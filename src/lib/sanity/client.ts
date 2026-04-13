@@ -5,7 +5,7 @@
 import { createClient } from "@sanity/client";
 
 export const sanityClient = createClient({
-    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "missing_project_id",
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
     apiVersion: "2024-01-01",
     useCdn: false, // We need real-time data
@@ -14,7 +14,7 @@ export const sanityClient = createClient({
 
 // Read-only client for public queries
 export const sanityReadClient = createClient({
-    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "missing_project_id",
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
     apiVersion: "2024-01-01",
     useCdn: true,
