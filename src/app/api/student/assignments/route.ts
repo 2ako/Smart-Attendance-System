@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/student/assignments — Fetch assignments for the logged-in student
 // ============================================================

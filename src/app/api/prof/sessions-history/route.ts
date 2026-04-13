@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // GET /api/prof/history — Fetch session history for professor
 // ============================================================

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // GET /api/export/pdf — Export attendance as PDF
 // ============================================================

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/admin/study-fields — Global Study Field Management
 // ============================================================

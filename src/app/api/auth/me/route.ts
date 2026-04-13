@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // GET /api/auth/me — Return current authenticated user
 // ============================================================

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // GET /api/admin/users — List all users
 // POST /api/admin/users — Update a user's studyField

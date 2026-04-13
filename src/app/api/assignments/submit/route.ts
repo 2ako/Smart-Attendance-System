@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/assignments/submit — Student Submission Handler
 // ============================================================

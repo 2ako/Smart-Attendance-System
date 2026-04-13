@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/admin/justifications — Admin operations for Absence Justifications
 // ============================================================

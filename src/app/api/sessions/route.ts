@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/sessions — Session management (open, close, extend)
 // ============================================================

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // POST /api/device/enroll-fingerprint — ESP32 enrolls fingerprint
 // ============================================================

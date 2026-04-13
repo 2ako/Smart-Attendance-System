@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // GET /api/device/session-status — ESP32 checks session state
 // ============================================================

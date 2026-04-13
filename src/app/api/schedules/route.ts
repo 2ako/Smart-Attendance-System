@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/schedules — CRUD operations for schedules
 // ============================================================

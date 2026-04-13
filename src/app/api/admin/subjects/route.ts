@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/admin/subjects — CRUD operations for courses (subjects)
 // ============================================================

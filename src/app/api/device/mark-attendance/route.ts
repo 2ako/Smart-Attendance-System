@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // POST /api/device/mark-attendance — ESP32 marks attendance
 // ============================================================

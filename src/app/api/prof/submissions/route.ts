@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/prof/submissions — Professor Submission Review API
 // ============================================================

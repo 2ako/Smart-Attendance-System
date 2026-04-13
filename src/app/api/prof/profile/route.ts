@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // GET /api/prof/profile — Fetch profile for logged-in professor
 // ============================================================

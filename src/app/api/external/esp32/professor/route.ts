@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { sanityClient } from "@/lib/sanity/client";
 import { getDeviceByToken } from "@/lib/sanity/queries";

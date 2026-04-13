@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // POST /api/device/open-session — ESP32 opens session via RFID
 // ============================================================

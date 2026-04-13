@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // /api/student/justifications — CRUD operations for Absence Justifications
 // ============================================================

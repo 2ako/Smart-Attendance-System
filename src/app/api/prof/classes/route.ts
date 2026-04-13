@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // ============================================================
 // GET /api/prof/classes — Fetch classes and schedules for professor
 // ============================================================
