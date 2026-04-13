@@ -47,7 +47,7 @@ export default function AdminDashboard() {
         setIsLoading(true);
         try {
             console.log("AdminDashboard: Fetching unified dashboard data...");
-            const res = await fetch("/api/admin/dashboard");
+            const res = await fetch("/api/admin/stats");
             if (!res.ok) {
                 const err = await res.json();
                 throw new Error(err.message || "Failed to fetch dashboard data");
