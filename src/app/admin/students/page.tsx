@@ -62,12 +62,33 @@ export default function AdminStudentsPage() {
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
     async function loadStudents() {
+        if (!user && loading) return;
         setIsLoading(true);
         try {
-            const data = await sanityClient.fetch(getAllStudents, { studyField: user?.studyField || "" });
+            const sfCode = user?.studyField || "";
+            console.log("AdminStudentsPage: Loading students for studyField:", sfCode);
+
+            // Attempt to resolve the ID if it looks like a code
+            let resolvedId = "";
+            if (sfCode && sfCode !== "all") {
+                try {
+                    const res = await sanityClient.fetch(`*[_type == "studyField" && (code == $code || _id == $code)][0]._id`, { code: sfCode });
+                    resolvedId = res || "";
+                } catch (e) {
+                    console.warn("AdminStudentsPage: Resolver error:", e);
+                }
+            }
+
+            const params = {
+                studyField: sfCode || "all",
+                studyFieldId: resolvedId || sfCode || ""
+            };
+
+            const data = await sanityClient.fetch(getAllStudents, params);
+            console.log(`AdminStudentsPage: Loaded ${data?.length || 0} students.`);
             setStudents(data || []);
         } catch (error) {
-            console.error("Error loading students:", error);
+            console.error("AdminStudentsPage: Error loading students:", error);
             toast.error(t("error"));
         } finally {
             setIsLoading(false);

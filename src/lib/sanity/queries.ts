@@ -17,11 +17,12 @@ export const getAllUsers = `*[_type == "user"] | order(name asc)`;
 
 // ── Students ──────────────────────────────────────────────────
 export const getAllStudents = `*[_type == "student" && (
-  !defined($studyField) || $studyField == "" || 
+  !defined($studyField) || $studyField == "" || $studyField == "all" || 
+  studyField == $studyField || 
+  studyField._ref == $studyFieldId ||
   studyField match $studyField || 
   user->studyField match $studyField ||
-  (lower($studyField) == "info" && (lower(studyField) == "informatique" || lower(user->studyField) == "informatique")) ||
-  (lower($studyField) == "informatique" && (lower(studyField) == "info" || lower(user->studyField) == "info"))
+  (lower($studyField) == "info" && (lower(studyField) == "informatique" || lower(user->studyField) == "informatique"))
 )]{
   ...,
   "fullName": firstName + " " + lastName,
@@ -66,10 +67,11 @@ export const getProfessorByUserId = `*[_type == "professor" && user._ref == $use
 
 // ── Subjects ──────────────────────────────────────────────────
 export const getAllSubjects = `*[_type == "subject" && (
-  !defined($studyField) || $studyField == "" || 
+  !defined($studyField) || $studyField == "" || $studyField == "all" || 
+  studyField == $studyField ||
+  studyField._ref == $studyFieldId ||
   studyField match $studyField ||
-  (lower($studyField) == "info" && lower(studyField) == "informatique") ||
-  (lower($studyField) == "informatique" && lower(studyField) == "info")
+  (lower($studyField) == "info" && lower(studyField) == "informatique")
 )]{
   ...,
   professor->{ ..., user->{ name } },
@@ -135,7 +137,14 @@ export const getSchedulesByProfessor = `*[_type == "schedule" && professor._ref 
 export const getAllRooms = `*[_type == "room" && (!defined($studyField) || $studyField == "" || studyField match $studyField || studyField._ref == $studyFieldId)] | order(name asc)`;
 
 // ── Devices ───────────────────────────────────────────────────
-export const getAllDevices = `*[_type == "device" && (!defined($studyField) || $studyField == "" || studyField match $studyField || studyField._ref == $studyFieldId)]{
+export const getAllDevices = `*[_type == "device" && (
+  !defined($studyField) || $studyField == "" || $studyField == "all" || 
+  studyField == $studyField ||
+  studyField match $studyField || 
+  studyField._ref == $studyFieldId ||
+  room->studyField == $studyField ||
+  room->studyField._ref == $studyFieldId
+)]{
   ...,
   room->{ _id, name }
 } | order(deviceId asc)`;

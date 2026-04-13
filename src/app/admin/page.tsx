@@ -52,27 +52,36 @@ export default function AdminDashboard() {
         setIsLoading(true);
         try {
             // For Super Admin, we want GLOBAL stats (no study field filter)
-            // For Faculty Admin, we scope to their department
             const sfCode = isSuperAdmin ? "" : ((user as any)?.studyField || "");
 
-            const resolvedId = sfCode
-                ? await sanityClient.fetch(`*[_type == "studyField" && (code == $code || _id == $code)][0]._id`, { code: sfCode })
-                : "";
+            console.log("AdminDashboard: Starting data load for sfCode:", sfCode);
+
+            let resolvedId = "";
+            if (sfCode) {
+                try {
+                    const result = await sanityClient.fetch(`*[_type == "studyField" && (code == $code || _id == $code)][0]._id`, { code: sfCode });
+                    resolvedId = result || "";
+                    console.log("AdminDashboard: Resolved studyField ID:", resolvedId);
+                } catch (e) {
+                    console.warn("AdminDashboard: Error resolving studyField ID (non-critical):", e);
+                }
+            }
 
             const params = {
-                studyField: sfCode,
+                studyField: sfCode || "all",
                 studyFieldId: resolvedId || sfCode || ""
             };
 
+            console.log("AdminDashboard: Fetching data with params:", params);
+
             const queries = [
-                sanityClient.fetch(getAllStudents, { studyField: sfCode }),
-                sanityClient.fetch(getAllDevices, params),
-                sanityClient.fetch(getAllRooms, params),
-                sanityClient.fetch(getAllSubjects, { studyField: sfCode }),
+                sanityClient.fetch(getAllStudents, params).catch(e => { console.error("Query failed: getAllStudents", e); throw e; }),
+                sanityClient.fetch(getAllDevices, params).catch(e => { console.error("Query failed: getAllDevices", e); throw e; }),
+                sanityClient.fetch(getAllRooms, { studyField: params.studyField, studyFieldId: params.studyFieldId }).catch(e => { console.error("Query failed: getAllRooms", e); throw e; }),
+                sanityClient.fetch(getAllSubjects, params).catch(e => { console.error("Query failed: getAllSubjects", e); throw e; }),
             ];
 
             if (isSuperAdmin) {
-                // Fetch ALL admins and ALL professors for the global view
                 queries.push(sanityClient.fetch(`*[_type == "user" && role == "admin"]`));
                 queries.push(sanityClient.fetch(getAllProfessors, { studyField: "" }));
             }
@@ -88,8 +97,9 @@ export default function AdminDashboard() {
                 admins: isSuperAdmin ? (results[4]?.length || 0) : 0,
                 professors: isSuperAdmin ? (results[5]?.length || 0) : 0,
             });
+            console.log("AdminDashboard: All data loaded successfully.");
         } catch (error) {
-            console.error("Error loading admin data:", error);
+            console.error("AdminDashboard: Error loading admin data:", error);
             toast.error(t("sync_statistics"));
         } finally {
             setIsLoading(false);
