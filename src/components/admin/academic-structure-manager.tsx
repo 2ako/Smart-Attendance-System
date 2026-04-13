@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus, Trash2, Save, Loader2, Layers, GraduationCap, Users, X, Info, ShieldAlert } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
 
 interface AcademicStructureManagerProps {
