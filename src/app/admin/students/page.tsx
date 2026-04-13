@@ -32,8 +32,6 @@ import { Badge } from "@/components/ui/badge";
 import { StudentDialog } from "@/components/admin/student-dialog";
 import { DeleteDialog } from "@/components/admin/delete-dialog";
 import { toast } from "sonner";
-import { sanityClient } from "@/lib/sanity/client";
-import { getAllStudents } from "@/lib/sanity/queries";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Select,
@@ -69,27 +67,25 @@ export default function AdminStudentsPage() {
             console.log("AdminStudentsPage: Loading students for studyField:", sfCode);
 
             // Attempt to resolve the ID if it looks like a code
-            let resolvedId = "";
-            if (sfCode && sfCode !== "all") {
-                try {
-                    const res = await sanityClient.fetch(`*[_type == "studyField" && (code == $code || _id == $code)][0]._id`, { code: sfCode });
-                    resolvedId = res || "";
-                } catch (e) {
-                    console.warn("AdminStudentsPage: Resolver error:", e);
-                }
+            const queryParams = new URLSearchParams({
+                studyField: studyFieldFilter,
+                level: selectedLevel,
+                specialty: specialtyFilter,
+                group: groupFilter
+            });
+
+            console.log("AdminStudentsPage: Fetching students via API:", queryParams.toString());
+            const res = await fetch(`/api/students?${queryParams.toString()}`);
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || "Failed to fetch students");
             }
 
-            const params = {
-                studyField: sfCode || "all",
-                studyFieldId: resolvedId || sfCode || ""
-            };
-
-            const data = await sanityClient.fetch(getAllStudents, params);
-            console.log(`AdminStudentsPage: Loaded ${data?.length || 0} students.`);
-            setStudents(data || []);
-        } catch (error) {
-            console.error("AdminStudentsPage: Error loading students:", error);
-            toast.error(t("error"));
+            const data = await res.json();
+            setStudents(data.students || []);
+        } catch (error: any) {
+            console.error("AdminStudentsPage error:", error);
+            toast.error(t("failed_load_students"));
         } finally {
             setIsLoading(false);
         }

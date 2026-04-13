@@ -9,13 +9,38 @@ import { getAllStudents } from "@/lib/sanity/queries";
 import { getCurrentUser, hasRole } from "@/lib/auth";
 import bcrypt from "bcryptjs";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     const user = await getCurrentUser();
     if (!hasRole(user, ["admin", "professor"])) {
         return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    const students = await sanityClient.fetch(getAllStudents, { studyField: user?.studyField || "" });
+    const { searchParams } = new URL(req.url);
+    const studyField = searchParams.get("studyField") || user?.studyField || "";
+    const level = searchParams.get("level") || "all";
+    const specialty = searchParams.get("specialty") || "all";
+    const group = searchParams.get("group") || "all";
+
+    // Resolve Study Field ID if it's a code
+    let resolvedId = "";
+    if (studyField && studyField !== "all") {
+        const result = await sanityClient.fetch(
+            `*[_type == "studyField" && (code == $code || _id == $code)][0]._id`,
+            { code: studyField }
+        );
+        resolvedId = result || "";
+    }
+
+    const params = {
+        studyField: studyField === "all" ? "" : studyField,
+        studyFieldId: resolvedId || (studyField === "all" ? "" : studyField),
+        level,
+        specialty,
+        group
+    };
+
+    console.log("API Students: Fetching with params:", params);
+    const students = await sanityClient.fetch(getAllStudents, params);
     return NextResponse.json({ students });
 }
 

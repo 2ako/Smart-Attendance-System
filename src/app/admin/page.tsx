@@ -21,20 +21,13 @@ import {
 import { AcademicStructureManager } from "@/components/admin/academic-structure-manager";
 import { StudentDialog } from "@/components/admin/student-dialog";
 import { DeleteDialog } from "@/components/admin/delete-dialog";
-import { sanityClient } from "@/lib/sanity/client";
-import {
-    getAllStudents,
-    getAllDevices,
-    getAllRooms,
-    getAllSubjects,
-    getAllProfessors,
-} from "@/lib/sanity/queries";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
 
 export default function AdminDashboard() {
     const { t, lang } = useTranslation();
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const isSuperAdmin = user && (user as any).role === "admin" && !(user as any).studyField;
 
     const [students, setStudents] = useState<any[]>([]);
@@ -47,57 +40,27 @@ export default function AdminDashboard() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
+    const [academicConfigs, setAcademicConfigs] = useState<any[]>([]);
+
     async function loadAdminData() {
-        if (!user) return;
+        if (!user && loading) return;
         setIsLoading(true);
         try {
-            // For Super Admin, we want GLOBAL stats (no study field filter)
-            const sfCode = isSuperAdmin ? "" : ((user as any)?.studyField || "");
-
-            console.log("AdminDashboard: Starting data load for sfCode:", sfCode);
-
-            let resolvedId = "";
-            if (sfCode) {
-                try {
-                    const result = await sanityClient.fetch(`*[_type == "studyField" && (code == $code || _id == $code)][0]._id`, { code: sfCode });
-                    resolvedId = result || "";
-                    console.log("AdminDashboard: Resolved studyField ID:", resolvedId);
-                } catch (e) {
-                    console.warn("AdminDashboard: Error resolving studyField ID (non-critical):", e);
-                }
+            console.log("AdminDashboard: Fetching unified dashboard data...");
+            const res = await fetch("/api/admin/dashboard");
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || "Failed to fetch dashboard data");
             }
 
-            const params = {
-                studyField: sfCode || "all",
-                studyFieldId: resolvedId || sfCode || ""
-            };
+            const data = await res.json();
+            console.log("AdminDashboard: Unified data received:", data);
 
-            console.log("AdminDashboard: Fetching data with params:", params);
+            setStats(data.stats);
+            setAcademicConfigs(data.academicConfigs || []);
+            setStudents(data.students || []);
 
-            const queries = [
-                sanityClient.fetch(getAllStudents, params).catch(e => { console.error("Query failed: getAllStudents", e); throw e; }),
-                sanityClient.fetch(getAllDevices, params).catch(e => { console.error("Query failed: getAllDevices", e); throw e; }),
-                sanityClient.fetch(getAllRooms, { studyField: params.studyField, studyFieldId: params.studyFieldId }).catch(e => { console.error("Query failed: getAllRooms", e); throw e; }),
-                sanityClient.fetch(getAllSubjects, params).catch(e => { console.error("Query failed: getAllSubjects", e); throw e; }),
-            ];
-
-            if (isSuperAdmin) {
-                queries.push(sanityClient.fetch(`*[_type == "user" && role == "admin"]`));
-                queries.push(sanityClient.fetch(getAllProfessors, { studyField: "" }));
-            }
-
-            const results = await Promise.all(queries);
-
-            setStudents(results[0] || []);
-            setStats({
-                students: results[0]?.length || 0,
-                devices: results[1]?.length || 0,
-                rooms: results[2]?.length || 0,
-                subjects: results[3]?.length || 0,
-                admins: isSuperAdmin ? (results[4]?.length || 0) : 0,
-                professors: isSuperAdmin ? (results[5]?.length || 0) : 0,
-            });
-            console.log("AdminDashboard: All data loaded successfully.");
+            console.log("AdminDashboard: State updated successfully.");
         } catch (error) {
             console.error("AdminDashboard: Error loading admin data:", error);
             toast.error(t("sync_statistics"));
@@ -107,10 +70,10 @@ export default function AdminDashboard() {
     }
 
     useEffect(() => {
-        if (user) {
+        if (!loading && user) {
             loadAdminData();
         }
-    }, [user]);
+    }, [user, loading]);
 
     const handleAddStudent = () => {
         setSelectedStudent(null);
@@ -317,7 +280,10 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="animate-enter [animation-delay:200ms] mb-12 text-start">
-                    <AcademicStructureManager />
+                    <AcademicStructureManager
+                        initialConfigs={academicConfigs}
+                        initialUser={user}
+                    />
                 </div>
             </main>
 

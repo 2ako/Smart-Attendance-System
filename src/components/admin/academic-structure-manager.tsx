@@ -7,23 +7,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus, Trash2, Save, Loader2, Layers, GraduationCap, Users, X, Info, ShieldAlert } from "lucide-react";
-import { sanityClient } from "@/lib/sanity/client";
-import { getAllAcademicConfigs } from "@/lib/sanity/queries";
-import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
 
-export function AcademicStructureManager() {
+interface AcademicStructureManagerProps {
+    initialConfigs?: any[];
+    initialUser?: any;
+}
+
+export function AcademicStructureManager({ initialConfigs, initialUser }: AcademicStructureManagerProps) {
     const { t } = useTranslation();
-    const [configs, setConfigs] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [configs, setConfigs] = useState<any[]>(initialConfigs || []);
+    const [loading, setLoading] = useState(!initialConfigs);
     const [saving, setSaving] = useState(false);
-    const [originalConfigs, setOriginalConfigs] = useState<any[]>([]);
+    const [originalConfigs, setOriginalConfigs] = useState<any[]>(initialConfigs || []);
     const [selectedLevel, setSelectedLevel] = useState("L1");
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<any>(initialUser || null);
 
     useEffect(() => {
-        fetchInitialData();
-    }, []);
+        if (initialConfigs && initialUser) {
+            setConfigs(initialConfigs);
+            setOriginalConfigs(JSON.parse(JSON.stringify(initialConfigs)));
+            setCurrentUser(initialUser);
+            setLoading(false);
+        } else {
+            fetchInitialData();
+        }
+    }, [initialConfigs, initialUser]);
 
     async function fetchInitialData() {
         setLoading(true);
