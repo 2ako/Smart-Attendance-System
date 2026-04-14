@@ -217,7 +217,8 @@ export default function AdminAnnouncementsPage() {
 function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t }: any) {
     return (
         <Card className="rounded-[32px] border-border/50 bg-card shadow-sm overflow-hidden text-start">
-            <div className="overflow-x-auto text-start">
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto text-start">
                 <Table>
                     <TableHeader className="bg-muted/30">
                         <TableRow className="text-start">
@@ -341,6 +342,63 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden p-4 space-y-4">
+                {isLoading ? (
+                    Array(3).fill(0).map((_, i) => (
+                        <div key={i} className="h-44 bg-muted/20 animate-pulse rounded-[2rem]" />
+                    ))
+                ) : data.length === 0 ? (
+                    <div className="py-20 text-center opacity-40 text-start">
+                        <Megaphone size={48} className="mx-auto mb-4" />
+                        <p className="text-sm font-bold uppercase tracking-widest">{t("no_broadcasts")}</p>
+                    </div>
+                ) : (
+                    data.map((a: any) => (
+                        <div key={a._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="flex-1 text-start">
+                                    <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-2">{a.title}</h3>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        <Badge variant="secondary" className={cn("text-[8px] font-black uppercase tracking-widest", a.status === 'published' ? 'bg-primary/20 text-primary' : '')}>
+                                            {t(a.status)}
+                                        </Badge>
+                                        <span className="text-[10px] font-bold text-muted-foreground">{new Date(a._createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                                {((a.studyField || "") === (user?.studyField || "")) && (
+                                    <div className="flex flex-col gap-1">
+                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(a)} className="h-9 w-9 rounded-xl bg-muted/20 text-muted-foreground hover:bg-primary/10 hover:text-primary">
+                                            <Pencil size={16} />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(a)} className="h-9 w-9 rounded-xl bg-muted/20 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
+                                            <Trash2 size={16} />
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Separator className="bg-border/30" />
+
+                            <div className="p-3 rounded-2xl bg-muted/10 border border-border/50 text-start">
+                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("audience")}</p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {a.targetAudience === 'faculty_admins' ? (
+                                        <span className="text-[11px] font-bold text-purple-600">{t("faculty_admins")}</span>
+                                    ) : a.isGlobal || (!a.level && !a.subject) ? (
+                                        <span className="text-[11px] font-bold text-emerald-600">{t("global")}</span>
+                                    ) : a.subject ? (
+                                        <span className="text-[11px] font-bold text-blue-600">{a.subject.name}</span>
+                                    ) : (
+                                        <span className="text-[11px] font-bold text-amber-600">{a.level} {a.specialty} {a.group ? `• G${a.group}` : ''}</span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </Card>
     );

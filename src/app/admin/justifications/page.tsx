@@ -149,103 +149,179 @@ export default function AdminJustificationsPage() {
 
                 {/* ── Table Container ─────────────────────────────── */}
                 <Card className="rounded-[40px] border-none shadow-2xl bg-card/50 backdrop-blur-xl overflow-hidden animate-enter [animation-delay:200ms]">
-                    <Table>
-                        <TableHeader className="bg-muted/30">
-                            <TableRow className="hover:bg-transparent border-border/50">
-                                <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("student")}</TableHead>
-                                <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("document_info")}</TableHead>
-                                <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("date")}</TableHead>
-                                <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("status")}</TableHead>
-                                <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest ltr:text-right rtl:text-left">{t("actions")}</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {isLoading ? (
-                                Array.from({ length: 5 }).map((_, i) => (
-                                    <TableRow key={i} className="animate-pulse">
-                                        <TableCell colSpan={5} className="py-12 border-border/10">
-                                            <div className="h-8 bg-muted/20 rounded-xl" />
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : filtered.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="py-32 text-center">
-                                        <div className="flex flex-col items-center justify-center opacity-20">
-                                            <FileText size={64} className="mb-4" />
-                                            <p className="text-xl font-bold uppercase tracking-tight">{t("no_justifications_found")}</p>
-                                        </div>
-                                    </TableCell>
+                    {/* Desktop Table View */}
+                    <div className="hidden lg:block overflow-x-auto">
+                        <Table>
+                            <TableHeader className="bg-muted/30">
+                                <TableRow className="hover:bg-transparent border-border/50">
+                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("student")}</TableHead>
+                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("document_info")}</TableHead>
+                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("date")}</TableHead>
+                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("status")}</TableHead>
+                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest ltr:text-right rtl:text-left">{t("actions")}</TableHead>
                                 </TableRow>
-                            ) : (
-                                filtered.map((item) => (
-                                    <TableRow key={item._id} className="hover:bg-muted/20 border-border/50 transition-colors group">
-                                        <TableCell className="py-6 px-8">
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold">
-                                                    {item.student?.user?.name?.[0] || "?"}
-                                                </div>
-                                                <div>
-                                                    <p className="font-black text-foreground group-hover:text-primary transition-colors">{item.student?.user?.name}</p>
-                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">{item.student?.matricule}</p>
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="py-6 px-8">
-                                            <div className="max-w-[300px]">
-                                                <p className="font-bold text-sm leading-tight">{item.title}</p>
-                                                {item.description && (
-                                                    <p className="text-xs text-muted-foreground mt-1 line-clamp-1">"{item.description}"</p>
-                                                )}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="py-6 px-8">
-                                            <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase opacity-70">
-                                                <Calendar size={12} />
-                                                {new Date(item.submissionDate).toLocaleDateString()}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="py-6 px-8">
-                                            {getStatusBadge(item.status)}
-                                        </TableCell>
-                                        <TableCell className="py-6 px-8 ltr:text-right rtl:text-left">
-                                            <div className="flex items-center ltr:justify-end rtl:justify-start gap-2">
-                                                <Button
-                                                    variant="secondary"
-                                                    size="sm"
-                                                    className="rounded-xl h-10 px-4 font-black uppercase tracking-widest text-[9px] gap-2"
-                                                    onClick={() => window.open(item.fileUrl, '_blank')}
-                                                >
-                                                    <Download size={14} />
-                                                    {t("view_doc_btn")}
-                                                </Button>
-                                                <div className="flex gap-1 ltr:border-l rtl:border-r border-border/50 ltr:pl-2 rtl:pr-2 ltr:ml-2 rtl:mr-2">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        disabled={updatingId === item._id || item.status === "approved"}
-                                                        className={`h-10 w-10 rounded-xl hover:bg-green-500/10 hover:text-green-500 transition-all ${item.status === 'approved' ? 'text-green-500 bg-green-500/10' : ''}`}
-                                                        onClick={() => handleUpdateStatus(item._id, "approved")}
-                                                    >
-                                                        {updatingId === item._id ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        disabled={updatingId === item._id || item.status === "rejected"}
-                                                        className={`h-10 w-10 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all ${item.status === 'rejected' ? 'text-destructive bg-destructive/10' : ''}`}
-                                                        onClick={() => handleUpdateStatus(item._id, "rejected")}
-                                                    >
-                                                        {updatingId === item._id ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />}
-                                                    </Button>
-                                                </div>
+                            </TableHeader>
+                            <TableBody>
+                                {isLoading ? (
+                                    Array.from({ length: 5 }).map((_, i) => (
+                                        <TableRow key={i} className="animate-pulse">
+                                            <TableCell colSpan={5} className="py-12 border-border/10">
+                                                <div className="h-8 bg-muted/20 rounded-xl" />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : filtered.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="py-32 text-center">
+                                            <div className="flex flex-col items-center justify-center opacity-20">
+                                                <FileText size={64} className="mb-4" />
+                                                <p className="text-xl font-bold uppercase tracking-tight">{t("no_justifications_found")}</p>
                                             </div>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    filtered.map((item) => (
+                                        <TableRow key={item._id} className="hover:bg-muted/20 border-border/50 transition-colors group">
+                                            <TableCell className="py-6 px-8">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                                                        {item.student?.user?.name?.[0] || "?"}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-black text-foreground group-hover:text-primary transition-colors">{item.student?.user?.name}</p>
+                                                        <p className="text-[10px] font-bold text-muted-foreground uppercase">{item.student?.matricule}</p>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-6 px-8">
+                                                <div className="max-w-[300px]">
+                                                    <p className="font-bold text-sm leading-tight">{item.title}</p>
+                                                    {item.description && (
+                                                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">"{item.description}"</p>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-6 px-8">
+                                                <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase opacity-70">
+                                                    <Calendar size={12} />
+                                                    {new Date(item.submissionDate).toLocaleDateString()}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-6 px-8">
+                                                {getStatusBadge(item.status)}
+                                            </TableCell>
+                                            <TableCell className="py-6 px-8 ltr:text-right rtl:text-left">
+                                                <div className="flex items-center ltr:justify-end rtl:justify-start gap-2">
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="sm"
+                                                        className="rounded-xl h-10 px-4 font-black uppercase tracking-widest text-[9px] gap-2"
+                                                        onClick={() => window.open(item.fileUrl, '_blank')}
+                                                    >
+                                                        <Download size={14} />
+                                                        {t("view_doc_btn")}
+                                                    </Button>
+                                                    <div className="flex gap-1 ltr:border-l rtl:border-r border-border/50 ltr:pl-2 rtl:pr-2 ltr:ml-2 rtl:mr-2">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            disabled={updatingId === item._id || item.status === "approved"}
+                                                            className={`h-10 w-10 rounded-xl hover:bg-green-500/10 hover:text-green-500 transition-all ${item.status === 'approved' ? 'text-green-500 bg-green-500/10' : ''}`}
+                                                            onClick={() => handleUpdateStatus(item._id, "approved")}
+                                                        >
+                                                            {updatingId === item._id ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            disabled={updatingId === item._id || item.status === "rejected"}
+                                                            className={`h-10 w-10 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all ${item.status === 'rejected' ? 'text-destructive bg-destructive/10' : ''}`}
+                                                            onClick={() => handleUpdateStatus(item._id, "rejected")}
+                                                        >
+                                                            {updatingId === item._id ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />}
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden p-4 space-y-4">
+                        {isLoading ? (
+                            Array.from({ length: 3 }).map((_, i) => (
+                                <div key={i} className="h-48 bg-muted/20 animate-pulse rounded-[2.5rem]" />
+                            ))
+                        ) : filtered.length === 0 ? (
+                            <div className="py-20 text-center opacity-20">
+                                <FileText size={64} className="mx-auto mb-4" />
+                                <p className="text-lg font-bold uppercase tracking-tight">{t("no_justifications_found")}</p>
+                            </div>
+                        ) : (
+                            filtered.map((item) => (
+                                <div key={item._id} className="p-6 rounded-[2.5rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold shadow-inner">
+                                            {item.student?.user?.name?.[0] || "?"}
+                                        </div>
+                                        <div className="flex-1 pr-12 rtl:pl-12 text-start">
+                                            <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1">{item.student?.user?.name}</h3>
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase">{item.student?.matricule}</p>
+                                        </div>
+                                        <div className="absolute top-4 ltr:right-4 rtl:left-4">
+                                            {getStatusBadge(item.status)}
+                                        </div>
+                                    </div>
+
+                                    <div className="p-4 rounded-2xl bg-muted/5 border border-border/30 text-start">
+                                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">{item.title}</p>
+                                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                                            {item.description || t("no_description_provided")}
+                                        </p>
+                                        <div className="mt-3 flex items-center gap-2 text-[10px] font-bold text-muted-foreground/60 uppercase">
+                                            <Calendar size={12} />
+                                            {new Date(item.submissionDate).toLocaleDateString()}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <Button
+                                            variant="secondary"
+                                            className="flex-1 rounded-xl h-12 font-black uppercase tracking-widest text-[10px] gap-2 shadow-sm"
+                                            onClick={() => window.open(item.fileUrl, '_blank')}
+                                        >
+                                            <Download size={14} />
+                                            {t("view_doc_btn")}
+                                        </Button>
+                                        <div className="flex gap-1">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                disabled={updatingId === item._id || item.status === "approved"}
+                                                className={`h-12 w-12 rounded-xl bg-muted/20 hover:bg-green-500/10 hover:text-green-500 transition-all ${item.status === 'approved' ? 'text-green-500 bg-green-500/10' : ''}`}
+                                                onClick={() => handleUpdateStatus(item._id, "approved")}
+                                            >
+                                                {updatingId === item._id ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                disabled={updatingId === item._id || item.status === "rejected"}
+                                                className={`h-12 w-12 rounded-xl bg-muted/20 hover:bg-destructive/10 hover:text-destructive transition-all ${item.status === 'rejected' ? 'text-destructive bg-destructive/10' : ''}`}
+                                                onClick={() => handleUpdateStatus(item._id, "rejected")}
+                                            >
+                                                {updatingId === item._id ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </Card>
             </main>
         </div>

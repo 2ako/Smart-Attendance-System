@@ -186,22 +186,23 @@ export default function StudyFieldsPage() {
                 </div>
 
                 <Card className="rounded-[32px] border-border/50 bg-card shadow-sm overflow-hidden animate-enter" style={{ animationDelay: "200ms" }}>
-                    <div className="overflow-x-auto">
+                    {/* Desktop Table View */}
+                    <div className="hidden lg:block overflow-x-auto text-start">
                         <Table>
                             <TableHeader className="bg-muted/30">
                                 <TableRow>
-                                    <TableHead className="w-[300px] h-14 uppercase text-[10px] font-bold tracking-widest text-muted-foreground">{t("full_name")}</TableHead>
-                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground">{t("subject_code")}</TableHead>
-                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground">{t("system_label")}</TableHead>
-                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground">{t("levels_label")}</TableHead>
-                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground">{t("specialties_label")}</TableHead>
-                                    <TableHead className="text-right uppercase text-[10px] font-bold tracking-widest text-muted-foreground pr-6">{t("actions_label")}</TableHead>
+                                    <TableHead className="w-[300px] h-14 uppercase text-[10px] font-bold tracking-widest text-muted-foreground text-start">{t("full_name")}</TableHead>
+                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground text-start">{t("subject_code")}</TableHead>
+                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground text-start">{t("system_label")}</TableHead>
+                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground text-start">{t("levels_label")}</TableHead>
+                                    <TableHead className="uppercase text-[10px] font-bold tracking-widest text-muted-foreground text-start">{t("specialties_label")}</TableHead>
+                                    <TableHead className="text-right uppercase text-[10px] font-bold tracking-widest text-muted-foreground pr-6 text-start">{t("actions_label")}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="h-32 text-center">
+                                        <TableCell colSpan={6} className="h-32 text-center text-start">
                                             <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                                                 <Loader2 className="h-6 w-6 animate-spin text-primary" />
                                                 <p className="text-xs font-bold uppercase tracking-widest">{t("loading_records")}</p>
@@ -210,7 +211,7 @@ export default function StudyFieldsPage() {
                                     </TableRow>
                                 ) : filtered.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="h-48 text-center">
+                                        <TableCell colSpan={6} className="h-48 text-center text-start">
                                             <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                                                 <Layers className="h-8 w-8 text-muted-foreground/30 mb-2" />
                                                 <p className="text-sm font-bold">{t("no_fields_found")}</p>
@@ -219,21 +220,21 @@ export default function StudyFieldsPage() {
                                     </TableRow>
                                 ) : (
                                     filtered.map((f) => (
-                                        <TableRow key={f._id} className="group hover:bg-muted/10 transition-colors">
-                                            <TableCell className="font-bold text-foreground">
-                                                <div className="flex items-center gap-3">
+                                        <TableRow key={f._id} className="group hover:bg-muted/10 transition-colors text-start">
+                                            <TableCell className="font-bold text-foreground text-start">
+                                                <div className="flex items-center gap-3 text-start">
                                                     <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
                                                         <GraduationCap size={16} />
                                                     </div>
-                                                    <span className="line-clamp-1">{f.name}</span>
+                                                    <span className="line-clamp-1 text-start">{f.name}</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="text-start">
                                                 <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5 px-2.5 py-1">
                                                     {f.code}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="text-start">
                                                 <Badge variant="secondary" className={cn(
                                                     "text-[10px] font-black uppercase tracking-widest border-none",
                                                     f.systemType === 'LMD' ? 'bg-indigo-500/10 text-indigo-600' : 'bg-amber-500/10 text-amber-600'
@@ -242,8 +243,8 @@ export default function StudyFieldsPage() {
                                                     {f.systemType}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                            <TableCell className="text-start">
+                                                <div className="flex flex-wrap gap-1 max-w-[200px] text-start">
                                                     {f.years?.map((year: string, i: number) => (
                                                         <span key={i} className="text-[9px] font-bold bg-muted p-1 px-1.5 rounded-md text-muted-foreground uppercase border border-border/50">
                                                             {year}
@@ -251,8 +252,8 @@ export default function StudyFieldsPage() {
                                                     ))}
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                            <TableCell className="text-start">
+                                                <div className="flex flex-wrap gap-1 max-w-[200px] text-start">
                                                     {f.specialties?.length > 0 ? (
                                                         f.specialties.map((s: any, i: number) => {
                                                             const name = typeof s === 'string' ? s : s.name;
@@ -261,7 +262,7 @@ export default function StudyFieldsPage() {
                                                                 <Badge key={i} variant="outline" className="text-[9px] font-black uppercase tracking-tight border-primary/20 text-primary bg-primary/5 px-2 py-0.5 rounded-md flex items-center gap-1">
                                                                     {name}
                                                                     {groupCount > 0 && (
-                                                                        <span className="opacity-50 font-medium">({groupCount} G)</span>
+                                                                        <span className="opacity-50 font-medium text-start">({groupCount} G)</span>
                                                                     )}
                                                                 </Badge>
                                                             );
@@ -271,8 +272,8 @@ export default function StudyFieldsPage() {
                                                     )}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-right pr-6">
-                                                <div className="flex justify-end gap-2">
+                                            <TableCell className="text-right pr-6 text-start">
+                                                <div className="flex justify-end gap-2 text-start">
                                                     <Button variant="ghost" size="icon" onClick={() => handleEdit(f)} className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all">
                                                         <Pencil size={14} />
                                                     </Button>
@@ -286,6 +287,86 @@ export default function StudyFieldsPage() {
                                 )}
                             </TableBody>
                         </Table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden p-4 space-y-4">
+                        {isLoading ? (
+                            Array(3).fill(0).map((_, i) => (
+                                <div key={i} className="h-32 bg-muted/20 animate-pulse rounded-[2.5rem]" />
+                            ))
+                        ) : filtered.length === 0 ? (
+                            <div className="py-20 text-center opacity-20 text-start">
+                                <Layers size={64} className="mx-auto mb-4" />
+                                <p className="text-lg font-bold uppercase tracking-tight">{t("no_fields_found")}</p>
+                            </div>
+                        ) : (
+                            filtered.map((f) => (
+                                <div key={f._id} className="p-6 rounded-[2.5rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group text-start">
+                                    <div className="flex items-start justify-between gap-4 text-start">
+                                        <div className="flex items-center gap-4 text-start">
+                                            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/10 shadow-inner">
+                                                <GraduationCap className="h-6 w-6 text-primary opacity-80" />
+                                            </div>
+                                            <div className="text-start">
+                                                <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1 text-start">{f.name}</h3>
+                                                <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5 px-2 py-0.5">
+                                                    {f.code}
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-1 text-start">
+                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(f)} className="h-10 w-10 rounded-xl bg-muted/20 text-muted-foreground hover:bg-primary/10 hover:text-primary">
+                                                <Pencil size={18} />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(f)} className="h-10 w-10 rounded-xl bg-muted/20 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
+                                                <Trash2 size={18} />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2 text-start">
+                                        <Badge variant="secondary" className={cn(
+                                            "text-[10px] font-black uppercase tracking-widest border-none",
+                                            f.systemType === 'LMD' ? 'bg-indigo-500/10 text-indigo-600' : 'bg-amber-500/10 text-amber-600'
+                                        )}>
+                                            <Binary size={10} className="mr-1.5" />
+                                            {f.systemType}
+                                        </Badge>
+                                    </div>
+
+                                    <div className="space-y-3 text-start">
+                                        <div className="text-start">
+                                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("levels_label")}</p>
+                                            <div className="flex flex-wrap gap-1 text-start">
+                                                {f.years?.map((year: string, i: number) => (
+                                                    <span key={i} className="text-[9px] font-bold bg-muted p-1 px-1.5 rounded-md text-muted-foreground uppercase border border-border/50 text-start">
+                                                        {year}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="text-start">
+                                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("specialties_label")}</p>
+                                            <div className="flex flex-wrap gap-1 text-start">
+                                                {f.specialties?.length > 0 ? (
+                                                    f.specialties.map((s: any, i: number) => {
+                                                        const name = typeof s === 'string' ? s : s.name;
+                                                        return (
+                                                            <Badge key={i} variant="outline" className="text-[9px] font-black uppercase tracking-tight border-primary/20 text-primary bg-primary/5 px-2 py-0.5 rounded-md text-start">
+                                                                {name}
+                                                            </Badge>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <span className="text-[9px] font-bold text-muted-foreground/40 uppercase italic ml-1 text-start text-start">{t("universal")}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </Card>
             </main>

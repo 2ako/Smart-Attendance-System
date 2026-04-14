@@ -236,7 +236,8 @@ export default function AbsencesPage() {
                 {/* ── Table ─────────────────────────────────────────── */}
                 <div className="animate-enter [animation-delay:200ms]">
                     <Card className="rounded-[32px] border-none shadow-xl bg-card overflow-hidden">
-                        <div className="overflow-x-auto">
+                        {/* Desktop Table View */}
+                        <div className="hidden lg:block overflow-x-auto">
                             <Table>
                                 <TableHeader className="bg-muted/30">
                                     <TableRow className="border-border/50 hover:bg-transparent">
@@ -354,6 +355,65 @@ export default function AbsencesPage() {
                                     )}
                                 </TableBody>
                             </Table>
+                        </div>
+
+                        {/* Mobile Card Layout */}
+                        <div className="lg:hidden p-4 space-y-4">
+                            {isLoading ? (
+                                Array(3).fill(0).map((_, i) => (
+                                    <div key={i} className="h-48 bg-muted/20 animate-pulse rounded-[2.5rem]" />
+                                ))
+                            ) : filteredSessions.length === 0 ? (
+                                <div className="py-20 text-center opacity-40">
+                                    <FileText size={48} className="mx-auto mb-4" />
+                                    <p className="text-sm font-bold uppercase tracking-widest">{t("no_results")}</p>
+                                </div>
+                            ) : (
+                                filteredSessions.map((session) => (
+                                    <div
+                                        key={session._id}
+                                        onClick={() => {
+                                            setSelectedSessionId(session._id);
+                                            setIsDetailsOpen(true);
+                                        }}
+                                        className="p-6 rounded-[2.5rem] bg-card border border-border/50 shadow-sm space-y-4 active:scale-[0.98] transition-all"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                                    <Calendar size={18} className="text-primary" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-black text-foreground uppercase">{new Date(session.startTime).toLocaleDateString()}</p>
+                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">{new Date(session.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                                </div>
+                                            </div>
+                                            <Badge className={cn(
+                                                "rounded-lg px-3 py-1 font-black text-[10px] uppercase",
+                                                session.attendanceCount > 0 ? "bg-green-500/10 text-green-500" : "bg-destructive/10 text-destructive"
+                                            )}>
+                                                {session.attendanceCount} {t("marks")}
+                                            </Badge>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight leading-tight">{session.subject?.name}</h3>
+                                            <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{session.subject?.code}</p>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-2 pt-2">
+                                            <div className="px-4 py-3 rounded-2xl bg-muted/20 border border-border/50">
+                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("professor")}</p>
+                                                <p className="text-[11px] font-bold text-foreground truncate">{session.professor?.name}</p>
+                                            </div>
+                                            <div className="px-4 py-3 rounded-2xl bg-muted/20 border border-border/50">
+                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("target")}</p>
+                                                <p className="text-[11px] font-bold text-foreground truncate">{session.subject?.level} {session.subject?.specialty}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </Card>
                 </div>

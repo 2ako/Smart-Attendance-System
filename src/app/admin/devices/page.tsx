@@ -211,7 +211,8 @@ export default function IoTDevicesPage() {
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                        <div className="overflow-x-auto">
+                        {/* Desktop Table View */}
+                        <div className="hidden lg:block overflow-x-auto">
                             <Table>
                                 <TableHeader className="bg-muted/30">
                                     <TableRow className="border-border hover:bg-transparent">
@@ -316,6 +317,74 @@ export default function IoTDevicesPage() {
                                     )}
                                 </TableBody>
                             </Table>
+                        </div>
+
+                        {/* Mobile Card Layout */}
+                        <div className="lg:hidden p-4 space-y-4">
+                            {isLoading ? (
+                                Array(3).fill(0).map((_, i) => (
+                                    <div key={i} className="h-44 bg-muted/20 animate-pulse rounded-[2rem]" />
+                                ))
+                            ) : filteredDevices.length === 0 ? (
+                                <div className="py-20 text-center opacity-40">
+                                    <Cpu size={48} className="mx-auto mb-4" />
+                                    <p className="text-sm font-bold uppercase tracking-widest">{t("no_results")}</p>
+                                </div>
+                            ) : (
+                                filteredDevices.map((device) => {
+                                    const online = isOnline(device.lastSeen);
+                                    return (
+                                        <div key={device._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
+                                            <div className="flex items-center gap-4">
+                                                <div className={`h-14 w-14 rounded-2xl ${device.isActive ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'} flex items-center justify-center shadow-inner`}>
+                                                    <Cpu size={24} />
+                                                </div>
+                                                <div className="flex-1 pr-12 rtl:pl-12">
+                                                    <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1">{device.deviceId}</h3>
+                                                    <div className="flex items-center gap-1">
+                                                        <span className={`h-1.5 w-1.5 rounded-full ${online ? 'bg-green-500 animate-pulse' : 'bg-muted-foreground/30'}`} />
+                                                        <p className="text-[10px] font-bold text-muted-foreground uppercase">{online ? t("online") : t("offline")}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="absolute top-4 ltr:right-4 rtl:left-4 flex gap-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => handleEditDevice(device)}
+                                                        className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-primary/10 hover:text-primary transition-all"
+                                                    >
+                                                        <Pencil size={16} />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => handleDeleteClick(device)}
+                                                        className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-destructive/10 hover:text-destructive transition-all"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-3 pt-2">
+                                                <div className="p-3 rounded-2xl bg-muted/10 border border-border/50">
+                                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("location")}</p>
+                                                    <div className="flex items-center gap-1">
+                                                        <MapPin size={10} className="text-primary" />
+                                                        <p className="text-[11px] font-bold text-foreground truncate">{device.room?.name || t("unassigned")}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="p-3 rounded-2xl bg-muted/10 border border-border/50 text-center flex flex-col justify-center">
+                                                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("last_seen")}</p>
+                                                    <p className="text-[10px] font-bold text-foreground">
+                                                        {device.lastSeen ? new Date(device.lastSeen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "N/A"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
                         </div>
                     </CardContent>
                 </Card>

@@ -305,7 +305,8 @@ export default function UsersPage() {
                 </div>
 
                 <Card className="rounded-[32px] border-border/50 bg-card shadow-sm overflow-hidden animate-enter text-start" style={{ animationDelay: "200ms" }}>
-                    <div className="overflow-x-auto text-start">
+                    {/* Desktop Table View */}
+                    <div className="hidden lg:block overflow-x-auto text-start">
                         <Table className="text-start">
                             <TableHeader className="bg-muted/30 text-start">
                                 <TableRow>
@@ -438,6 +439,81 @@ export default function UsersPage() {
                                 )}
                             </TableBody>
                         </Table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden p-4 space-y-4">
+                        {isLoading ? (
+                            Array(3).fill(0).map((_, i) => (
+                                <div key={i} className="h-40 bg-muted/20 animate-pulse rounded-[2rem]" />
+                            ))
+                        ) : filtered.length === 0 ? (
+                            <div className="py-20 text-center opacity-40">
+                                <UserCircle size={48} className="mx-auto mb-4" />
+                                <p className="text-sm font-bold uppercase tracking-widest">{t("no_results")}</p>
+                            </div>
+                        ) : (
+                            filtered.map((u) => {
+                                const isCurrentUser = currentUser?.id === u._id;
+                                const isAdmin = u.role === 'admin';
+                                const isSuperAdmin = isAdmin && !u.studyField;
+
+                                return (
+                                    <div key={u._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center shrink-0 border border-border/50 overflow-hidden shadow-inner">
+                                                {u.avatar ? (
+                                                    <img src={u.avatar} alt={u.name} className="h-full w-full object-cover" />
+                                                ) : (
+                                                    <UserCircle size={24} className="text-muted-foreground/40" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1 pr-12 rtl:pl-12">
+                                                <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1">{u.name}</h3>
+                                                <Badge className={cn(
+                                                    "text-[8px] font-black uppercase tracking-widest border-none px-2 py-0.5 mt-1",
+                                                    u.role === 'admin' ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/20' :
+                                                        u.role === 'professor' ? 'bg-indigo-500/10 text-indigo-600' : 'bg-emerald-500/10 text-emerald-600'
+                                                )}>
+                                                    {isSuperAdmin ? t("super_admin_tag") : t("role_" + u.role)}
+                                                </Badge>
+                                            </div>
+                                            <div className="absolute top-4 ltr:right-4 rtl:left-4 flex gap-1">
+                                                <Button variant="ghost" size="icon" onClick={() => handleEdit(u)} className="h-9 w-9 rounded-xl bg-muted/20 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all">
+                                                    <Pencil size={16} />
+                                                </Button>
+                                                {!isCurrentUser && (
+                                                    <Button variant="ghost" size="icon" onClick={() => handleDelete(u)} className="h-9 w-9 rounded-xl bg-muted/20 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all">
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div className="p-3 rounded-2xl bg-muted/10 border border-border/50">
+                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("identity")}</p>
+                                                <p className="text-[10px] font-bold text-foreground truncate">{u.username} • {u.email}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-muted/10 border border-border/50">
+                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("scope")}</p>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {isAdmin ? (
+                                                        <span className="text-[11px] font-bold text-primary">{getFieldName(u.studyField)}</span>
+                                                    ) : u.role === 'professor' ? (
+                                                        <span className="text-[11px] font-bold text-foreground">{getFieldName(u.professor?.studyField || u.professor?.department || u.studyField)}</span>
+                                                    ) : u.role === 'student' && u.student ? (
+                                                        <span className="text-[11px] font-bold text-foreground">{u.student.level} {getFieldName(u.student.studyField || u.studyField)} • G{u.student.group}</span>
+                                                    ) : (
+                                                        <span className="text-[11px] font-bold text-muted-foreground/40 italic uppercase">{t("global_scope")}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
                     </div>
                 </Card>
 

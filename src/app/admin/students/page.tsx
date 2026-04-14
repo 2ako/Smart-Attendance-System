@@ -234,98 +234,170 @@ export default function AdminStudentsPage() {
                     </TabsList>
 
                     <Card className="rounded-[40px] border-none shadow-2xl bg-card/50 backdrop-blur-xl overflow-hidden border border-white/10">
-                        <Table>
-                            <TableHeader className="bg-muted/30">
-                                <TableRow className="hover:bg-transparent border-border/50">
-                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("student_info")}</TableHead>
-                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("field")}</TableHead>
-                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("specialty")}</TableHead>
-                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("group")}</TableHead>
-                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("level")}</TableHead>
-                                    <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest ltr:text-right rtl:text-left">{t("actions")}</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoading ? (
-                                    Array.from({ length: 5 }).map((_, i) => (
-                                        <TableRow key={i} className="animate-pulse">
-                                            <TableCell colSpan={6} className="py-10 border-border/10">
-                                                <div className="h-12 bg-muted/20 rounded-2xl mx-4" />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                ) : filteredStudents.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={6} className="py-32 text-center">
-                                            <div className="flex flex-col items-center justify-center opacity-20">
-                                                <SearchX size={64} className="mb-4" />
-                                                <p className="text-xl font-bold uppercase tracking-tight">{t("no_students_found")}</p>
-                                            </div>
-                                        </TableCell>
+                        {/* Desktop Table View */}
+                        <div className="hidden lg:block">
+                            <Table>
+                                <TableHeader className="bg-muted/30">
+                                    <TableRow className="hover:bg-transparent border-border/50">
+                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest">{t("student_info")}</TableHead>
+                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("field")}</TableHead>
+                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("specialty")}</TableHead>
+                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("group")}</TableHead>
+                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-center">{t("level")}</TableHead>
+                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest ltr:text-right rtl:text-left">{t("actions")}</TableHead>
                                     </TableRow>
-                                ) : (
-                                    filteredStudents.map((student) => (
-                                        <TableRow key={student._id} className="hover:bg-muted/20 border-border/50 transition-all group">
-                                            <TableCell className="py-6 px-8">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold shadow-inner">
-                                                        {student.fullName?.[0] || student.user?.name?.[0] || "?"}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-black text-foreground group-hover:text-primary transition-colors uppercase tracking-tight">
-                                                            {student.fullName || student.user?.name}
-                                                        </p>
-                                                        <p className="text-[10px] font-bold font-mono text-muted-foreground uppercase tracking-widest">
-                                                            {student.matricule}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="py-6 px-8">
-                                                <Badge variant="outline" className="bg-muted/30 text-muted-foreground border-none font-bold text-[9px] uppercase tracking-widest h-7 px-3 rounded-lg text-center mx-auto block w-fit">
-                                                    {student.studyField || t("not_available")}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="py-6 px-8">
-                                                <Badge variant="secondary" className="bg-secondary/50 text-secondary-foreground border-none font-bold text-[9px] uppercase tracking-widest h-7 px-3 rounded-lg text-center mx-auto block w-fit">
-                                                    {student.specialty || t("general")}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="py-6 px-8 text-center">
-                                                <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-orange-500 font-mono font-black text-xs border border-orange-500/20 shadow-sm">
-                                                    {student.group || "1"}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="py-6 px-8 text-center">
-                                                <div className="inline-flex h-9 px-4 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500 font-black text-[10px] uppercase tracking-widest border border-blue-500/20 shadow-sm">
-                                                    {student.level || t("not_available")}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="py-6 px-8 ltr:text-right rtl:text-left">
-                                                <div className="flex items-center justify-center ltr:md:justify-end rtl:md:justify-start gap-2">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleEditStudent(student)}
-                                                        className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all"
-                                                    >
-                                                        <Pencil size={18} />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleDeleteClick(student)}
-                                                        className="h-10 w-10 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all"
-                                                    >
-                                                        <Trash2 size={18} />
-                                                    </Button>
+                                </TableHeader>
+                                <TableBody>
+                                    {isLoading ? (
+                                        Array.from({ length: 5 }).map((_, i) => (
+                                            <TableRow key={i} className="animate-pulse">
+                                                <TableCell colSpan={6} className="py-10 border-border/10">
+                                                    <div className="h-12 bg-muted/20 rounded-2xl mx-4" />
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : filteredStudents.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="py-32 text-center">
+                                                <div className="flex flex-col items-center justify-center opacity-20">
+                                                    <SearchX size={64} className="mb-4" />
+                                                    <p className="text-xl font-bold uppercase tracking-tight">{t("no_students_found")}</p>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
+                                    ) : (
+                                        filteredStudents.map((student) => (
+                                            <TableRow key={student._id} className="hover:bg-muted/20 border-border/50 transition-all group">
+                                                <TableCell className="py-6 px-8">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold shadow-inner">
+                                                            {student.fullName?.[0] || student.user?.name?.[0] || "?"}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-black text-foreground group-hover:text-primary transition-colors uppercase tracking-tight">
+                                                                {student.fullName || student.user?.name}
+                                                            </p>
+                                                            <p className="text-[10px] font-bold font-mono text-muted-foreground uppercase tracking-widest">
+                                                                {student.matricule}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-6 px-8">
+                                                    <Badge variant="outline" className="bg-muted/30 text-muted-foreground border-none font-bold text-[9px] uppercase tracking-widest h-7 px-3 rounded-lg text-center mx-auto block w-fit">
+                                                        {student.studyField || t("not_available")}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="py-6 px-8">
+                                                    <Badge variant="secondary" className="bg-secondary/50 text-secondary-foreground border-none font-bold text-[9px] uppercase tracking-widest h-7 px-3 rounded-lg text-center mx-auto block w-fit">
+                                                        {student.specialty || t("general")}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="py-6 px-8 text-center">
+                                                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500/10 text-orange-500 font-mono font-black text-xs border border-orange-500/20 shadow-sm">
+                                                        {student.group || "1"}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-6 px-8 text-center">
+                                                    <div className="inline-flex h-9 px-4 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500 font-black text-[10px] uppercase tracking-widest border border-blue-500/20 shadow-sm">
+                                                        {student.level || t("not_available")}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-6 px-8 ltr:text-right rtl:text-left">
+                                                    <div className="flex items-center justify-center ltr:md:justify-end rtl:md:justify-start gap-2">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleEditStudent(student)}
+                                                            className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all"
+                                                        >
+                                                            <Pencil size={18} />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleDeleteClick(student)}
+                                                            className="h-10 w-10 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all"
+                                                        >
+                                                            <Trash2 size={18} />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+
+                        {/* Mobile Card Layout */}
+                        <div className="lg:hidden p-4 space-y-4">
+                            {isLoading ? (
+                                Array.from({ length: 3 }).map((_, i) => (
+                                    <div key={i} className="h-48 bg-muted/20 animate-pulse rounded-[2rem]" />
+                                ))
+                            ) : filteredStudents.length === 0 ? (
+                                <div className="py-20 text-center opacity-40">
+                                    <SearchX size={48} className="mx-auto mb-4" />
+                                    <p className="text-sm font-bold uppercase tracking-widest">{t("no_results")}</p>
+                                </div>
+                            ) : (
+                                filteredStudents.map((student) => (
+                                    <div key={student._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-xl shadow-inner">
+                                                {student.fullName?.[0] || student.user?.name?.[0] || "?"}
+                                            </div>
+                                            <div className="flex-1 pr-12 rtl:pl-12">
+                                                <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1">
+                                                    {student.fullName || student.user?.name}
+                                                </h3>
+                                                <p className="text-[10px] font-bold font-mono text-primary uppercase tracking-widest">
+                                                    {student.matricule}
+                                                </p>
+                                            </div>
+                                            <div className="absolute top-4 ltr:right-4 rtl:left-4 flex gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleEditStudent(student)}
+                                                    className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-primary/10 hover:text-primary transition-all"
+                                                >
+                                                    <Pencil size={16} />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleDeleteClick(student)}
+                                                    className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-destructive/10 hover:text-destructive transition-all"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </Button>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-3 pt-2">
+                                            <div className="p-3 rounded-2xl bg-muted/10 border border-border/50 flex flex-col justify-center">
+                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{t("field")}</p>
+                                                <p className="text-[11px] font-bold text-foreground truncate">{student.studyField || "N/A"}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-muted/10 border border-border/50 flex flex-col justify-center">
+                                                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{t("specialty")}</p>
+                                                <p className="text-[11px] font-bold text-foreground truncate">{student.specialty || t("general")}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-between">
+                                                <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest">{t("level")}</span>
+                                                <span className="text-xs font-black text-primary">{student.level || "N/A"}</span>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-orange-500/5 border border-orange-500/10 flex items-center justify-between">
+                                                <span className="text-[9px] font-black text-orange-500/60 uppercase tracking-widest">{t("group")}</span>
+                                                <span className="text-xs font-black text-orange-500">{student.group || "1"}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </Card>
                 </Tabs>
             </main>

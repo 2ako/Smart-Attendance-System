@@ -183,7 +183,8 @@ export default function AdminCoursesPage() {
                             </div>
                         </div>
 
-                        <div className="p-4 overflow-x-auto scrollbar-none">
+                        {/* Desktop Table View */}
+                        <div className="hidden lg:block overflow-x-auto scrollbar-none">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="border-none hover:bg-transparent">
@@ -319,6 +320,85 @@ export default function AdminCoursesPage() {
                                     )}
                                 </TableBody>
                             </Table>
+                        </div>
+
+                        {/* Mobile Card View */}
+                        <div className="lg:hidden p-4 space-y-4">
+                            {loading ? (
+                                Array(3).fill(0).map((_, i) => (
+                                    <div key={i} className="h-48 bg-muted/20 animate-pulse rounded-3xl" />
+                                ))
+                            ) : filteredCourses.length > 0 ? (
+                                filteredCourses.map((course) => (
+                                    <div key={course._id} className="p-6 rounded-[2rem] bg-muted/10 border border-border/50 space-y-4">
+                                        <div className="flex justify-between items-start">
+                                            <div className="space-y-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-lg font-black text-foreground uppercase tracking-tight">{course.name}</span>
+                                                    <Badge variant="outline" className="text-[8px] font-bold border-primary/20 text-primary bg-primary/5 uppercase">
+                                                        {course.code}
+                                                    </Badge>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 text-zinc-400">
+                                                    <UserCheck size={14} className="text-primary/60" />
+                                                    <span className="text-xs font-bold uppercase tracking-tight">{(course.professor as any)?.user?.name || t("unassigned")}</span>
+                                                </div>
+                                            </div>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-background shadow-sm">
+                                                        <MoreVertical size={18} />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl p-2 min-w-[160px]">
+                                                    <DropdownMenuItem onClick={() => handleEdit(course)} className="rounded-xl flex items-center gap-3 p-3 font-bold text-xs uppercase">
+                                                        <Pencil size={14} /> {t("edit_details")}
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={() => handleDeleteClick(course)} className="rounded-xl flex items-center gap-3 p-3 font-bold text-xs uppercase text-destructive">
+                                                        <Trash2 size={14} /> {t("delete")}
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="p-3 rounded-2xl bg-background/50 border border-border/40 space-y-1">
+                                                <div className="flex items-center gap-1.5 text-zinc-400">
+                                                    <GraduationCap size={12} />
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest">{t("field")}</span>
+                                                </div>
+                                                <p className="text-xs font-black text-foreground">{(course as any).studyField?.name || (course as any).studyField || "Common"}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-background/50 border border-border/40 space-y-1">
+                                                <div className="flex items-center gap-1.5 text-zinc-400">
+                                                    <Users size={12} />
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest">{t("cohort")}</span>
+                                                </div>
+                                                <p className="text-xs font-black text-primary">{(course as any).level || "L1"} - {course.group || "G1"}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-background/50 border border-border/40 space-y-1">
+                                                <div className="flex items-center gap-1.5 text-zinc-400">
+                                                    <MapPin size={12} />
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest">{t("location")}</span>
+                                                </div>
+                                                <p className="text-xs font-black text-foreground truncate">{typeof course.scheduleInfo?.room === 'string' ? course.scheduleInfo.room : (course.scheduleInfo?.room as any)?.name || "TBA"}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-background/50 border border-border/40 space-y-1">
+                                                <div className="flex items-center gap-1.5 text-zinc-400">
+                                                    <Calendar size={12} />
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest">{t("schedule")}</span>
+                                                </div>
+                                                <p className="text-xs font-black text-foreground">{course.scheduleInfo?.day}, {course.scheduleInfo?.startTime}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="py-20 text-center opacity-40">
+                                    <BookOpen size={40} className="mx-auto mb-4" />
+                                    <p className="text-sm font-bold uppercase tracking-widest">{t("no_results")}</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

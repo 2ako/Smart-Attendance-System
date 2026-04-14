@@ -209,7 +209,8 @@ export default function RoomAllocationPage() {
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                        <div className="overflow-x-auto">
+                        {/* Desktop Table View */}
+                        <div className="hidden lg:block overflow-x-auto">
                             <Table>
                                 <TableHeader className="bg-muted/30">
                                     <TableRow className="border-border hover:bg-transparent">
@@ -292,6 +293,70 @@ export default function RoomAllocationPage() {
                                     )}
                                 </TableBody>
                             </Table>
+                        </div>
+
+                        {/* Mobile Card Layout */}
+                        <div className="lg:hidden p-4 space-y-4">
+                            {isLoading ? (
+                                Array(3).fill(0).map((_, i) => (
+                                    <div key={i} className="h-40 bg-muted/20 animate-pulse rounded-[2rem]" />
+                                ))
+                            ) : filteredRooms.length === 0 ? (
+                                <div className="py-20 text-center opacity-40">
+                                    <MapPin size={48} className="mx-auto mb-4" />
+                                    <p className="text-sm font-bold uppercase tracking-widest">{t("no_results")}</p>
+                                </div>
+                            ) : (
+                                filteredRooms.map((room) => (
+                                    <div key={room._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-xl shadow-inner">
+                                                {room.name?.[0]}
+                                            </div>
+                                            <div className="flex-1 pr-12 rtl:pl-12">
+                                                <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1">{room.name}</h3>
+                                                <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{t("academic_room")}</p>
+                                            </div>
+                                            <div className="absolute top-4 ltr:right-4 rtl:left-4 flex gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleEditRoom(room)}
+                                                    className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-primary/10 hover:text-primary transition-all"
+                                                >
+                                                    <Pencil size={16} />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleDeleteClick(room)}
+                                                    className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-destructive/10 hover:text-destructive transition-all"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </Button>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-3 gap-3">
+                                            <div className="p-3 rounded-2xl bg-muted/10 border border-border/50 flex flex-col items-center justify-center text-center">
+                                                <Building size={14} className="text-muted-foreground mb-1" />
+                                                <p className="text-[10px] font-black text-foreground uppercase truncate w-full">{getStudyFieldName(room.studyField)}</p>
+                                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{t("field")}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-muted/10 border border-border/50 flex flex-col items-center justify-center text-center">
+                                                <Layers size={14} className="text-muted-foreground mb-1" />
+                                                <p className="text-xs font-black text-foreground">F{room.floor || 0}</p>
+                                                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">{t("floor")}</p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-primary/5 border border-primary/10 flex flex-col items-center justify-center text-center">
+                                                <Users size={14} className="text-primary mb-1" />
+                                                <p className="text-xs font-black text-primary">{room.capacity || 0}</p>
+                                                <p className="text-[8px] font-bold text-primary/60 uppercase tracking-widest">{t("capacity")}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </CardContent>
                 </Card>

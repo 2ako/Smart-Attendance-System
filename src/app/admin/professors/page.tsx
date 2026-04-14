@@ -117,7 +117,7 @@ export default function AdminProfessorsDashboard() {
     return (
         <div className="flex h-screen bg-background text-foreground">
             <Sidebar role={user.role} />
-            <div className="flex-1 flex flex-col h-screen ltr:md:pl-72 rtl:md:pr-72 relative transition-all duration-300">
+            <div className="flex-1 flex flex-col h-screen ltr:lg:pl-[270px] rtl:lg:pr-[270px] relative transition-all duration-300">
                 <main className="flex-1 overflow-y-auto p-4 md:p-8 xl:p-12 pb-32 scrollbar-none scroll-smooth max-w-7xl mx-auto w-full">
                     {/* Header */}
                     <header className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -163,7 +163,8 @@ export default function AdminProfessorsDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <div className="overflow-x-auto">
+                            {/* Desktop Table View */}
+                            <div className="hidden lg:block overflow-x-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow className="bg-muted/30 hover:bg-muted/30 border-none">
@@ -250,6 +251,79 @@ export default function AdminProfessorsDashboard() {
                                         )}
                                     </TableBody>
                                 </Table>
+                            </div>
+
+                            {/* Mobile Card Layout */}
+                            <div className="lg:hidden p-4 space-y-4">
+                                {isLoading ? (
+                                    Array(3).fill(0).map((_, i) => (
+                                        <div key={i} className="h-40 bg-muted/20 animate-pulse rounded-3xl" />
+                                    ))
+                                ) : filteredProfessors.length === 0 ? (
+                                    <div className="py-20 text-center opacity-40">
+                                        <UserCheck size={48} className="mx-auto mb-4" />
+                                        <p className="text-sm font-bold uppercase tracking-widest">{t("no_results")}</p>
+                                    </div>
+                                ) : (
+                                    filteredProfessors.map((prof) => (
+                                        <div key={prof._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
+                                            <div className="absolute top-0 ltr:right-0 rtl:left-0 p-4">
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-10 w-10 rounded-xl bg-muted/30 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
+                                                        onClick={() => handleEditProf(prof)}
+                                                    >
+                                                        <Pencil size={18} />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-10 w-10 rounded-xl bg-muted/30 hover:bg-destructive/10 hover:text-destructive transition-all shadow-sm"
+                                                        onClick={() => handleDeleteClick(prof)}
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </Button>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+                                                    <span className="text-xl font-black uppercase">{(prof.user?.name || "?")[0]}</span>
+                                                </div>
+                                                <div className="pr-20 rtl:pl-20">
+                                                    <h3 className="font-black text-lg text-foreground uppercase tracking-tight line-clamp-1">{prof.user?.name}</h3>
+                                                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{prof.specialization || t("academic_staff")}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 gap-3">
+                                                <div className="flex items-center gap-3 p-3 rounded-2xl bg-muted/20 border border-border/40">
+                                                    <div className="p-2 rounded-xl bg-background text-muted-foreground flex items-center justify-center">
+                                                        <Briefcase size={14} />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest leading-none mb-1">{t("contact_area")}</p>
+                                                        <p className="text-xs font-black text-foreground truncate">{prof.user?.email || "N/A"}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div className="flex flex-col p-3 rounded-2xl bg-muted/20 border border-border/40">
+                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest leading-none mb-1">{t("identifier")}</p>
+                                                        <p className="text-xs font-mono font-bold text-foreground">{prof.employeeId || "—"}</p>
+                                                    </div>
+                                                    <div className="flex flex-col p-3 rounded-2xl bg-muted/20 border border-border/40">
+                                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest leading-none mb-1">{t("department")}</p>
+                                                        <Badge variant="outline" className="w-fit text-[9px] font-black tracking-widest uppercase border-primary/20 text-primary bg-primary/5 px-2">
+                                                            {prof.department || "INFO"}
+                                                        </Badge>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </CardContent>
                     </Card>
