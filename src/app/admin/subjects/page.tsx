@@ -30,8 +30,6 @@ import { Badge } from "@/components/ui/badge";
 import { CourseDialog } from "@/components/admin/course-dialog";
 import { DeleteDialog } from "@/components/admin/delete-dialog";
 import { toast } from "sonner";
-import { sanityClient } from "@/lib/sanity/client";
-import { getAllSubjects } from "@/lib/sanity/queries";
 import { useTranslation } from "@/lib/i18n/context";
 
 export default function SubjectCatalogPage() {
@@ -49,11 +47,17 @@ export default function SubjectCatalogPage() {
     async function loadSubjects() {
         setIsLoading(true);
         try {
-            const data = await sanityClient.fetch(getAllSubjects, { studyField: user?.studyField || "" });
-            setSubjects(data || []);
-        } catch (error) {
+            console.log("AdminSubjectsPage: Fetching subjects via API...");
+            const res = await fetch("/api/subjects");
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || "Failed to fetch subjects");
+            }
+            const data = await res.json();
+            setSubjects(data.subjects || []);
+        } catch (error: any) {
             console.error("Error loading subjects:", error);
-            toast.error(t("error"));
+            toast.error(t("failed_load_subjects") || t("error"));
         } finally {
             setIsLoading(false);
         }

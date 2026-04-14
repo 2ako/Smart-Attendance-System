@@ -30,9 +30,6 @@ import { ProfDialog } from "@/components/admin/prof-dialog";
 import { DeleteDialog } from "@/components/admin/delete-dialog";
 import { toast } from "sonner";
 
-import { sanityClient } from "@/lib/sanity/client";
-import { getAllProfessors } from "@/lib/sanity/queries";
-
 import { useTranslation } from "@/lib/i18n/context";
 
 export default function AdminProfessorsDashboard() {
@@ -50,11 +47,17 @@ export default function AdminProfessorsDashboard() {
     async function loadProfessors() {
         setIsLoading(true);
         try {
-            const data = await sanityClient.fetch(getAllProfessors, { studyField: user?.studyField || "" });
-            setProfessors(data || []);
-        } catch (error) {
+            console.log("AdminProfessorsPage: Fetching professors via API...");
+            const res = await fetch("/api/professors");
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || "Failed to fetch professors");
+            }
+            const data = await res.json();
+            setProfessors(data.professors || []);
+        } catch (error: any) {
             console.error("Error loading professors:", error);
-            toast.error(t("error"));
+            toast.error(t("failed_load_professors") || t("error"));
         } finally {
             setIsLoading(false);
         }

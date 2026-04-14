@@ -37,33 +37,50 @@ export async function GET(req: NextRequest) {
             studyFieldId: resolvedId || sfCode || ""
         };
 
-        // Parallel fetching
-        const queries = [
-            sanityClient.fetch(getAllStudents, params),
-            sanityClient.fetch(getAllDevices, params),
-            sanityClient.fetch(getAllRooms, params),
-            sanityClient.fetch(getAllSubjects, params),
-            sanityClient.fetch(getAllAcademicConfigs),
-        ];
+        // Parallel fetching for common stats
+        const commonPromises = {
+            students: sanityClient.fetch(getAllStudents, params),
+            devices: sanityClient.fetch(getAllDevices, params),
+            rooms: sanityClient.fetch(getAllRooms, params),
+            subjects: sanityClient.fetch(getAllSubjects, params),
+            professors: sanityClient.fetch(getAllProfessors, params),
+            configs: sanityClient.fetch(getAllAcademicConfigs),
+        };
 
-        if (isSuperAdmin) {
-            queries.push(sanityClient.fetch(`*[_type == "user" && role == "admin"]`));
-            queries.push(sanityClient.fetch(getAllProfessors, { studyField: "" }));
-        }
+        // Extra info only for superadmin
+        const adminPromise = isSuperAdmin
+            ? sanityClient.fetch(`*[_type == "user" && role == "admin"]`)
+            : Promise.resolve([]);
 
-        const results = await Promise.all(queries);
+        const [
+            students,
+            devices,
+            rooms,
+            subjects,
+            professors,
+            configs,
+            admins
+        ] = await Promise.all([
+            commonPromises.students,
+            commonPromises.devices,
+            commonPromises.rooms,
+            commonPromises.subjects,
+            commonPromises.professors,
+            commonPromises.configs,
+            adminPromise
+        ]);
 
         return NextResponse.json({
             stats: {
-                students: results[0]?.length || 0,
-                devices: results[1]?.length || 0,
-                rooms: results[2]?.length || 0,
-                subjects: results[3]?.length || 0,
-                admins: isSuperAdmin ? (results[5]?.length || 0) : 0,
-                professors: isSuperAdmin ? (results[6]?.length || 0) : 0,
+                students: students?.length || 0,
+                devices: devices?.length || 0,
+                rooms: rooms?.length || 0,
+                subjects: subjects?.length || 0,
+                professors: professors?.length || 0,
+                admins: isSuperAdmin ? (admins?.length || 0) : 0,
             },
-            academicConfigs: results[4] || [],
-            students: results[0] || [], // To populate the students list if needed
+            academicConfigs: configs || [],
+            students: students || [],
         });
     } catch (error: any) {
         console.error("Dashboard API Error:", error);
