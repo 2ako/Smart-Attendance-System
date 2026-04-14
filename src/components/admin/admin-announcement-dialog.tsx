@@ -86,6 +86,7 @@ export function AdminAnnouncementDialog({
     const [existingAttachments, setExistingAttachments] = useState<any[]>([]);
 
     const isSuperAdmin = !user?.studyField;
+    const isOwner = announcement?.studyField === user?.studyField;
 
     useEffect(() => {
         if (open) {
@@ -262,7 +263,7 @@ export function AdminAnnouncementDialog({
 
                 {/* ── Dynamic Header ── */}
                 <div className={cn(
-                    "relative h-28 p-8 flex flex-col justify-center text-start transition-all duration-500",
+                    "relative h-24 sm:h-28 p-6 sm:p-8 flex flex-col justify-center text-start transition-all duration-500",
                     isViewMode
                         ? "bg-gradient-to-br from-primary via-primary/80 to-primary/40"
                         : "bg-gradient-to-br from-indigo-600 via-indigo-500 to-indigo-400"
@@ -286,14 +287,14 @@ export function AdminAnnouncementDialog({
                             </div>
                         </div>
 
-                        {announcement && isSuperAdmin && (
+                        {announcement && (isSuperAdmin || isOwner) && (
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setIsEditMode(!isEditMode)}
-                                className="bg-white/10 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10"
+                                className="bg-white/10 hover:bg-white/20 text-white rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-white/10 h-8 sm:h-9"
                             >
-                                {isEditMode ? <Eye size={14} className="mr-2" /> : <PencilLine size={14} className="mr-2" />}
+                                {isEditMode ? <Eye size={14} className="ltr:mr-2 rtl:ml-2" /> : <PencilLine size={14} className="ltr:mr-2 rtl:ml-2" />}
                                 {isEditMode ? t("view_mode") : t("edit_mode")}
                             </Button>
                         )}
@@ -302,7 +303,7 @@ export function AdminAnnouncementDialog({
 
                 {isViewMode ? (
                     /* ── View Mode Layout ── */
-                    <div className="p-8 space-y-8 text-start animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-5 sm:p-8 space-y-6 sm:space-y-8 text-start animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="space-y-4 text-start">
                             <div className="flex flex-wrap gap-2 text-start">
                                 <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 text-primary bg-primary/5 px-2.5 py-1">
@@ -322,16 +323,18 @@ export function AdminAnnouncementDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 text-start">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-start">
                             <div className="p-4 rounded-2xl bg-muted/20 border border-border/40 text-start">
                                 <div className="flex items-center gap-2 mb-1.5 opacity-50 text-start">
                                     <User size={12} className="text-primary" />
                                     <span className="text-[9px] font-bold uppercase tracking-widest">{t("issuing_authority")}</span>
                                 </div>
                                 <p className="text-[11px] font-black uppercase text-foreground text-start">
-                                    {announcement.targetFaculties && announcement.targetFaculties.length > 0
-                                        ? announcement.targetFaculties.map((f: any) => f.name).join(", ")
-                                        : (announcement.targetFaculty?.name || t("university_rectorate"))}
+                                    {isOwner
+                                        ? (studyFields.find(f => f.code === user?.studyField)?.name || user?.studyField)
+                                        : (announcement.targetFaculties && announcement.targetFaculties.length > 0
+                                            ? announcement.targetFaculties.map((f: any) => f.name).join(", ")
+                                            : (announcement.targetFaculty?.name || t("university_rectorate")))}
                                 </p>
                             </div>
                             <div className="p-4 rounded-2xl bg-muted/20 border border-border/40 text-start">

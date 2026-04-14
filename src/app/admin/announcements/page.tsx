@@ -369,13 +369,24 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                                         <span className="text-[10px] font-bold text-muted-foreground">{a?._createdAt ? new Date(a._createdAt).toLocaleDateString() : ""}</span>
                                     </div>
                                 </div>
-                                {((a.studyField || "") === (user?.studyField || "")) && (
+                                {((a.studyField || "") === (user?.studyField || "")) ? (
                                     <div className="flex flex-col gap-1">
                                         <Button variant="ghost" size="icon" onClick={() => handleEdit(a)} className="h-9 w-9 rounded-xl bg-muted/20 text-muted-foreground hover:bg-primary/10 hover:text-primary">
                                             <Pencil size={16} />
                                         </Button>
                                         <Button variant="ghost" size="icon" onClick={() => handleDelete(a)} className="h-9 w-9 rounded-xl bg-muted/20 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
                                             <Trash2 size={16} />
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col gap-1">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => handleEdit(a)}
+                                            className="h-9 w-9 rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
+                                        >
+                                            <Search size={16} />
                                         </Button>
                                     </div>
                                 )}
