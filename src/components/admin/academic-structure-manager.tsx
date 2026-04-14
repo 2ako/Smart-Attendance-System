@@ -197,7 +197,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
     }
 
     if (loading) return (
-        <div className="flex flex-col items-center justify-center p-20 space-y-4 bg-muted/20 rounded-[40px] border-2 border-dashed border-border/50 animate-pulse">
+        <div className="flex flex-col items-center justify-center p-10 lg:p-20 space-y-4 bg-muted/20 rounded-3xl lg:rounded-[40px] border-2 border-dashed border-border/50 animate-pulse">
             <Loader2 className="animate-spin text-primary" size={40} />
             <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">{t("identifying_persona")}</p>
         </div>
@@ -206,8 +206,8 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
     const isSuperAdmin = !currentUser?.studyField;
 
     return (
-        <Card className="rounded-[40px] border-none shadow-2xl bg-card/60 backdrop-blur-3xl overflow-hidden border border-white/5 relative">
-            <CardHeader className="p-10 pb-4">
+        <Card className="rounded-3xl lg:rounded-[40px] border-none shadow-2xl bg-card/60 backdrop-blur-3xl overflow-hidden border border-white/5 relative">
+            <CardHeader className="p-6 lg:p-10 pb-4">
                 <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
                     {/* Title Section */}
                     <div className="flex items-center gap-5">
@@ -245,13 +245,13 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                         </div>
 
                         {/* Level Switcher */}
-                        <div className="flex gap-2 p-1.5 bg-muted/80 rounded-3xl border border-border/40 backdrop-blur-md">
+                        <div className="flex gap-1.5 sm:gap-2 p-1 bg-muted/80 rounded-2xl sm:rounded-3xl border border-border/40 backdrop-blur-md overflow-x-auto scrollbar-none max-w-full">
                             {["L1", "L2", "L3", "M1", "M2"].map(L => (
                                 <button
                                     key={L}
                                     onClick={() => setSelectedLevel(L)}
                                     className={cn(
-                                        "px-6 py-2.5 rounded-2xl text-[10px] font-black transition-all transform hover:scale-105 active:scale-95",
+                                        "px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-[10px] font-black transition-all transform hover:scale-105 active:scale-95 whitespace-nowrap",
                                         selectedLevel === L
                                             ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/30"
                                             : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
@@ -265,7 +265,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                 </div>
             </CardHeader>
 
-            <CardContent className="p-10 pt-6 space-y-12">
+            <CardContent className="p-6 lg:p-10 pt-6 space-y-12">
                 {/* ── Guidance Banner ──────────────────────────── */}
                 {currentUser?.studyField && (
                     <div className="p-6 rounded-[32px] bg-primary/5 border border-primary/10 flex items-start gap-4">
@@ -300,8 +300,8 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {currentConfig.specialties?.map((spec: any, sIdx: number) => (
-                            <div key={sIdx} className="group/spec relative p-1 rounded-[40px] bg-gradient-to-br from-background via-muted/10 to-transparent border border-border/50 hover:border-primary/30 transition-all duration-700 shadow-sm hover:shadow-2xl hover:shadow-primary/5">
-                                <div className="p-8 space-y-6">
+                            <div key={sIdx} className="group/spec relative p-0.5 sm:p-1 rounded-[32px] lg:rounded-[40px] bg-gradient-to-br from-background via-muted/10 to-transparent border border-border/50 hover:border-primary/30 transition-all duration-700 shadow-sm hover:shadow-2xl hover:shadow-primary/5">
+                                <div className="p-6 lg:p-8 space-y-6">
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1 space-y-2">
                                             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("specialty_name")}</Label>
@@ -410,7 +410,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-4 p-10 rounded-[40px] bg-muted/10 border border-border/40 min-h-[140px] items-center justify-center relative group/general">
+                    <div className="flex flex-wrap gap-4 p-6 lg:p-10 rounded-3xl lg:rounded-[40px] bg-muted/10 border border-border/40 min-h-[140px] items-center justify-center relative group/general">
                         <div className="absolute inset-0 bg-grid-white/5 opacity-0 group-hover/general:opacity-100 transition-opacity pointer-events-none" />
                         {currentConfig.groups?.map((group: string, gIdx: number) => (
                             <div key={gIdx} className="flex items-center gap-3 bg-background rounded-2xl p-2.5 px-6 border border-border shadow-md hover:border-primary/40 transition-all hover:scale-105 active:scale-95">

@@ -155,7 +155,7 @@ export default function AdminDashboard() {
                         </div>
 
                         {/* ── Global Stats Grid ───────────────────────────────── */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-enter [animation-delay:100ms] text-start">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-enter [animation-delay:100ms] text-start">
                             {[
                                 { title: t("total_students_count"), value: stats.students, icon: <Users size={24} />, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" },
                                 { title: t("faculty_staff"), value: stats.professors, icon: <Fingerprint size={24} />, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" },
@@ -258,7 +258,7 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-4 animate-enter [animation-delay:100ms] text-start">
+                <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-enter [animation-delay:100ms] text-start">
                     {[
                         { label: t("total_students"), value: stats.students, icon: <Users size={20} />, color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" },
                         { label: t("active_subjects"), value: stats.subjects, icon: <BookOpen size={20} />, color: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20" },
