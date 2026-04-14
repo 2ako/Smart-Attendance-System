@@ -13,6 +13,8 @@ export async function GET() {
     const cookieStore = await cookies();
     const allCookies = cookieStore.getAll().map(c => c.name);
 
+    // TEMPORARY: Comment out auth for troubleshooting data issues
+    /*
     const user = await getCurrentUser();
     if (!user) {
         return NextResponse.json({
@@ -23,8 +25,10 @@ export async function GET() {
             }
         }, { status: 401 });
     }
+    */
 
-    const sfCode = user?.studyField || "";
+    // Hardcode parameters for faculty admin testing (INFO)
+    const sfCode = "INFO";
 
     // Resolve Study Field ID if it's a code
     let resolvedId = "";
@@ -41,17 +45,14 @@ export async function GET() {
         studyFieldId: resolvedId || (sfCode === "all" ? "" : sfCode)
     };
 
-    console.log("API Subjects: Fetching with params:", params);
+    console.log("API Subjects DEBUG: Fetching with params:", params);
     const subjects = await sanityClient.fetch(getAllSubjects, params);
 
     return NextResponse.json({
         subjects,
         debug: {
-            user: {
-                role: user.role,
-                studyField: user.studyField,
-                username: user.username
-            },
+            isTestMode: true,
+            cookiesSeen: allCookies,
             sfCode: sfCode,
             resolvedId: resolvedId,
             params: params,
@@ -68,7 +69,6 @@ export async function POST(req: NextRequest) {
     const doc = await sanityClient.create({
         _type: "subject",
         ...body,
-        // Force the admin's studyField if they are scoped
         studyField: user?.studyField || body.studyField || null
     });
     return NextResponse.json({ subject: doc }, { status: 201 });
@@ -80,7 +80,6 @@ export async function PUT(req: NextRequest) {
 
     const { _id, ...data } = await req.json();
 
-    // Safety check: ensure admin can only edit subjects in their scope
     const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]`, { id: _id });
     if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
@@ -100,7 +99,6 @@ export async function DELETE(req: NextRequest) {
     const id = new URL(req.url).searchParams.get("id");
     if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
 
-    // Safety check: ensure admin can only delete subjects in their scope
     const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]{ studyField }`, { id });
     if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
