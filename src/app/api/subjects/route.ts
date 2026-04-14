@@ -4,37 +4,13 @@ export const dynamic = "force-dynamic";
 // ============================================================
 
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { sanityClient } from "@/lib/sanity/client";
 import { getAllSubjects } from "@/lib/sanity/queries";
-import { getCurrentUser, hasRole, TOKEN_COOKIE_NAME } from "@/lib/auth";
+import { getCurrentUser, hasRole } from "@/lib/auth";
 
-export async function GET(req: NextRequest) {
-    // Debug: Check raw cookie header and request details
-    const rawCookieHeader = req.headers.get("cookie") || "MISSING_HEADER";
-    const origin = req.headers.get("origin") || "MISSING_ORIGIN";
-    const referer = req.headers.get("referer") || "MISSING_REFERER";
-    const host = req.headers.get("host") || "MISSING_HOST";
-
-    const cookieStore = await cookies();
-    const allCookies = cookieStore.getAll().map(c => c.name);
-
+export async function GET() {
     const user = await getCurrentUser();
-
-    // Auth Check
-    if (!user) {
-        return NextResponse.json({
-            message: "Unauthorized",
-            debug: {
-                host,
-                origin,
-                referer,
-                rawCookieHeader,
-                cookiesSeen: allCookies,
-                hasAuthCookie: allCookies.includes(TOKEN_COOKIE_NAME)
-            }
-        }, { status: 401 });
-    }
+    if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const sfCode = user?.studyField || "";
 
@@ -54,18 +30,7 @@ export async function GET(req: NextRequest) {
     };
 
     const subjects = await sanityClient.fetch(getAllSubjects, params);
-
-    return NextResponse.json({
-        subjects,
-        debug: {
-            host,
-            user: { role: user.role, studyField: user.studyField },
-            sfCode: sfCode,
-            resolvedId: resolvedId,
-            params: params,
-            count: subjects?.length || 0
-        }
-    });
+    return NextResponse.json({ subjects });
 }
 
 export async function POST(req: NextRequest) {

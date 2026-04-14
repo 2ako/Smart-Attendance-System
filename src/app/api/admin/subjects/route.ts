@@ -11,11 +11,26 @@ import { getCurrentUser, hasRole } from "@/lib/auth";
 export async function GET() {
     try {
         const user = await getCurrentUser();
-        if (!hasRole(user, ["admin"])) {
-            return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+        if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+
+        const sfCode = user?.studyField || "";
+
+        // Resolve Study Field ID if it's a code
+        let resolvedId = "";
+        if (sfCode && sfCode !== "all") {
+            const result = await sanityClient.fetch(
+                `*[_type == "studyField" && (code == $code || _id == $code || name == $code || title == $code)][0]._id`,
+                { code: sfCode }
+            );
+            resolvedId = result || "";
         }
 
-        const subjects = await sanityClient.fetch(getAllSubjects, { studyField: user?.studyField || "" });
+        const params = {
+            studyField: sfCode === "all" ? "" : sfCode,
+            studyFieldId: resolvedId || (sfCode === "all" ? "" : sfCode)
+        };
+
+        const subjects = await sanityClient.fetch(getAllSubjects, params);
         return NextResponse.json({ subjects });
     } catch (error: any) {
         console.error("Error fetching admin subjects:", error);
@@ -25,147 +40,49 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     const user = await getCurrentUser();
-    if (!hasRole(user, ["admin"])) {
-        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-    }
+    if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const {
-        name, code, studyField, specialty, degree, level, group, academicYear, professorId,
-        semester, day, startTime, endTime, roomId
-    } = body;
-
-    // Check for duplicate code
-    const existing = await sanityClient.fetch(`*[_type == "subject" && code == $code][0]`, { code });
-    if (existing) {
-        return NextResponse.json({ message: "Course code already exists" }, { status: 400 });
-    }
-
-    // 1. Create the Subject
-    const subjectId = `subject-${code.toLowerCase().replace(/\s+/g, '-')}`;
-    const subjectDoc = await sanityClient.create({
-        _id: subjectId,
+    const doc = await sanityClient.create({
+        _id: body._id || `subject-${Math.random().toString(36).substr(2, 9)}`,
         _type: "subject",
-        name,
-        code,
-        studyField,
-        specialty,
-        degree,
-        level,
-        group,
-        academicYear,
-        semester: Number(semester),
-        professor: professorId ? { _type: "reference", _ref: professorId } : undefined,
+        ...body,
+        studyField: user?.studyField || body.studyField || null
     });
-
-    // 2. Create the Schedule
-    if (roomId && day) {
-        await sanityClient.create({
-            _id: `schedule-${subjectId}`,
-            _type: "schedule",
-            subject: { _type: "reference", _ref: subjectId },
-            professor: professorId ? { _type: "reference", _ref: professorId } : undefined,
-            room: roomId,
-            day,
-            startTime,
-            endTime,
-            group,
-        });
-    }
-
-    return NextResponse.json({ subject: subjectDoc }, { status: 201 });
+    return NextResponse.json({ subject: doc }, { status: 201 });
 }
 
 export async function PUT(req: NextRequest) {
     const user = await getCurrentUser();
-    if (!hasRole(user, ["admin"])) {
-        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+
+    const { _id, ...data } = await req.json();
+    const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]`, { id: _id });
+
+    // Safety check: ensure admin can only edit subjects in their scope
+    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
+        return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 
-    const body = await req.json();
-    const {
-        _id, name, code, studyField, specialty, degree, level, group, academicYear, professorId,
-        semester, day, startTime, endTime, roomId
-    } = body;
-
-    // 1. Update Subject
-    const updatedSubject = await sanityClient.patch(_id).set({
-        name,
-        code,
-        studyField,
-        specialty,
-        degree,
-        level,
-        group,
-        academicYear,
-        semester: Number(semester),
-        professor: professorId ? { _type: "reference", _ref: professorId } : undefined,
+    const updated = await sanityClient.patch(_id).set({
+        ...data,
+        studyField: user?.studyField || data.studyField || existing?.studyField
     }).commit();
-
-    // 2. Update/Create Schedule
-    if (roomId && day) {
-        const scheduleId = `schedule-${_id}`;
-        // Try to fetch existing schedule with this ID
-        const existingSchedule = await sanityClient.fetch(`*[_type == "schedule" && _id == $scheduleId][0]`, { scheduleId });
-
-        const scheduleData = {
-            _type: "schedule",
-            subject: { _type: "reference", _ref: _id },
-            professor: professorId ? { _type: "reference", _ref: professorId } : undefined,
-            room: roomId,
-            day,
-            startTime,
-            endTime,
-            group,
-        };
-
-        if (existingSchedule) {
-            await sanityClient.patch(scheduleId).set(scheduleData).commit();
-        } else {
-            await sanityClient.create({ _id: scheduleId, ...scheduleData });
-        }
-    }
-
-    return NextResponse.json({ subject: updatedSubject });
+    return NextResponse.json({ subject: updated });
 }
 
 export async function DELETE(req: NextRequest) {
-    try {
-        const user = await getCurrentUser();
-        if (!hasRole(user, ["admin"])) {
-            return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-        }
+    const user = await getCurrentUser();
+    if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get("id");
-        if (!id) {
-            return NextResponse.json({ message: "ID required" }, { status: 400 });
-        }
+    const id = new URL(req.url).searchParams.get("id");
+    if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
 
-        // Find and delete associated schedule first
-        const scheduleId = `schedule-${id}`;
-        try {
-            await sanityClient.delete(scheduleId);
-        } catch (e) {
-            // It's okay if schedule doesn't exist
-            console.log("No schedule found to delete", e);
-        }
-
-        await sanityClient.delete(id);
-        return NextResponse.json({ message: "Course deleted" });
-    } catch (error: any) {
-        console.error("DELETE Course Error:", error);
-
-        if (error.message?.includes("reference")) {
-            return NextResponse.json(
-                { message: "Cannot delete this course because it has associated attendance sessions or other records." },
-                { status: 409 }
-            );
-        }
-
-        return NextResponse.json(
-            { message: error.message || "Failed to delete course" },
-            { status: 500 }
-        );
+    const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]{ studyField }`, { id });
+    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
+        return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
+
+    await sanityClient.delete(id);
+    return NextResponse.json({ message: "Subject deleted" });
 }

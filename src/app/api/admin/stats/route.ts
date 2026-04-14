@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         let resolvedId = "";
         if (sfCode) {
             const result = await sanityClient.fetch(
-                `*[_type == "studyField" && (code == $code || _id == $code)][0]._id`,
+                `*[_type == "studyField" && (code == $code || _id == $code || name == $code || title == $code)][0]._id`,
                 { code: sfCode }
             );
             resolvedId = result || "";
