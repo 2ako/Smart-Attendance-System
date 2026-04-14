@@ -17,6 +17,8 @@ const roleRouteMap: Record<string, string> = {
     admin: "/admin",
 };
 
+import { TOKEN_COOKIE_NAME } from "@/lib/auth";
+
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
@@ -29,7 +31,7 @@ export async function middleware(req: NextRequest) {
     const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
     if (!isProtected) return NextResponse.next();
 
-    const token = req.cookies.get("auth-token")?.value;
+    const token = req.cookies.get(TOKEN_COOKIE_NAME)?.value;
     if (!token) {
         return NextResponse.redirect(new URL("/login", req.url));
     }

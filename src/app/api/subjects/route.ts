@@ -7,15 +7,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { sanityClient } from "@/lib/sanity/client";
 import { getAllSubjects } from "@/lib/sanity/queries";
-import { getCurrentUser, hasRole } from "@/lib/auth";
+import { getCurrentUser, hasRole, TOKEN_COOKIE_NAME } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
     // Debug: Check raw cookie header
     const rawCookieHeader = req.headers.get("cookie") || "MISSING_HEADER";
     const cookieStore = await cookies();
     const allCookies = cookieStore.getAll().map(c => c.name);
-
-    console.log("API Subjects: Raw Cookie Header:", rawCookieHeader);
 
     const user = await getCurrentUser();
 
@@ -26,7 +24,7 @@ export async function GET(req: NextRequest) {
             debug: {
                 rawCookieHeader,
                 cookiesSeen: allCookies,
-                hasAuthCookie: allCookies.includes("auth-token")
+                hasAuthCookie: allCookies.includes(TOKEN_COOKIE_NAME)
             }
         }, { status: 401 });
     }
@@ -53,7 +51,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
         subjects,
         debug: {
-            rawCookieHeader,
             user: { role: user.role, studyField: user.studyField },
             sfCode: sfCode,
             resolvedId: resolvedId,

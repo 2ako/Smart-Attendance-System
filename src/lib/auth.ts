@@ -10,7 +10,7 @@ const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production"
 );
 
-const TOKEN_COOKIE_NAME = "auth-token";
+export const TOKEN_COOKIE_NAME = "___auth-token"; // Use a unique name to break stale sessions
 
 /**
  * Sign a JWT token with user information
