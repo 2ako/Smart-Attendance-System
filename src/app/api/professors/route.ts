@@ -15,7 +15,25 @@ export async function GET() {
         return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    const professors = await sanityClient.fetch(getAllProfessors, { studyField: user?.studyField || "" });
+    const sfCode = user?.studyField || "";
+
+    // Resolve Study Field ID if it's a code
+    let resolvedId = "";
+    if (sfCode && sfCode !== "all") {
+        const result = await sanityClient.fetch(
+            `*[_type == "studyField" && (code == $code || _id == $code || name == $code || title == $code)][0]._id`,
+            { code: sfCode }
+        );
+        resolvedId = result || "";
+    }
+
+    const params = {
+        studyField: sfCode === "all" ? "" : sfCode,
+        studyFieldId: resolvedId || (sfCode === "all" ? "" : sfCode)
+    };
+
+    console.log("API Professors: Fetching with params:", params);
+    const professors = await sanityClient.fetch(getAllProfessors, params);
     return NextResponse.json({ professors });
 }
 
@@ -65,11 +83,11 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 
-    const updated = await sanityClient.patch(_id).set({ 
-        employeeId, 
-        department: user?.studyField || department || existingProf?.department, 
-        specialization, 
-        rfidUid 
+    const updated = await sanityClient.patch(_id).set({
+        employeeId,
+        department: user?.studyField || department || existingProf?.department,
+        specialization,
+        rfidUid
     }).commit();
 
     if (name || email || employeeId || body.password) {
@@ -99,7 +117,7 @@ export async function DELETE(req: NextRequest) {
         if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
 
         const existing = await sanityClient.fetch(`*[_type == "professor" && _id == $id][0]{ user, department }`, { id });
-        
+
         // Safety check: ensure admin can only delete professors in their scope
         if (user?.role === "admin" && user?.studyField && existing?.department && existing.department !== user.studyField) {
             return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
