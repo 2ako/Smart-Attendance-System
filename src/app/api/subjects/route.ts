@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 // ============================================================
 
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { sanityClient } from "@/lib/sanity/client";
 import { getAllSubjects } from "@/lib/sanity/queries";
 import { getCurrentUser, hasRole } from "@/lib/auth";
