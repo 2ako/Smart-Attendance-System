@@ -39,13 +39,15 @@ export async function POST(req: NextRequest) {
         });
 
         const cookieStore = await cookies();
-        cookieStore.set(TOKEN_COOKIE_NAME, token, {
+        const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: "lax" as const,
             maxAge: 60 * 60 * 24, // 24 hours
             path: "/",
-        });
+        };
+
+        cookieStore.set(TOKEN_COOKIE_NAME, token, cookieOptions);
 
         return NextResponse.json({
             user: {
@@ -55,6 +57,12 @@ export async function POST(req: NextRequest) {
                 role: user.role,
                 studyField: typeof user.studyField === 'object' ? user.studyField?._ref : user.studyField,
             },
+            debug: {
+                cookieName: TOKEN_COOKIE_NAME,
+                tokenLength: token.length,
+                cookieOptions,
+                nodeEnv: process.env.NODE_ENV
+            }
         });
     } catch (error) {
         console.error("Login error:", error);

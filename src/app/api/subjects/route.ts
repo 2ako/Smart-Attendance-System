@@ -10,8 +10,12 @@ import { getAllSubjects } from "@/lib/sanity/queries";
 import { getCurrentUser, hasRole, TOKEN_COOKIE_NAME } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-    // Debug: Check raw cookie header
+    // Debug: Check raw cookie header and request details
     const rawCookieHeader = req.headers.get("cookie") || "MISSING_HEADER";
+    const origin = req.headers.get("origin") || "MISSING_ORIGIN";
+    const referer = req.headers.get("referer") || "MISSING_REFERER";
+    const host = req.headers.get("host") || "MISSING_HOST";
+
     const cookieStore = await cookies();
     const allCookies = cookieStore.getAll().map(c => c.name);
 
@@ -22,6 +26,9 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             message: "Unauthorized",
             debug: {
+                host,
+                origin,
+                referer,
                 rawCookieHeader,
                 cookiesSeen: allCookies,
                 hasAuthCookie: allCookies.includes(TOKEN_COOKIE_NAME)
@@ -51,6 +58,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
         subjects,
         debug: {
+            host,
             user: { role: user.role, studyField: user.studyField },
             sfCode: sfCode,
             resolvedId: resolvedId,
