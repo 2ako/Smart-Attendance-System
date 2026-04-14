@@ -377,19 +377,19 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
 
                 {/* ── General Groups Section ─────────────────────────── */}
                 <div className="pt-12 border-t border-border/40">
-                    <div className="flex items-center justify-between mb-8 px-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 px-2">
                         <div className="flex items-center gap-4">
                             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-foreground/80">{t("independent_groups")}</h4>
-                            <div className="h-[2px] w-12 bg-primary/20 rounded-full" />
+                            <div className="h-[2px] w-12 bg-primary/20 rounded-full hidden sm:block" />
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={addLevelGroup}
                                 disabled={currentConfig.specialties?.length > 0}
                                 className={cn(
-                                    "h-11 rounded-2xl text-[10px] font-black uppercase tracking-widest px-6 transition-all",
+                                    "h-10 sm:h-11 rounded-2xl text-[10px] font-black uppercase tracking-widest px-4 sm:px-6 transition-all whitespace-nowrap",
                                     currentConfig.specialties?.length > 0
                                         ? "text-muted-foreground bg-muted/50 border border-border/50 cursor-not-allowed opacity-50 shadow-none"
                                         : "text-primary hover:bg-primary/5 border border-primary/20 hover:shadow-lg"
@@ -402,7 +402,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                                     variant="ghost"
                                     size="sm"
                                     onClick={clearLevelGroups}
-                                    className="h-11 rounded-2xl text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/5 border border-destructive/10 px-6 transition-all"
+                                    className="h-10 sm:h-11 rounded-2xl text-[10px] font-black uppercase tracking-widest text-destructive hover:bg-destructive/5 border border-destructive/10 px-4 sm:px-6 transition-all whitespace-nowrap"
                                 >
                                     <Trash2 size={16} className="mr-2" /> {t("reset")}
                                 </Button>
