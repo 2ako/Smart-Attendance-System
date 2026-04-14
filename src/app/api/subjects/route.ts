@@ -31,7 +31,21 @@ export async function GET() {
 
     console.log("API Subjects: Fetching with params:", params);
     const subjects = await sanityClient.fetch(getAllSubjects, params);
-    return NextResponse.json({ subjects });
+
+    return NextResponse.json({
+        subjects,
+        debug: {
+            user: {
+                role: user.role,
+                studyField: user.studyField,
+                username: user.username
+            },
+            sfCode: sfCode,
+            resolvedId: resolvedId,
+            params: params,
+            count: subjects?.length || 0
+        }
+    });
 }
 
 export async function POST(req: NextRequest) {
