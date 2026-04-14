@@ -9,18 +9,24 @@ import { sanityClient } from "@/lib/sanity/client";
 import { getAllSubjects } from "@/lib/sanity/queries";
 import { getCurrentUser, hasRole } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    // Debug: Check raw cookie header
+    const rawCookieHeader = req.headers.get("cookie") || "MISSING_HEADER";
+    const cookieStore = await cookies();
+    const allCookies = cookieStore.getAll().map(c => c.name);
+
+    console.log("API Subjects: Raw Cookie Header:", rawCookieHeader);
+
     const user = await getCurrentUser();
 
     // Auth Check
     if (!user) {
-        const cookieStore = await cookies();
-        const allCookies = cookieStore.getAll().map(c => c.name);
         return NextResponse.json({
             message: "Unauthorized",
             debug: {
+                rawCookieHeader,
                 cookiesSeen: allCookies,
-                hasAuthToken: allCookies.includes("auth-token")
+                hasAuthCookie: allCookies.includes("auth-token")
             }
         }, { status: 401 });
     }
@@ -42,12 +48,12 @@ export async function GET() {
         studyFieldId: resolvedId || (sfCode === "all" ? "" : sfCode)
     };
 
-    console.log("API Subjects: Fetching with params:", params);
     const subjects = await sanityClient.fetch(getAllSubjects, params);
 
     return NextResponse.json({
         subjects,
         debug: {
+            rawCookieHeader,
             user: { role: user.role, studyField: user.studyField },
             sfCode: sfCode,
             resolvedId: resolvedId,
