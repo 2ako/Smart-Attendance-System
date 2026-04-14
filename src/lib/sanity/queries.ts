@@ -52,6 +52,7 @@ export const getAllProfessors = `*[_type == "professor" && (
   !defined($studyField) || $studyField == "" || 
   department match $studyField || 
   studyField match $studyField || 
+  studyField._ref == $studyFieldId ||
   user->studyField match $studyField ||
   (lower($studyField) == "info" && (lower(department) == "informatique" || lower(studyField) == "informatique" || lower(user->studyField) == "informatique")) ||
   (lower($studyField) == "informatique" && (lower(department) == "info" || lower(studyField) == "info" || lower(user->studyField) == "info"))
@@ -68,10 +69,11 @@ export const getProfessorByUserId = `*[_type == "professor" && user._ref == $use
 // ── Subjects ──────────────────────────────────────────────────
 export const getAllSubjects = `*[_type == "subject" && (
   !defined($studyField) || $studyField == "" || $studyField == "all" || 
-  studyField == $studyField ||
+  lower(studyField) == lower($studyField) ||
   studyField._ref == $studyFieldId ||
   studyField match $studyField ||
-  (lower($studyField) == "info" && lower(studyField) == "informatique")
+  (lower($studyField) == "info" && lower(studyField) == "informatique") ||
+  (lower($studyField) == "informatique" && lower(studyField) == "info")
 )]{
   ...,
   professor->{ ..., user->{ name } },
