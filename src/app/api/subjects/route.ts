@@ -9,8 +9,19 @@ import { getAllSubjects } from "@/lib/sanity/queries";
 import { getCurrentUser, hasRole } from "@/lib/auth";
 
 export async function GET() {
+    const cookieStore = await cookies();
+    const allCookies = cookieStore.getAll().map(c => c.name);
+
     const user = await getCurrentUser();
-    if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    if (!user) {
+        return NextResponse.json({
+            message: "Unauthorized",
+            debug: {
+                cookiesSeen: allCookies,
+                hasAuthCookie: allCookies.includes("auth-token")
+            }
+        }, { status: 401 });
+    }
 
     const sfCode = user?.studyField || "";
 
