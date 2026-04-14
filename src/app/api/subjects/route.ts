@@ -11,7 +11,26 @@ import { getCurrentUser, hasRole } from "@/lib/auth";
 export async function GET() {
     const user = await getCurrentUser();
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    const subjects = await sanityClient.fetch(getAllSubjects, { studyField: user?.studyField || "" });
+
+    const sfCode = user?.studyField || "";
+
+    // Resolve Study Field ID if it's a code
+    let resolvedId = "";
+    if (sfCode && sfCode !== "all") {
+        const result = await sanityClient.fetch(
+            `*[_type == "studyField" && (code == $code || _id == $code)][0]._id`,
+            { code: sfCode }
+        );
+        resolvedId = result || "";
+    }
+
+    const params = {
+        studyField: sfCode === "all" ? "" : sfCode,
+        studyFieldId: resolvedId || (sfCode === "all" ? "" : sfCode)
+    };
+
+    console.log("API Subjects: Fetching with params:", params);
+    const subjects = await sanityClient.fetch(getAllSubjects, params);
     return NextResponse.json({ subjects });
 }
 
@@ -20,8 +39,8 @@ export async function POST(req: NextRequest) {
     if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
-    const doc = await sanityClient.create({ 
-        _type: "subject", 
+    const doc = await sanityClient.create({
+        _type: "subject",
         ...body,
         // Force the admin's studyField if they are scoped
         studyField: user?.studyField || body.studyField || null
