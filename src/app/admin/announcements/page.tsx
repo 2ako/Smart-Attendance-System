@@ -264,10 +264,10 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                                                             {f.name}
                                                         </Badge>
                                                     ))
-                                                ) : a.targetFaculty ? (
+                                                ) : a?.targetFaculty ? (
                                                     <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-purple-500/20 text-purple-600 bg-purple-500/10">
                                                         <Shield size={10} className="ltr:mr-1.5 rtl:ml-1.5" />
-                                                        {t("faculty_admins_label", { faculty: a.targetFaculty.name }).replace("{{faculty}}", a.targetFaculty.name)}
+                                                        {t("faculty_admins_label", { faculty: a.targetFaculty?.name || "..." }).replace("{{faculty}}", a.targetFaculty?.name || "...")}
                                                     </Badge>
                                                 ) : (
                                                     <Badge variant="outline" className={cn(
@@ -287,15 +287,15 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                                         ) : a.subject ? (
                                             <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-blue-500/20 text-blue-600 bg-blue-500/10">
                                                 <BookOpen size={10} className="ltr:mr-1.5 rtl:ml-1.5" />
-                                                {a.subject.name}
+                                                {a?.subject?.name || t("unknown_subject")}
                                             </Badge>
                                         ) : (
                                             <div className="flex flex-col gap-1 text-start">
                                                 <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest border-amber-500/20 text-amber-600 bg-amber-500/10 w-fit">
                                                     <Users size={10} className="ltr:mr-1.5 rtl:ml-1.5" />
-                                                    {a.level} {a.specialty}
+                                                    {a?.level || ""} {a?.specialty || ""}
                                                 </Badge>
-                                                {a.group && (
+                                                {a?.group && (
                                                     <span className="text-[10px] font-bold text-muted-foreground ltr:ml-1 rtl:mr-1">{t("group")}: {a.group}</span>
                                                 )}
                                             </div>
@@ -362,10 +362,10 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                                 <div className="flex-1 text-start">
                                     <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-2">{a.title}</h3>
                                     <div className="flex flex-wrap gap-2 mt-2">
-                                        <Badge variant="secondary" className={cn("text-[8px] font-black uppercase tracking-widest", a.status === 'published' ? 'bg-primary/20 text-primary' : '')}>
-                                            {t(a.status)}
+                                        <Badge variant="secondary" className={cn("text-[8px] font-black uppercase tracking-widest", a?.status === 'published' ? 'bg-primary/20 text-primary' : '')}>
+                                            {t(a?.status || "published")}
                                         </Badge>
-                                        <span className="text-[10px] font-bold text-muted-foreground">{new Date(a._createdAt).toLocaleDateString()}</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground">{a?._createdAt ? new Date(a._createdAt).toLocaleDateString() : ""}</span>
                                     </div>
                                 </div>
                                 {((a.studyField || "") === (user?.studyField || "")) && (
@@ -385,14 +385,14 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                             <div className="p-3 rounded-2xl bg-muted/10 border border-border/50 text-start">
                                 <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{t("audience")}</p>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {a.targetAudience === 'faculty_admins' ? (
+                                    {a?.targetAudience === 'faculty_admins' ? (
                                         <span className="text-[11px] font-bold text-purple-600">{t("faculty_admins")}</span>
-                                    ) : a.isGlobal || (!a.level && !a.subject) ? (
+                                    ) : a?.isGlobal || (!a?.level && !a?.subject) ? (
                                         <span className="text-[11px] font-bold text-emerald-600">{t("global")}</span>
-                                    ) : a.subject ? (
-                                        <span className="text-[11px] font-bold text-blue-600">{a.subject.name}</span>
+                                    ) : a?.subject ? (
+                                        <span className="text-[11px] font-bold text-blue-600">{a.subject?.name || "..."}</span>
                                     ) : (
-                                        <span className="text-[11px] font-bold text-amber-600">{a.level} {a.specialty} {a.group ? `• G${a.group}` : ''}</span>
+                                        <span className="text-[11px] font-bold text-amber-600">{a?.level || ""} {a?.specialty || ""} {a?.group ? `• G${a.group}` : ''}</span>
                                     )}
                                 </div>
                             </div>
