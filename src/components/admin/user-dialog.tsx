@@ -173,12 +173,12 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 
                 <form onSubmit={handleSubmit} className="relative z-10 text-start">
-                    <DialogHeader className="p-8 pb-4 text-start">
+                    <DialogHeader className="p-6 sm:p-8 pb-4 text-start">
                         <div className="flex items-center gap-3 mb-2 text-primary">
                             <div className="p-2 rounded-xl bg-primary/10">
                                 <UserCog size={24} />
                             </div>
-                            <DialogTitle className="text-2xl font-black tracking-tight uppercase text-start">
+                            <DialogTitle className="text-xl sm:text-2xl font-black tracking-tight uppercase text-start">
                                 {userAccount ? t("edit_account") : t("new_account")}
                             </DialogTitle>
                         </div>
@@ -188,7 +188,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                     </DialogHeader>
 
                     {/* Role Selector At Top */}
-                    <div className="px-8 pb-4">
+                    <div className="px-6 sm:px-8 pb-4">
                         <div className="p-1.5 bg-muted/30 rounded-2xl border border-border/50 flex items-center gap-2">
                             {['student', 'professor', 'admin'].map((r) => (
                                 <button
@@ -208,7 +208,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                         </div>
                     </div>
 
-                    <div className="px-8 py-4 space-y-5 max-h-[50vh] overflow-y-auto scrollbar-none border-t border-border/10 text-start">
+                    <div className="px-6 sm:px-8 py-4 space-y-5 max-h-[50vh] overflow-y-auto scrollbar-none border-t border-border/10 text-start">
                         {formData.role === "admin" ? (
                             <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                                 <div className="space-y-2">
@@ -264,7 +264,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                         ) : formData.role === "student" ? (
                             <div className="space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
                                 {/* Name Fields */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("first_name")}</Label>
                                         <Input
@@ -287,7 +287,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                                 </div>
 
                                 {/* Registration & DOB */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("matricule")}</Label>
                                         <Input
@@ -311,7 +311,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                                 </div>
 
                                 {/* Degree & Level — BEFORE Field & Specialty so we can filter */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("degree")}</Label>
                                         <Select
@@ -398,7 +398,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                                 </div>
 
                                 {/* Field & Specialty */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("study_field")}</Label>
                                         {!!currentUser?.studyField ? (
@@ -512,7 +512,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                                 </div>
 
                                 {/* Group & Year */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("group")}</Label>
                                         {(() => {
@@ -596,7 +596,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                         ) : (
                             <div className="space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
                                 {/* Professor Name Fields */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("first_name")}</Label>
                                         <Input
@@ -723,7 +723,7 @@ export function UserDialog({ open, onOpenChange, userAccount, onSuccess }: UserD
                         </div>
                     </div>
 
-                    <DialogFooter className="p-8 pt-4">
+                    <DialogFooter className="p-6 sm:p-8 pt-4 flex-col-reverse sm:flex-row gap-3">
                         <Button
                             type="button"
                             variant="ghost"

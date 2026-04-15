@@ -168,19 +168,19 @@ export function StudentDialog({
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 
                 <form onSubmit={handleSubmit} className="relative z-10">
-                    <DialogHeader className="p-8 pb-4">
+                    <DialogHeader className="p-6 sm:p-8 pb-4">
                         <div className="flex items-center gap-3 mb-2 text-primary">
                             <div className="p-2 rounded-xl bg-primary/10">
                                 {student ? <User size={24} /> : <UserPlus size={24} />}
                             </div>
-                            <DialogTitle className="text-2xl font-black tracking-tight uppercase">
+                            <DialogTitle className="text-xl sm:text-2xl font-black tracking-tight uppercase">
                                 {student ? t("edit_account") : t("new_student")}
                             </DialogTitle>
                         </div>
                     </DialogHeader>
 
-                    <div className="px-8 py-4 space-y-5 max-h-[60vh] overflow-y-auto scrollbar-none">
-                        <div className="grid grid-cols-2 gap-4">
+                    <div className="px-6 sm:px-8 py-4 space-y-5 max-h-[60vh] overflow-y-auto scrollbar-none">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("first_name")}</Label>
                                 <Input
@@ -203,7 +203,7 @@ export function StudentDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("matricule")}</Label>
                                 <Input
@@ -226,7 +226,7 @@ export function StudentDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("study_field")}</Label>
                                 {!!currentUser?.studyField ? (
@@ -263,7 +263,7 @@ export function StudentDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("degree")}</Label>
                                 <Select value={formData.degree} onValueChange={handleDegreeChange}>
@@ -315,7 +315,7 @@ export function StudentDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("specialty")}</Label>
                                 {(() => {
@@ -442,7 +442,7 @@ export function StudentDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("acad_year")}</Label>
                                 <Input
@@ -455,7 +455,7 @@ export function StudentDialog({
                         </div>
                     </div>
 
-                    <DialogFooter className="p-10 pt-0">
+                    <DialogFooter className="p-6 sm:p-10 pt-0">
                         <Button
                             type="submit"
                             disabled={isLoading}

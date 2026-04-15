@@ -139,19 +139,19 @@ export function ProfDialog({
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 
                 <form onSubmit={handleSubmit} className="relative z-10">
-                    <DialogHeader className="p-8 pb-4">
+                    <DialogHeader className="p-6 sm:p-8 pb-4">
                         <div className="flex items-center gap-3 mb-2 text-primary">
                             <div className="p-2 rounded-xl bg-primary/10">
                                 {professor ? <User size={24} /> : <UserPlus size={24} />}
                             </div>
-                            <DialogTitle className="text-2xl font-black tracking-tight uppercase">
+                            <DialogTitle className="text-xl sm:text-2xl font-black tracking-tight uppercase">
                                 {professor ? t("edit_account") : t("new_professor")}
                             </DialogTitle>
                         </div>
                     </DialogHeader>
 
-                    <div className="px-8 py-4 space-y-5 max-h-[60vh] overflow-y-auto scrollbar-none">
-                        <div className="grid grid-cols-2 gap-4">
+                    <div className="px-6 sm:px-8 py-4 space-y-5 max-h-[60vh] overflow-y-auto scrollbar-none">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("first_name")}</Label>
                                 <Input
@@ -174,7 +174,7 @@ export function ProfDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("email_address")}</Label>
                                 <Input
@@ -288,7 +288,7 @@ export function ProfDialog({
                         </div>
                     </div>
 
-                    <DialogFooter className="p-8 pt-4">
+                    <DialogFooter className="p-6 sm:p-8 pt-4 flex-col-reverse sm:flex-row gap-3">
                         <Button
                             type="button"
                             variant="ghost"

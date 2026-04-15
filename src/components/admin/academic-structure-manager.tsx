@@ -10,6 +10,9 @@ import { Plus, Trash2, Save, Loader2, Layers, GraduationCap, Users, X, Info, Shi
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
 
+import { sanityClient } from "@/lib/sanity/client";
+import { getAllAcademicConfigs } from "@/lib/sanity/queries";
+
 interface AcademicStructureManagerProps {
     initialConfigs?: any[];
     initialUser?: any;
@@ -301,8 +304,8 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {currentConfig.specialties?.map((spec: any, sIdx: number) => (
                             <div key={sIdx} className="group/spec relative p-0.5 sm:p-1 rounded-[32px] lg:rounded-[40px] bg-gradient-to-br from-background via-muted/10 to-transparent border border-border/50 hover:border-primary/30 transition-all duration-700 shadow-sm hover:shadow-2xl hover:shadow-primary/5">
-                                <div className="p-6 lg:p-8 space-y-6">
-                                    <div className="flex items-start justify-between">
+                                <div className="p-6 lg:p-8 space-y-6 text-start">
+                                    <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1 space-y-2">
                                             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("specialty_name")}</Label>
                                             <Input
@@ -316,7 +319,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => removeSpecialty(sIdx)}
-                                            className="h-10 w-10 rounded-2xl bg-destructive/5 text-destructive hover:bg-destructive hover:text-white transition-all ml-4 opacity-0 group-hover/spec:opacity-100"
+                                            className="h-10 w-10 rounded-2xl bg-destructive/5 text-destructive hover:bg-destructive hover:text-white transition-all sm:ml-4 lg:opacity-0 lg:group-hover/spec:opacity-100"
                                         >
                                             <Trash2 size={16} />
                                         </Button>
@@ -354,7 +357,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                                                         onChange={(e) => updateGroupName(sIdx, gIdx, e.target.value)}
                                                         className="w-10 text-[11px] font-black bg-transparent border-none outline-none text-center uppercase p-0"
                                                     />
-                                                    <button onClick={() => removeGroupFromSpecialty(sIdx, gIdx)} className="text-muted-foreground/30 hover:text-destructive opacity-0 group-hover/group:opacity-100 transition-opacity">
+                                                    <button onClick={() => removeGroupFromSpecialty(sIdx, gIdx)} className="text-muted-foreground/30 hover:text-destructive lg:opacity-0 lg:group-hover/group:opacity-100 transition-opacity">
                                                         <X size={10} strokeWidth={4} />
                                                     </button>
                                                 </div>
@@ -382,7 +385,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                             <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-foreground/80">{t("independent_groups")}</h4>
                             <div className="h-[2px] w-12 bg-primary/20 rounded-full hidden sm:block" />
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                        <div className="flex flex-wrap items-center gap-3">
                             <Button
                                 variant="ghost"
                                 size="sm"

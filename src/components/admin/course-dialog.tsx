@@ -267,12 +267,12 @@ export function CourseDialog({
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 
                 <form onSubmit={handleSubmit} className="relative z-10">
-                    <DialogHeader className="p-8 pb-4">
+                    <DialogHeader className="p-6 sm:p-8 pb-4">
                         <div className="flex items-center gap-3 mb-2 text-primary">
                             <div className="p-2 rounded-xl bg-primary/10">
                                 <BookOpen size={24} />
                             </div>
-                            <DialogTitle className="text-2xl font-black tracking-tight uppercase">
+                            <DialogTitle className="text-xl sm:text-2xl font-black tracking-tight uppercase">
                                 {course ? t("edit_course") : t("add_new_course")}
                             </DialogTitle>
                         </div>
@@ -281,7 +281,7 @@ export function CourseDialog({
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="px-8 py-4 space-y-5 max-h-[60vh] overflow-y-auto scrollbar-none">
+                    <div className="px-6 sm:px-8 py-4 space-y-5 max-h-[60vh] overflow-y-auto scrollbar-none">
                         <div className="grid grid-cols-1 gap-4">
                             {/* Course Name */}
                             <div className="space-y-2">
@@ -303,7 +303,7 @@ export function CourseDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* Course Code */}
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">
@@ -344,7 +344,7 @@ export function CourseDialog({
                         </div>
 
                         {/* Degree & Level — BEFORE Field & Specialty so we can filter */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("degree")}</Label>
                                 <Select value={formData.degree} onValueChange={handleDegreeChange}>
@@ -437,7 +437,8 @@ export function CourseDialog({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* Field & Specialty */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("study_field")}</Label>
                                 {!!currentUser?.studyField ? (
@@ -541,7 +542,7 @@ export function CourseDialog({
                         </div>
 
                         {/* Type & Group */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("type")}</Label>
                                 <Select
@@ -659,7 +660,7 @@ export function CourseDialog({
                                 {t("scheduling_details")}
                             </Label>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("semester")}</Label>
                                     <Select
@@ -693,7 +694,7 @@ export function CourseDialog({
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 mt-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div className="space-y-2">
                                     <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("start_time")}</Label>
                                     <Input
@@ -842,19 +843,19 @@ export function CourseDialog({
                         </div>
                     </div>
 
-                    <DialogFooter className="p-8 pt-4 bg-muted/20">
+                    <DialogFooter className="p-6 sm:p-8 pt-4 flex-col-reverse sm:flex-row gap-3 bg-muted/20">
                         <Button
                             type="button"
                             variant="ghost"
                             onClick={() => onOpenChange(false)}
-                            className="h-12 px-6 rounded-2xl font-bold uppercase tracking-widest text-xs"
+                            className="h-12 px-6 rounded-2xl font-bold uppercase tracking-widest text-xs w-full sm:w-auto"
                         >
                             {t("cancel")}
                         </Button>
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="h-12 px-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            className="h-12 px-10 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
                         >
                             {loading ? (
                                 <span className="flex items-center gap-2">

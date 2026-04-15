@@ -17,18 +17,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    Search,
-    Plus,
-    Pencil,
-    Trash2,
-    Megaphone,
-    Globe,
-    BookOpen,
-    Users,
-    Loader2,
-    Shield
-} from "lucide-react";
+import { Search, Plus, Trash2, Calendar, Users, Megaphone, Pencil, Info, MapPin, Eye, Filter, Loader2, RefreshCw, Send, Download, Shield, Globe, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { AdminAnnouncementDialog } from "@/components/admin/admin-announcement-dialog";
@@ -46,6 +35,7 @@ export default function AdminAnnouncementsPage() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
+    const [dialogMode, setDialogMode] = useState<"view" | "edit">("edit");
 
     const loadData = async () => {
         setIsLoading(true);
@@ -79,11 +69,13 @@ export default function AdminAnnouncementsPage() {
 
     const handleCreate = () => {
         setSelectedAnnouncement(null);
+        setDialogMode("edit");
         setDialogOpen(true);
     };
 
-    const handleEdit = (announcement: any) => {
+    const handleEdit = (announcement: any, mode: "view" | "edit" = "edit") => {
         setSelectedAnnouncement(announcement);
+        setDialogMode(mode);
         setDialogOpen(true);
     };
 
@@ -178,6 +170,7 @@ export default function AdminAnnouncementsPage() {
                                     user={user}
                                     handleEdit={handleEdit}
                                     handleDelete={handleDelete}
+                                    setAnnouncementToDelete={setSelectedAnnouncement}
                                     t={t}
                                 />
                             </TabsContent>
@@ -189,6 +182,7 @@ export default function AdminAnnouncementsPage() {
                             user={user}
                             handleEdit={handleEdit}
                             handleDelete={handleDelete}
+                            setAnnouncementToDelete={setSelectedAnnouncement}
                             t={t}
                         />
                     )}
@@ -199,6 +193,7 @@ export default function AdminAnnouncementsPage() {
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
                 announcement={selectedAnnouncement}
+                initialMode={dialogMode}
                 onSuccess={loadData}
                 subjects={subjects}
             />
@@ -215,7 +210,7 @@ export default function AdminAnnouncementsPage() {
 }
 
 // Extracted inner table component
-function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t }: any) {
+function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, setAnnouncementToDelete, t }: any) {
     return (
         <Card className="rounded-[32px] border-border/50 bg-card shadow-sm overflow-hidden text-start">
             {/* Desktop Table View */}
@@ -312,12 +307,23 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                                     </TableCell>
                                     <TableCell className="ltr:text-right rtl:text-left text-start ltr:pr-6 rtl:pl-6">
                                         {((a.studyField || "") === (user?.studyField || "")) ? (
-                                            <div className="flex ltr:justify-end rtl:justify-start gap-2">
-                                                <Button variant="ghost" size="icon" onClick={() => handleEdit(a)} className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary">
-                                                    <Pencil size={14} />
+                                            <div className="flex items-center gap-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleEdit(a, "edit")}
+                                                    className="h-8 rounded-lg text-primary hover:bg-primary/10 font-bold text-[10px] uppercase tracking-widest px-3"
+                                                >
+                                                    <Pencil size={12} className="mr-1.5" />
+                                                    {t("edit")}
                                                 </Button>
-                                                <Button variant="ghost" size="icon" onClick={() => handleDelete(a)} className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
-                                                    <Trash2 size={14} />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(a)}
+                                                    className="h-8 w-8 rounded-lg text-destructive/40 hover:text-destructive hover:bg-destructive/10 p-0"
+                                                >
+                                                    <Trash2 size={12} />
                                                 </Button>
                                             </div>
                                         ) : (
@@ -329,10 +335,11 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         e.stopPropagation();
-                                                        handleEdit(a);
+                                                        handleEdit(a, "view");
                                                     }}
-                                                    className="h-8 rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary text-[10px] uppercase font-bold tracking-widest px-3 relative z-10"
+                                                    className="h-8 rounded-lg text-primary bg-primary/5 hover:bg-primary/20 text-[10px] uppercase font-black tracking-widest px-4 border border-primary/20 shadow-sm"
                                                 >
+                                                    <Eye size={12} className="mr-1.5" />
                                                     {t("view")}
                                                 </Button>
                                             </div>
@@ -380,14 +387,25 @@ function AnnouncementsTable({ data, isLoading, user, handleEdit, handleDelete, t
                                     </div>
                                 ) : (
                                     <div className="flex flex-col gap-1">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleEdit(a)}
-                                            className="h-9 w-9 rounded-xl bg-primary/10 text-primary hover:bg-primary/20"
-                                        >
-                                            <Search size={16} />
-                                        </Button>
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => handleEdit(a, ((a.studyField || "") === (user?.studyField || "")) ? "edit" : "view")}
+                                                className="h-9 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 font-black text-[10px] uppercase px-4 flex items-center gap-2"
+                                            >
+                                                <Eye size={14} />
+                                                {t("view")}
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => setAnnouncementToDelete(a)}
+                                                className="h-9 w-9 rounded-xl bg-destructive/10 text-destructive"
+                                            >
+                                                <Trash2 size={14} />
+                                            </Button>
+                                        </div>
                                     </div>
                                 )}
                             </div>

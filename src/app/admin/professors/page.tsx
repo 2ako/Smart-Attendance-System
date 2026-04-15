@@ -267,34 +267,33 @@ export default function AdminProfessorsDashboard() {
                                 ) : (
                                     filteredProfessors.map((prof) => (
                                         <div key={prof._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
-                                            <div className="absolute top-0 ltr:right-0 rtl:left-0 p-4">
-                                                <div className="flex gap-2">
+                                            <div className="flex justify-between items-start gap-4">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner shrink-0">
+                                                        <span className="text-xl font-black uppercase">{(prof.user?.name || "?")[0]}</span>
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-black text-lg text-foreground uppercase tracking-tight line-clamp-1">{prof.user?.name}</h3>
+                                                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{prof.specialization || t("academic_staff")}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col sm:flex-row gap-2 shrink-0">
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-10 w-10 rounded-xl bg-muted/30 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
+                                                        className="h-10 w-10 sm:h-9 sm:w-9 rounded-xl bg-muted/30 hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
                                                         onClick={() => handleEditProf(prof)}
                                                     >
-                                                        <Pencil size={18} />
+                                                        <Pencil size={18} className="sm:w-4 sm:h-4" />
                                                     </Button>
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-10 w-10 rounded-xl bg-muted/30 hover:bg-destructive/10 hover:text-destructive transition-all shadow-sm"
+                                                        className="h-10 w-10 sm:h-9 sm:w-9 rounded-xl bg-muted/30 hover:bg-destructive/10 hover:text-destructive transition-all shadow-sm"
                                                         onClick={() => handleDeleteClick(prof)}
                                                     >
-                                                        <Trash2 size={18} />
+                                                        <Trash2 size={18} className="sm:w-4 sm:h-4" />
                                                     </Button>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
-                                                    <span className="text-xl font-black uppercase">{(prof.user?.name || "?")[0]}</span>
-                                                </div>
-                                                <div className="pr-20 rtl:pl-20">
-                                                    <h3 className="font-black text-lg text-foreground uppercase tracking-tight line-clamp-1">{prof.user?.name}</h3>
-                                                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest">{prof.specialization || t("academic_staff")}</p>
                                                 </div>
                                             </div>
 
@@ -308,7 +307,7 @@ export default function AdminProfessorsDashboard() {
                                                         <p className="text-xs font-black text-foreground truncate">{prof.user?.email || "N/A"}</p>
                                                     </div>
                                                 </div>
-                                                <div className="grid grid-cols-2 gap-3">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     <div className="flex flex-col p-3 rounded-2xl bg-muted/20 border border-border/40">
                                                         <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest leading-none mb-1">{t("identifier")}</p>
                                                         <p className="text-xs font-mono font-bold text-foreground">{prof.employeeId || "—"}</p>

@@ -48,6 +48,7 @@ interface AdminAnnouncementDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     announcement?: any;
+    initialMode?: "view" | "edit";
     onSuccess: () => void;
     subjects: any[];
 }
@@ -56,13 +57,14 @@ export function AdminAnnouncementDialog({
     open,
     onOpenChange,
     announcement,
+    initialMode = "edit",
     onSuccess,
     subjects
 }: AdminAnnouncementDialogProps) {
     const { t } = useTranslation();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
-    const [isEditMode, setIsEditMode] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(initialMode === "edit");
     const [studyFields, setStudyFields] = useState<any[]>([]);
     const [academicConfigs, setAcademicConfigs] = useState<any[]>([]);
     const [students, setStudents] = useState<any[]>([]);
@@ -92,7 +94,8 @@ export function AdminAnnouncementDialog({
         if (open) {
             fetchStudyFields();
             if (announcement) {
-                setIsEditMode(false);
+                // Determine mode: view for others' announcements, initialMode for own.
+                setIsEditMode(isOwner ? (initialMode === "edit") : false);
                 setFormData({
                     title: announcement.title || "",
                     description: announcement.description || "",
@@ -259,11 +262,11 @@ export function AdminAnnouncementDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto border-none shadow-2xl rounded-[32px] p-0 bg-card/95 backdrop-blur-xl scrollbar-none text-start">
+            <DialogContent className="sm:max-w-[650px] max-h-[95vh] overflow-y-auto border-none shadow-2xl rounded-[32px] p-0 bg-card/95 backdrop-blur-xl scrollbar-none text-start">
 
                 {/* ── Dynamic Header ── */}
                 <div className={cn(
-                    "relative h-24 sm:h-28 p-6 sm:p-8 flex flex-col justify-center text-start transition-all duration-500",
+                    "relative h-20 sm:h-28 p-5 sm:p-8 flex flex-col justify-center text-start transition-all duration-500",
                     isViewMode
                         ? "bg-gradient-to-br from-primary via-primary/80 to-primary/40"
                         : "bg-gradient-to-br from-indigo-600 via-indigo-500 to-indigo-400"
@@ -331,10 +334,12 @@ export function AdminAnnouncementDialog({
                                 </div>
                                 <p className="text-[11px] font-black uppercase text-foreground text-start">
                                     {isOwner
-                                        ? (studyFields.find(f => f.code === user?.studyField)?.name || user?.studyField)
-                                        : (announcement.targetFaculties && announcement.targetFaculties.length > 0
-                                            ? announcement.targetFaculties.map((f: any) => f.name).join(", ")
-                                            : (announcement.targetFaculty?.name || t("university_rectorate")))}
+                                        ? (studyFields.find(f => f.code === user?.studyField)?.name || user?.studyField || t("my_faculty"))
+                                        : (announcement.studyField
+                                            ? (studyFields.find(f => f.code === announcement.studyField)?.name || announcement.studyField)
+                                            : (announcement.targetFaculties && announcement.targetFaculties.length > 0
+                                                ? announcement.targetFaculties.map((f: any) => f.name).join(", ")
+                                                : (announcement.targetFaculty?.name || t("university_rectorate"))))}
                                 </p>
                             </div>
                             <div className="p-4 rounded-2xl bg-muted/20 border border-border/40 text-start">
@@ -423,7 +428,7 @@ export function AdminAnnouncementDialog({
                     </div>
                 ) : (
                     /* ── Form Mode Layout ── */
-                    <form onSubmit={handleSubmit} className="p-8 space-y-6 text-start animate-in fade-in zoom-in-95 duration-300">
+                    <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6 text-start animate-in fade-in zoom-in-95 duration-300">
                         <div className="space-y-5">
                             {/* Basic Info */}
                             <div className="space-y-2">

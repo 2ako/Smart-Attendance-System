@@ -19,8 +19,8 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        const isSuperAdmin = !user.studyField;
-        const sfCode = user.studyField || "";
+        const isSuperAdmin = !user?.studyField;
+        const sfCode = user?.studyField || "";
 
         // Resolve Study Field ID if it's a code
         let resolvedId = "";
