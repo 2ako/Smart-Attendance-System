@@ -94,7 +94,11 @@ export const getSubjectsByProfessor = `*[_type == "subject" && professor._ref ==
   type
 } | order(name asc)`;
 
-export const getStudentCourses = `*[_type == "subject" && academicYear == $academicYear && degree == $degree && level == $level && (studyField == $studyField || specialty == $specialty || group == $group)]{
+export const getStudentCourses = `*[_type == "subject" && academicYear == $academicYear && degree == $degree && level == $level && (
+  (!defined(studyField) || studyField == "" || lower(studyField) == "all" || lower(studyField) == lower($studyField) || (lower($studyField) == "info" && lower(studyField) == "informatique") || (lower($studyField) == "informatique" && lower(studyField) == "info")) &&
+  (!defined(specialty) || specialty == "" || lower(specialty) == "none" || lower(specialty) == "all" || lower(specialty) == lower($specialty)) &&
+  (!defined(group) || group == "" || lower(group) == "all" || group == $group)
+)]{
   ...,
   "subjectDetails": {
     "name": name,
