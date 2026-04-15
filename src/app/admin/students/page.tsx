@@ -176,8 +176,8 @@ export default function AdminStudentsPage() {
                 </div>
 
                 {/* ── Filtering Tools ────────────────────────────────── */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 animate-enter [animation-delay:100ms]">
-                    <div className="md:col-span-1 relative group">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-enter [animation-delay:100ms]">
+                    <div className="relative group">
                         <Search size={18} className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                             placeholder={t("search")}
@@ -226,7 +226,7 @@ export default function AdminStudentsPage() {
 
                 {/* ── Organized View ─────────────────────────────────── */}
                 <Tabs defaultValue="all" className="w-full animate-enter [animation-delay:200ms]" onValueChange={setSelectedLevel}>
-                    <TabsList className="bg-card p-1.5 rounded-[24px] mb-8 h-16 shadow-sm border border-border/50 max-w-3xl overflow-x-auto">
+                    <TabsList className="bg-card p-1.5 rounded-[24px] mb-8 h-16 shadow-sm border border-border/50 max-w-3xl overflow-x-auto flex flex-nowrap whitespace-nowrap justify-start sm:justify-center scrollbar-none">
                         <TabsTrigger value="all" className="rounded-xl px-8 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black uppercase tracking-widest text-[10px] h-full transition-all">{t("all_students")}</TabsTrigger>
                         {levels.map(level => (
                             <TabsTrigger key={level} value={level} className="rounded-xl px-8 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black uppercase tracking-widest text-[10px] h-full transition-all">{level}</TabsTrigger>
@@ -344,34 +344,36 @@ export default function AdminStudentsPage() {
                             ) : (
                                 filteredStudents.map((student) => (
                                     <div key={student._id} className="p-6 rounded-[2rem] bg-card border border-border/50 shadow-sm space-y-4 relative overflow-hidden group">
-                                        <div className="flex items-center gap-4">
-                                            <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-xl shadow-inner">
-                                                {student.fullName?.[0] || student.user?.name?.[0] || "?"}
+                                        <div className="flex justify-between items-start gap-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-xl shadow-inner shrink-0">
+                                                    {student.fullName?.[0] || student.user?.name?.[0] || "?"}
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1">
+                                                        {student.fullName || student.user?.name}
+                                                    </h3>
+                                                    <p className="text-[10px] font-bold font-mono text-primary uppercase tracking-widest">
+                                                        {student.matricule}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="flex-1 pr-12 rtl:pl-12">
-                                                <h3 className="font-extrabold text-lg text-foreground uppercase tracking-tight line-clamp-1">
-                                                    {student.fullName || student.user?.name}
-                                                </h3>
-                                                <p className="text-[10px] font-bold font-mono text-primary uppercase tracking-widest">
-                                                    {student.matricule}
-                                                </p>
-                                            </div>
-                                            <div className="absolute top-4 ltr:right-4 rtl:left-4 flex gap-1">
+                                            <div className="flex flex-col sm:flex-row gap-2 shrink-0">
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => handleEditStudent(student)}
-                                                    className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-primary/10 hover:text-primary transition-all"
+                                                    className="h-10 w-10 sm:h-9 sm:w-9 rounded-xl bg-muted/20 hover:bg-primary/10 hover:text-primary transition-all"
                                                 >
-                                                    <Pencil size={16} />
+                                                    <Pencil size={18} className="sm:w-4 sm:h-4" />
                                                 </Button>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => handleDeleteClick(student)}
-                                                    className="h-9 w-9 rounded-xl bg-muted/20 hover:bg-destructive/10 hover:text-destructive transition-all"
+                                                    className="h-10 w-10 sm:h-9 sm:w-9 rounded-xl bg-muted/20 hover:bg-destructive/10 hover:text-destructive transition-all"
                                                 >
-                                                    <Trash2 size={16} />
+                                                    <Trash2 size={18} className="sm:w-4 sm:h-4" />
                                                 </Button>
                                             </div>
                                         </div>
