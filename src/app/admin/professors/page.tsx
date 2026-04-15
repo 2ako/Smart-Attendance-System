@@ -122,7 +122,7 @@ export default function AdminProfessorsDashboard() {
                     {/* Header */}
                     <header className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div>
-                            <h1 className="text-4xl font-black tracking-tight uppercase text-primary mb-2">
+                            <h1 id="professors-title" className="text-4xl font-black tracking-tight uppercase text-primary mb-2">
                                 {t("manage_professors")}
                             </h1>
                             <p className="text-muted-foreground font-medium flex items-center gap-2">

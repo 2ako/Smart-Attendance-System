@@ -259,7 +259,7 @@ input::-webkit-credentials-auto-fill-button {
 }
 
 @media (max-width: 768px) {
-  h1 .text-4xl {
+  #professors-title {
     margin: 25px;
   }
 }
