@@ -257,3 +257,9 @@ input::-webkit-credentials-auto-fill-button {
   display: none !important;
   pointer-events: none;
 }
+
+@media (max-width: 768px) {
+  h1 .text-4xl {
+    margin: 25px;
+  }
+}
