@@ -106,17 +106,25 @@ export default function ProfessorDashboard() {
 
     // ── Polling Logics ──────────────────────────────────────────
 
-    // 1. Session Detection Polling (Runs when no active session is open)
+    // 1. Session Life-cycle Polling (Detects Opening & Closing via ESP32)
     const { data: profileData } = usePolling<any>({
-        url: !isSessionActive ? "/api/prof/profile" : null,
+        url: "/api/prof/profile",
         interval: 3000,
-        enabled: !isSessionActive && !!user?.id,
+        enabled: !!user?.id,
     });
 
     useEffect(() => {
+        if (!profileData) return; // Wait for first fetch result
+
+        // A. Detection of Session OPENED via ESP32
         if (profileData?.activeSession && !isSessionActive) {
             console.log("Real-time: Active session detected via polling");
             setSession(profileData.activeSession);
+        }
+        // B. Detection of Session CLOSED via ESP32 (or expiration)
+        else if (!profileData?.activeSession && isSessionActive) {
+            console.log("Real-time: Session closure detected via polling");
+            setSession(null);
         }
     }, [profileData, isSessionActive]);
 

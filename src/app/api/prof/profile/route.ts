@@ -27,6 +27,12 @@ export async function GET() {
         return NextResponse.json({
             professor,
             activeSession: activeSessions && activeSessions.length > 0 ? activeSessions[0] : null
+        }, {
+            headers: {
+                "Cache-Control": "no-store, max-age=0, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
         });
     } catch (error: any) {
         console.error("Error fetching professor profile:", error);

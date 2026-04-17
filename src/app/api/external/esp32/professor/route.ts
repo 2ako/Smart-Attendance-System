@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
         }
 
         // ── 5. Schedule Detection ─────────────────────────────────────
-        // Use 'sall' (hall name) from ESP32 or fallback to device room
         const roomName = sall || device.room?.name;
         if (!roomName) {
             return NextResponse.json(
@@ -79,7 +78,6 @@ export async function POST(req: NextRequest) {
         }
 
         // ── 6. Session Management ─────────────────────────────────────
-        // Check for existing open session for this schedule
         const existingSession = await sanityClient.fetch(
             `*[_type == "session" && schedule._ref == $scheduleId && status == "open" && dateTime(endTime) > dateTime(now())][0]`,
             { scheduleId: currentSchedule._id }
