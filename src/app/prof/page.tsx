@@ -102,12 +102,29 @@ export default function ProfessorDashboard() {
     }, [user?.id]);
 
     const sessionId = session?._id || null;
+    const isSessionActive = session?.status === "open";
 
-    // ── Polling Logic ──────────────────────────────────────────
+    // ── Polling Logics ──────────────────────────────────────────
+
+    // 1. Session Detection Polling (Runs when no active session is open)
+    const { data: profileData } = usePolling<any>({
+        url: !isSessionActive ? "/api/prof/profile" : null,
+        interval: 3000,
+        enabled: !isSessionActive && !!user?.id,
+    });
+
+    useEffect(() => {
+        if (profileData?.activeSession && !isSessionActive) {
+            console.log("Real-time: Active session detected via polling");
+            setSession(profileData.activeSession);
+        }
+    }, [profileData, isSessionActive]);
+
+    // 2. Attendance Data Polling (Runs when a session is active)
     const { data: attendanceData, error: pollingError } = usePolling<AttendanceRecord[]>({
         url: sessionId ? `/api/attendance?sessionId=${sessionId}` : null,
         interval: 3000,
-        enabled: session?.status === "open",
+        enabled: isSessionActive,
         transform: (res) => res.attendance || []
     });
 
