@@ -92,13 +92,14 @@ export async function PATCH(req: NextRequest) {
 
                     // Mark all absences on the specified dates
                     if (justification.justifiedDates && justification.justifiedDates.length > 0) {
-                        // Find all absent records for this student on these dates
-                        // We use count() == 0 or similar but here we need the IDs to patch them.
-                        // Sanity doesn't support patch-by-query easily in transactions without knowing IDs
-                        // So we fetch the IDs first.
-                        const dateFilters = justification.justifiedDates.map((d: string) => `timestamp match "${d}*"`).join(" || ");
-                        const query = `*[_type == "attendance" && student._ref == $studentId && status == "absent" && (${dateFilters})]{ _id }`;
-                        const recordsToJustify = await sanityClient.fetch(query, { studentId: justification.student._id });
+                        const allAbsentRecords = await sanityClient.fetch(
+                            `*[_type == "attendance" && student._ref == $studentId && status == "absent"]{ _id, timestamp }`,
+                            { studentId: justification.student._id }
+                        );
+
+                        const recordsToJustify = allAbsentRecords.filter((record: any) =>
+                            justification.justifiedDates.some((d: string) => record.timestamp.startsWith(d))
+                        );
 
                         recordsToJustify.forEach((record: any) => {
                             transaction.patch(record._id, { set: { isJustified: true } });

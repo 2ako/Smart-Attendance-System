@@ -25,13 +25,23 @@ export async function GET(req: NextRequest) {
         const status = searchParams.get("status");
         const isJustified = searchParams.get("isJustified");
 
+        let targetStudentId = studentId;
+        // Map userId to student._id if a student requested their own records using their user.id
+        if (user && user.role === "student" && studentId === user.id) {
+            const { getStudentByUserId } = await import("@/lib/sanity/queries");
+            const studentDoc = await sanityClient.fetch(getStudentByUserId, { userId: user.id });
+            if (studentDoc && studentDoc._id) {
+                targetStudentId = studentDoc._id;
+            }
+        }
+
         let query = `*[_type == "attendance" && student._ref == $studentId`;
         if (status) query += ` && status == "${status}"`;
         if (isJustified === "true") query += ` && isJustified == true`;
         if (isJustified === "false") query += ` && (isJustified == false || !defined(isJustified))`;
         query += `]{ ..., session->{ ..., schedule->{ ..., subject->{ name, code }, room } } } | order(timestamp desc)`;
 
-        const attendance = await sanityClient.fetch(query, { studentId });
+        const attendance = await sanityClient.fetch(query, { studentId: targetStudentId });
         return NextResponse.json({ attendance });
     }
 

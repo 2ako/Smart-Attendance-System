@@ -17,6 +17,7 @@ import {
     Plus,
     Trash2,
     MapPin,
+    ShieldCheck,
 } from "lucide-react";
 import { AcademicStructureManager } from "@/components/admin/academic-structure-manager";
 import { StudentDialog } from "@/components/admin/student-dialog";
@@ -31,7 +32,7 @@ export default function AdminDashboard() {
     const isSuperAdmin = user && (user as any).role === "admin" && !(user as any).studyField;
 
     const [students, setStudents] = useState<any[]>([]);
-    const [stats, setStats] = useState({ students: 0, devices: 0, rooms: 0, subjects: 0, admins: 0, professors: 0 });
+    const [stats, setStats] = useState({ students: 0, devices: 0, rooms: 0, subjects: 0, admins: 0, professors: 0, justifiedAbsences: 0 });
     const [searchTerm, setSearchTerm] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
@@ -155,12 +156,13 @@ export default function AdminDashboard() {
                         </div>
 
                         {/* ── Global Stats Grid ───────────────────────────────── */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 animate-enter [animation-delay:100ms] text-start">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12 animate-enter [animation-delay:100ms] text-start">
                             {[
                                 { title: t("total_students_count"), value: stats.students, icon: <Users size={24} />, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" },
                                 { title: t("faculty_staff"), value: stats.professors, icon: <Fingerprint size={24} />, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" },
                                 { title: t("professors"), value: stats.admins, icon: <Shield size={24} />, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
                                 { title: t("global_subjects"), value: stats.subjects, icon: <BookOpen size={24} />, color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+                                { title: t("justified_absences") || "Justified Absences", value: stats.justifiedAbsences, icon: <ShieldCheck size={24} />, color: "text-green-500", bg: "bg-green-500/10", border: "border-green-500/20" },
                             ].map((s, i) => (
                                 <Card key={i} className="rounded-3xl border-border bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden relative text-start">
                                     <div className={`absolute top-0 ltr:right-0 rtl:left-0 p-8 opacity-10 ${s.color} transform ltr:translate-x-4 rtl:-translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-500 text-start`}>
@@ -258,12 +260,13 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-enter [animation-delay:100ms] text-start">
+                <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 animate-enter [animation-delay:100ms] text-start">
                     {[
                         { label: t("total_students"), value: stats.students, icon: <Users size={20} />, color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" },
                         { label: t("active_subjects"), value: stats.subjects, icon: <BookOpen size={20} />, color: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20" },
                         { label: t("devices"), value: stats.devices, icon: <Cpu size={20} />, color: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20" },
                         { label: t("rooms_assigned"), value: stats.rooms, icon: <MapPin size={20} />, color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" },
+                        { label: t("justified_absences") || "Justified Absences", value: stats.justifiedAbsences, icon: <ShieldCheck size={20} />, color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" },
                     ].map((stat) => (
                         <Card key={stat.label} className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden group hover:scale-[1.02] transition-all cursor-default text-start">
                             <CardContent className="p-6 text-start">

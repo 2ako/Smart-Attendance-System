@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
             subjects: sanityClient.fetch(getAllSubjects, params),
             professors: sanityClient.fetch(getAllProfessors, params),
             configs: sanityClient.fetch(getAllAcademicConfigs),
+            justifiedAbsencesCount: sanityClient.fetch(`count(*[_type == "attendance" && status == "absent" && isJustified == true ${sfCode ? '&& student->studyField == $studyFieldId' : ''}])`, { studyFieldId: params.studyFieldId })
         };
 
         // Extra info only for superadmin
@@ -59,6 +60,7 @@ export async function GET(req: NextRequest) {
             subjects,
             professors,
             configs,
+            justifiedAbsencesCount,
             admins
         ] = await Promise.all([
             commonPromises.students,
@@ -67,6 +69,7 @@ export async function GET(req: NextRequest) {
             commonPromises.subjects,
             commonPromises.professors,
             commonPromises.configs,
+            commonPromises.justifiedAbsencesCount,
             adminPromise
         ]);
 
@@ -77,6 +80,7 @@ export async function GET(req: NextRequest) {
                 rooms: rooms?.length || 0,
                 subjects: subjects?.length || 0,
                 professors: professors?.length || 0,
+                justifiedAbsences: justifiedAbsencesCount || 0,
                 admins: isSuperAdmin ? (admins?.length || 0) : 0,
             },
             academicConfigs: configs || [],
