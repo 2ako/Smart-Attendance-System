@@ -39,30 +39,32 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
             const attendanceQuery = `*[_type == "attendance" && session._ref == $sessionId]`;
             const attendanceSub = sanityClient
                 .listen(attendanceQuery, { sessionId }, { includeResult: true })
-                .subscribe(async (update: any) => {
-                    if (update.type === "mutation") {
-                        if (update.transition === "appear" || update.transition === "update") {
-                            // For appearances (new records), we often need the expanded student data
-                            // Sanity listen results are not expanded by default
-                            const record = update.result;
-                            if (record) {
-                                // Fetch expanded record with student info
-                                const fullRecord = await sanityClient.fetch(
-                                    `*[_id == $id][0]{
-                                        ...,
-                                        student->{ _id, firstName, lastName, matricule, studyField, specialty, degree, level, group, user->{ name } }
-                                    }`,
-                                    { id: record._id }
-                                );
-                                onEventRef.current({ 
-                                    type: "attendance_update", 
-                                    sessionId, 
-                                    record: fullRecord || record 
-                                });
+                .subscribe({
+                    next: async (update: any) => {
+                        if (update.type === "mutation") {
+                            if (update.transition === "appear" || update.transition === "update") {
+                                const record = update.result;
+                                if (record) {
+                                    const fullRecord = await sanityClient.fetch(
+                                        `*[_id == $id][0]{
+                                            ...,
+                                            student->{ _id, firstName, lastName, matricule, studyField, specialty, degree, level, group, user->{ name } }
+                                        }`,
+                                        { id: record._id }
+                                    );
+                                    onEventRef.current({ 
+                                        type: "attendance_update", 
+                                        sessionId, 
+                                        record: fullRecord || record 
+                                    });
+                                }
+                            } else if (update.transition === "disappear") {
+                                onEventRef.current({ type: "attendance_delete", id: update.documentId, sessionId });
                             }
-                        } else if (update.transition === "disappear") {
-                            onEventRef.current({ type: "attendance_delete", id: update.documentId, sessionId });
                         }
+                    },
+                    error: (err) => {
+                        console.error("Sanity Listener Error (Attendance):", err);
                     }
                 });
             subscriptions.push(attendanceSub);
@@ -71,9 +73,14 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
             const sessionQuery = `*[_type == "session" && _id == $sessionId]`;
             const sessionSub = sanityClient
                 .listen(sessionQuery, { sessionId }, { includeResult: true })
-                .subscribe((update: any) => {
-                    if (update.type === "mutation" && update.result) {
-                        onEventRef.current({ type: "session_update", session: update.result });
+                .subscribe({
+                    next: (update: any) => {
+                        if (update.type === "mutation" && update.result) {
+                            onEventRef.current({ type: "session_update", session: update.result });
+                        }
+                    },
+                    error: (err) => {
+                        console.error("Sanity Listener Error (Session):", err);
                     }
                 });
             subscriptions.push(sessionSub);
@@ -84,9 +91,14 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
             const newSessionQuery = `*[_type == "session" && professor._ref == $professorId && status == "open"]`;
             const newSessionSub = sanityClient
                 .listen(newSessionQuery, { professorId }, { includeResult: true })
-                .subscribe((update: any) => {
-                    if (update.type === "mutation" && update.transition === "appear" && update.result) {
-                        onEventRef.current({ type: "session_update", session: update.result });
+                .subscribe({
+                    next: (update: any) => {
+                        if (update.type === "mutation" && update.transition === "appear" && update.result) {
+                            onEventRef.current({ type: "session_update", session: update.result });
+                        }
+                    },
+                    error: (err) => {
+                        console.error("Sanity Listener Error (New Session):", err);
                     }
                 });
             subscriptions.push(newSessionSub);

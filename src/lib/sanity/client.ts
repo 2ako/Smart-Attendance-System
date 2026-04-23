@@ -9,7 +9,8 @@ export const sanityClient = createClient({
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
     apiVersion: "2024-01-01",
     useCdn: false, // We need real-time data
-    token: process.env.SANITY_API_TOKEN,
+    // Only use token on server-side to avoid exposing it and to fix client-side listener issues on Vercel
+    token: typeof window === "undefined" ? process.env.SANITY_API_TOKEN : undefined,
 });
 
 // Read-only client for public queries
