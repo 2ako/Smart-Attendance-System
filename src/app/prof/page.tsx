@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useAuth } from "@/hooks/use-auth";
-import { usePolling } from "@/hooks/use-polling";
+import { useRealtime } from "@/hooks/use-realtime";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table,
@@ -77,66 +77,85 @@ export default function ProfessorDashboard() {
     const { user } = useAuth();
     const [professor, setProfessor] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
+    const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // 1. Initial Profile & Session Fetch
+    // 1. Initial Profile & Session & Attendance Fetch
     useEffect(() => {
-        async function loadProfile() {
+        async function loadInitialData() {
             if (!user?.id) return;
             try {
+                // Fetch Profile and Active Session
                 const res = await fetch("/api/prof/profile");
                 if (res.ok) {
                     const data = await res.json();
                     setProfessor(data.professor);
+                    
                     if (data.activeSession) {
                         setSession(data.activeSession);
+                        
+                        // Fetch initial attendance for the active session
+                        const attRes = await fetch(`/api/attendance?sessionId=${data.activeSession._id}`);
+                        if (attRes.ok) {
+                            const attData = await attRes.json();
+                            setAttendance(attData.attendance || []);
+                        }
                     }
                 }
             } catch (error) {
-                console.error("Error loading professor profile:", error);
+                console.error("Error loading initial dashboard data:", error);
             } finally {
                 setIsLoading(false);
             }
         }
-        loadProfile();
+        loadInitialData();
     }, [user?.id]);
 
     const sessionId = session?._id || null;
+    const professorId = professor?._id || null;
     const isSessionActive = session?.status === "open";
 
-    // ── Polling Logics ──────────────────────────────────────────
-
-    // 1. Session Life-cycle Polling (Detects Opening & Closing via ESP32)
-    const { data: profileData } = usePolling<any>({
-        url: "/api/prof/profile",
-        interval: 3000,
+    // ── Real-time Updates via Sanity Listeners ────────────────────────
+    useRealtime({
         enabled: !!user?.id,
+        sessionId,
+        professorId,
+        onEvent: (event) => {
+            console.log("Real-time event received:", event);
+
+            switch (event.type) {
+                case "attendance_update":
+                    if (event.sessionId === sessionId) {
+                        setAttendance((prev) => {
+                            const exists = prev.some((r) => r._id === event.record._id);
+                            if (exists) return prev.map((r) => (r._id === event.record._id ? event.record : r));
+                            return [event.record, ...prev];
+                        });
+                    }
+                    break;
+
+                case "attendance_delete":
+                    if (event.sessionId === sessionId) {
+                        setAttendance((prev) => prev.filter((r) => r._id !== event.id));
+                    }
+                    break;
+
+                case "session_update":
+                    // If it's the current session or we don't have one, update it
+                    if (!sessionId || event.session._id === sessionId) {
+                        setSession(event.session.status === "open" ? event.session : null);
+                        // Clear attendance if session closed
+                        if (event.session.status !== "open") {
+                            setAttendance([]);
+                        }
+                    } else if (event.session.status === "open") {
+                        // A new session started (maybe via ESP32)
+                        setSession(event.session);
+                    }
+                    break;
+            }
+        },
     });
-
-    useEffect(() => {
-        if (!profileData) return; // Wait for first fetch result
-
-        // A. Detection of Session OPENED via ESP32
-        if (profileData?.activeSession && !isSessionActive) {
-            console.log("Real-time: Active session detected via polling");
-            setSession(profileData.activeSession);
-        }
-        // B. Detection of Session CLOSED via ESP32 (or expiration)
-        else if (!profileData?.activeSession && isSessionActive) {
-            console.log("Real-time: Session closure detected via polling");
-            setSession(null);
-        }
-    }, [profileData, isSessionActive]);
-
-    // 2. Attendance Data Polling (Runs when a session is active)
-    const { data: attendanceData, error: pollingError } = usePolling<AttendanceRecord[]>({
-        url: sessionId ? `/api/attendance?sessionId=${sessionId}` : null,
-        interval: 3000,
-        enabled: isSessionActive,
-        transform: (res) => res.attendance || []
-    });
-
-    const attendance = attendanceData || [];
 
     const handleCloseSession = async () => {
         if (!sessionId) return;
@@ -204,7 +223,7 @@ export default function ProfessorDashboard() {
             });
             if (res.ok) {
                 setSelectedStudentId("");
-                // Polling will update list
+                // Real-time SSE will update the list automatically
             }
         } catch (err) {
             console.error("Failed to add attendance:", err);
@@ -215,7 +234,7 @@ export default function ProfessorDashboard() {
         try {
             const res = await fetch(`/api/attendance?id=${id}`, { method: "DELETE" });
             if (res.ok) {
-                // Polling will update the list
+                // Real-time SSE will update the list automatically
             }
         } catch (err) {
             console.error("Failed to delete attendance:", err);
@@ -316,13 +335,6 @@ export default function ProfessorDashboard() {
                         )}
                     </div>
                 </div>
-
-                {pollingError && (
-                    <div className="mb-6 flex items-center gap-2 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-destructive animate-enter text-start">
-                        <AlertCircle size={18} />
-                        <span className="text-sm font-semibold">{t("error")}</span>
-                    </div>
-                )}
 
                 <div className="mb-10 grid grid-cols-1 gap-8 lg:grid-cols-3 text-start">
                     {isLoading ? (

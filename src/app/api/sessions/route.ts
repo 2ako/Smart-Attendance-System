@@ -146,11 +146,17 @@ export async function PUT(req: NextRequest) {
         if (!session) return NextResponse.json({ message: "Session not found" }, { status: 404 });
 
         const currentEnd = new Date(session.endTime);
-        const newEnd = new Date(currentEnd.getTime() + (extraMinutes || 5) * 60 * 1000);
+        const minutesToExtend = extraMinutes || 10;
+        const newEnd = new Date(currentEnd.getTime() + minutesToExtend * 60 * 1000);
+        
         const updated = await sanityClient
             .patch(sessionId)
-            .set({ endTime: newEnd.toISOString(), duration: session.duration + (extraMinutes || 5) })
+            .set({ 
+                endTime: newEnd.toISOString(), 
+                duration: (session.duration || 90) + minutesToExtend 
+            })
             .commit();
+
         return NextResponse.json({ session: updated });
     }
 

@@ -116,20 +116,18 @@ export async function POST(req: NextRequest) {
         markedBy: "manual",
     });
 
-    // Notify student
-    try {
-        await sanityClient.create({
-            _type: "notification",
-            recipient: { _type: "reference", _ref: studentId },
-            type: `attendance_${status}`,
-            title: `Attendance: ${status.charAt(0).toUpperCase() + status.slice(1)}`,
-            message: `Your professor has marked you as ${status} in your class.`,
-            isRead: false,
-            createdAt: now,
-        });
-    } catch (notifErr) {
+    // ── Notify student (fire-and-forget) ─────────────────────────
+    sanityClient.create({
+        _type: "notification",
+        recipient: { _type: "reference", _ref: studentId },
+        type: `attendance_${status}`,
+        title: `Attendance: ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+        message: `Your professor has marked you as ${status} in your class.`,
+        isRead: false,
+        createdAt: now,
+    }).catch((notifErr: unknown) => {
         console.error("Failed to create manual attendance notification:", notifErr);
-    }
+    });
 
     return NextResponse.json({ attendance }, { status: 201 });
 }
@@ -143,5 +141,6 @@ export async function DELETE(req: NextRequest) {
     const id = new URL(req.url).searchParams.get("id");
     if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
     await sanityClient.delete(id);
+
     return NextResponse.json({ message: "Attendance record deleted" });
 }

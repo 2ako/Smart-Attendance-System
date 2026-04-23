@@ -1,0 +1,99 @@
+// ============================================================
+// useRealtime Hook — Sanity Listen-based real-time updates
+// ============================================================
+// Replaces SSE. Connects directly to Sanity's Real-time Edge
+// to listen for document changes in attendance and sessions.
+
+"use client";
+
+import { useEffect, useRef } from "react";
+import { sanityClient } from "@/lib/sanity/client";
+
+export type RealtimeEvent =
+    | { type: "attendance_update"; sessionId: string; record: any }
+    | { type: "attendance_delete"; id: string; sessionId: string }
+    | { type: "session_update"; session: any };
+
+interface UseRealtimeOptions {
+    /** Called whenever a document change is detected */
+    onEvent: (event: RealtimeEvent) => void;
+    /** Current active session ID */
+    sessionId?: string | null;
+    /** Current professor ID (to detect new sessions) */
+    professorId?: string | null;
+    /** Set to false to skip connecting */
+    enabled?: boolean;
+}
+
+export function useRealtime({ onEvent, sessionId, professorId, enabled = true }: UseRealtimeOptions) {
+    const onEventRef = useRef(onEvent);
+    onEventRef.current = onEvent;
+
+    useEffect(() => {
+        if (!enabled) return;
+
+        const subscriptions: any[] = [];
+
+        // 1. Listen for Attendance changes (New/Update/Delete)
+        if (sessionId) {
+            const attendanceQuery = `*[_type == "attendance" && session._ref == $sessionId]`;
+            const attendanceSub = sanityClient
+                .listen(attendanceQuery, { sessionId }, { includeResult: true })
+                .subscribe(async (update: any) => {
+                    if (update.type === "mutation") {
+                        if (update.transition === "appear" || update.transition === "update") {
+                            // For appearances (new records), we often need the expanded student data
+                            // Sanity listen results are not expanded by default
+                            const record = update.result;
+                            if (record) {
+                                // Fetch expanded record with student info
+                                const fullRecord = await sanityClient.fetch(
+                                    `*[_id == $id][0]{
+                                        ...,
+                                        student->{ _id, firstName, lastName, matricule, studyField, specialty, degree, level, group, user->{ name } }
+                                    }`,
+                                    { id: record._id }
+                                );
+                                onEventRef.current({ 
+                                    type: "attendance_update", 
+                                    sessionId, 
+                                    record: fullRecord || record 
+                                });
+                            }
+                        } else if (update.transition === "disappear") {
+                            onEventRef.current({ type: "attendance_delete", id: update.documentId, sessionId });
+                        }
+                    }
+                });
+            subscriptions.push(attendanceSub);
+
+            // 2. Listen for current Session changes (Close/Extend)
+            const sessionQuery = `*[_type == "session" && _id == $sessionId]`;
+            const sessionSub = sanityClient
+                .listen(sessionQuery, { sessionId }, { includeResult: true })
+                .subscribe((update: any) => {
+                    if (update.type === "mutation" && update.result) {
+                        onEventRef.current({ type: "session_update", session: update.result });
+                    }
+                });
+            subscriptions.push(sessionSub);
+        }
+
+        // 3. Listen for NEW sessions opened by this professor (if no session active)
+        if (professorId && !sessionId) {
+            const newSessionQuery = `*[_type == "session" && professor._ref == $professorId && status == "open"]`;
+            const newSessionSub = sanityClient
+                .listen(newSessionQuery, { professorId }, { includeResult: true })
+                .subscribe((update: any) => {
+                    if (update.type === "mutation" && update.transition === "appear" && update.result) {
+                        onEventRef.current({ type: "session_update", session: update.result });
+                    }
+                });
+            subscriptions.push(newSessionSub);
+        }
+
+        return () => {
+            subscriptions.forEach((sub) => sub.unsubscribe());
+        };
+    }, [enabled, sessionId, professorId]);
+}
