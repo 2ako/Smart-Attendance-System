@@ -25,6 +25,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { AssignmentDialog } from "@/components/prof/assignment-dialog";
 import { SubmissionsReviewDialog } from "@/components/prof/submissions-review-dialog";
+import { RequestMakeUpDialog } from "@/components/prof/request-makeup-dialog";
 import { DeleteDialog } from "@/components/admin/delete-dialog";
 import {
     BookOpen,
@@ -63,6 +64,8 @@ export default function MyClassesPage() {
     const [classAssignments, setClassAssignments] = useState<any[]>([]);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isMakeUpDialogOpen, setIsMakeUpDialogOpen] = useState(false);
+    const [selectedSchedule, setSelectedSchedule] = useState<any>(null);
 
     const loadData = async () => {
         if (!user?.id) return;
@@ -274,6 +277,17 @@ export default function MyClassesPage() {
                                                     <FileText size={14} />
                                                     {t("manage_assignments")} ({classAssignments.filter((a: any) => a.subject?._id === schedule.subject?._id).length})
                                                 </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => {
+                                                        setSelectedSchedule(schedule);
+                                                        setIsMakeUpDialogOpen(true);
+                                                    }}
+                                                    className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 border-primary/20 text-primary hover:bg-primary/5 transition-all text-start"
+                                                >
+                                                    <Calendar size={14} />
+                                                    {t("request_makeup")}
+                                                </Button>
                                             </div>
                                         )}
                                     </CardFooter>
@@ -401,6 +415,13 @@ export default function MyClassesPage() {
                     open={isSubmissionReviewOpen}
                     onOpenChange={setIsSubmissionReviewOpen}
                     assignment={selectedAssignment}
+                />
+
+                <RequestMakeUpDialog
+                    open={isMakeUpDialogOpen}
+                    onOpenChange={setIsMakeUpDialogOpen}
+                    schedule={selectedSchedule}
+                    professorId={professor?._id}
                 />
 
                 <DeleteDialog

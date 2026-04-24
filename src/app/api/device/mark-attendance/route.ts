@@ -33,11 +33,14 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: false, error: "Session not active or expired" }, { status: 400 });
     }
 
-    // Fetch Subject details for validation
+    // Fetch Subject details for validation (Handles both regular and make-up sessions)
     const sessionWithSubject = await sanityClient.fetch(
         `*[_type == "session" && _id == $id][0]{
             ...,
-            "subject": schedule->subject->{ type, level, specialty, group, studyField }
+            "subject": coalesce(
+                schedule->subject->{ type, level, specialty, group, studyField },
+                subject->{ type, level, specialty, group, studyField }
+            )
         }`,
         { id: sessionId }
     );

@@ -21,7 +21,9 @@ export async function GET(req: NextRequest) {
         const session = await sanityClient.fetch(
             `*[_type == "session" && _id == $id][0]{
         ...,
-        schedule->{ ..., subject->{ name, code }, room->{ name, building } }
+        "schedule": schedule->{ ..., subject->{ name, code }, room->{ name, building } },
+        "directSubject": subject->{ name, code },
+        "roomName": coalesce(schedule->room->name, room)
       }`,
             { id: sessionId }
         );
@@ -50,31 +52,48 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    const { scheduleId, duration = 90 } = await req.json();
+    const { scheduleId, requestId, duration = 90 } = await req.json();
 
     const professor = await sanityClient.fetch(getProfessorByUserId, { userId: user!.id });
     if (!professor) {
         return NextResponse.json({ message: "Professor profile not found" }, { status: 404 });
     }
 
-    // Prevent duplicate open sessions for same schedule
-    const existing = await sanityClient.fetch(getActiveSessionBySchedule, { scheduleId });
-    if (existing) {
-        return NextResponse.json({ message: "Session already active", sessionId: existing._id }, { status: 400 });
-    }
-
     const now = new Date();
     const endTime = new Date(now.getTime() + duration * 60 * 1000);
 
-    const session = await sanityClient.create({
+    const sessionDoc: any = {
         _type: "session",
-        schedule: { _type: "reference", _ref: scheduleId },
         professor: { _type: "reference", _ref: professor._id },
         status: "open",
         startTime: now.toISOString(),
         endTime: endTime.toISOString(),
         duration,
-    });
+    };
+
+    if (requestId) {
+        // Opening a make-up class manually
+        const makeupRequest = await sanityClient.fetch(`*[_type == "makeUpRequest" && _id == $id][0]{ subject, type, room }`, { id: requestId });
+        if (!makeupRequest) return NextResponse.json({ message: "Make-up request not found" }, { status: 404 });
+        
+        sessionDoc.isMakeUp = true;
+        sessionDoc.subject = makeupRequest.subject;
+        sessionDoc.type = makeupRequest.type;
+        sessionDoc.room = makeupRequest.room;
+    } else {
+        // Prevent duplicate open sessions for same schedule
+        const existing = await sanityClient.fetch(getActiveSessionBySchedule, { scheduleId });
+        if (existing) {
+            return NextResponse.json({ message: "Session already active", sessionId: existing._id }, { status: 400 });
+        }
+        sessionDoc.schedule = { _type: "reference", _ref: scheduleId };
+    }
+
+    const session = await sanityClient.create(sessionDoc);
+
+    if (requestId) {
+        await sanityClient.patch(requestId).set({ session: { _type: "reference", _ref: session._id } }).commit();
+    }
 
     return NextResponse.json({ session }, { status: 201 });
 }
@@ -90,7 +109,10 @@ export async function PUT(req: NextRequest) {
     if (action === "close") {
         const session = await sanityClient.fetch(`*[_type == "session" && _id == $id][0]{
             ...,
-            "subject": schedule->subject->{ level, specialty, group, studyField }
+            "subject": coalesce(
+                schedule->subject->{ level, specialty, group, studyField },
+                subject->{ level, specialty, group, studyField }
+            )
         }`, { id: sessionId });
 
         if (!session) return NextResponse.json({ message: "Session not found" }, { status: 404 });

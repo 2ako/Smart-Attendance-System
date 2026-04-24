@@ -20,6 +20,7 @@ import notification from "./notification";
 import academicConfig from "./academicConfig";
 import studyField from "./studyField";
 import systemConfig from "./systemConfig";
+import makeUpRequest from "./makeUpRequest";
 
 export const schemaTypes = [
     user,
@@ -40,4 +41,5 @@ export const schemaTypes = [
     notification,
     studyField,
     systemConfig,
+    makeUpRequest,
 ];
