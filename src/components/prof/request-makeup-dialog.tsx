@@ -74,8 +74,8 @@ export function RequestMakeUpDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[500px] rounded-3xl border-none shadow-2xl p-0 bg-card overflow-hidden">
-                <div className="bg-primary/5 p-8 border-b border-primary/10">
+            <DialogContent className="sm:max-w-[500px] rounded-3xl border-none shadow-2xl p-0 bg-card flex flex-col max-h-[95vh] overflow-hidden">
+                <div className="bg-primary/5 p-8 border-b border-primary/10 shrink-0">
                     <DialogHeader>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 font-mono text-[10px] font-bold uppercase tracking-widest text-primary mb-4 w-fit">
                             <Calendar size={12} />
@@ -90,7 +90,7 @@ export function RequestMakeUpDialog({
                     </DialogHeader>
                 </div>
 
-                <div className="p-8 space-y-6">
+                <div className="flex-1 overflow-y-auto p-8 space-y-6 scrollbar-none">
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
@@ -136,7 +136,7 @@ export function RequestMakeUpDialog({
                     </div>
                 </div>
 
-                <DialogFooter className="p-8 pt-0">
+                <DialogFooter className="p-8 pt-0 shrink-0">
                     <div className="flex gap-3 w-full">
                         <Button
                             variant="outline"

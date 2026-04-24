@@ -98,8 +98,8 @@ export function CreateMakeUpSessionDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[550px] rounded-[2.5rem] border-none shadow-2xl p-0 bg-card overflow-hidden text-start">
-                <div className="bg-primary/5 p-8 border-b border-primary/10 text-start">
+            <DialogContent className="sm:max-w-[500px] rounded-[2.5rem] border-none shadow-2xl p-0 bg-card flex flex-col max-h-[95vh] overflow-hidden text-start">
+                <div className="bg-primary/5 p-8 border-b border-primary/10 text-start shrink-0">
                     <DialogHeader className="text-start">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 font-mono text-[10px] font-bold uppercase tracking-widest text-primary mb-4 w-fit text-start">
                             <CheckCircle2 size={12} className="text-primary" />
@@ -114,7 +114,7 @@ export function CreateMakeUpSessionDialog({
                     </DialogHeader>
                 </div>
 
-                <div className="p-8 space-y-6 text-start">
+                <div className="flex-1 overflow-y-auto p-8 space-y-6 text-start scrollbar-none">
                     {/* Request Summary Info */}
                     <div className="grid grid-cols-2 gap-4 text-start">
                         <div className="p-4 rounded-2xl bg-muted/30 border border-border/50 text-start">
@@ -177,7 +177,7 @@ export function CreateMakeUpSessionDialog({
                     </div>
                 </div>
 
-                <DialogFooter className="p-8 pt-0 text-start">
+                <DialogFooter className="p-8 pt-0 text-start shrink-0">
                     <div className="flex gap-3 w-full text-start">
                         <Button
                             variant="ghost"

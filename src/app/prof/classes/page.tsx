@@ -66,6 +66,7 @@ export default function MyClassesPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isMakeUpDialogOpen, setIsMakeUpDialogOpen] = useState(false);
     const [selectedSchedule, setSelectedSchedule] = useState<any>(null);
+    const [makeUpRequests, setMakeUpRequests] = useState<any[]>([]);
 
     const loadData = async () => {
         if (!user?.id) return;
@@ -79,6 +80,7 @@ export default function MyClassesPage() {
             const data = await res.json();
             setProfessor(data.professor);
             setSchedules(data.schedules || []);
+            setMakeUpRequests(data.makeUpRequests || []);
             setActiveSessions(data.activeSessions || []);
 
             // ── Fetch all assignments for this professor ────────────────
@@ -180,14 +182,15 @@ export default function MyClassesPage() {
                                 </CardContent>
                             </Card>
                         ))
-                    ) : schedules.length === 0 ? (
+                    ) : schedules.length === 0 && makeUpRequests.length === 0 ? (
                         <div className="col-span-full py-20 text-center space-y-4 bg-muted/20 border-2 border-dashed border-border/50 rounded-3xl text-start">
                             <Calendar size={48} className="mx-auto text-muted-foreground/30" />
                             <h3 className="text-xl font-bold text-muted-foreground text-start">{t("no_classes_assigned")}</h3>
                             <p className="text-sm text-muted-foreground/60 max-w-xs mx-auto font-medium text-start">{t("no_classes_desc")}</p>
                         </div>
                     ) : (
-                        schedules.map((schedule) => {
+                        <>
+                        {schedules.map((schedule) => {
                             const active = isClassActive(schedule._id);
                             const startTime = schedule.startTime || "00:00";
                             const endTime = schedule.endTime || "00:00";
@@ -293,7 +296,76 @@ export default function MyClassesPage() {
                                     </CardFooter>
                                 </Card>
                             );
-                        })
+                        })}
+
+                        {/* ── Make-up Classes ────────────────────────────────── */}
+                        {makeUpRequests.map((request) => {
+                            const active = activeSessions.some(session => session.isMakeUp && session.subject?._id === request.subject?._id && session.status === 'open');
+                            const startTime = request.requestedTime || "00:00";
+                            const requestedDate = new Date(request.requestedDate);
+                            
+                            return (
+                                <Card
+                                    key={request._id}
+                                    className={`group rounded-3xl border-none shadow-xl transition-all duration-300 hover:scale-[1.02] ${active ? 'ring-2 ring-primary bg-primary/5' : 'bg-card border-2 border-dashed border-primary/20'} text-start`}
+                                >
+                                    <CardHeader className="relative pb-4 text-start">
+                                        <div className="flex justify-between items-start mb-2 text-start">
+                                            <Badge variant="outline" className="rounded-lg px-2 py-0.5 text-[10px] font-black uppercase border-primary/40 text-primary bg-primary/5 flex items-center gap-1.5 text-start">
+                                                {request.subject?.code || "SUBJ"}
+                                                <span className="h-1 w-1 rounded-full bg-primary/40" />
+                                                <span className="opacity-70">{t("makeup_class")}</span>
+                                                <span className="h-1 w-1 rounded-full bg-primary/40" />
+                                                <span className="opacity-70">{t(`format_${(request.subject?.type || "lecture").toLowerCase()}`)}</span>
+                                            </Badge>
+                                            {active && (
+                                                <Badge className="bg-primary hover:bg-primary shadow-lg shadow-primary/20 animate-pulse rounded-lg px-2 py-0.5 text-[10px] font-black uppercase text-start">
+                                                    {t("live_now")}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <CardTitle className="text-xl font-black leading-tight text-foreground group-hover:text-primary transition-colors text-start">
+                                            {request.subject?.name || t("untitled_course")}
+                                        </CardTitle>
+                                        <CardDescription className="flex items-center gap-2 font-bold uppercase tracking-widest text-[10px] mt-1 text-start">
+                                            <MapPin size={10} className="text-primary" />
+                                            {request.room || t("room_tbd")}
+                                        </CardDescription>
+                                    </CardHeader>
+
+                                    <CardContent className="space-y-4 border-t border-border/50 pt-6 text-start">
+                                        <div className="grid grid-cols-2 gap-3 text-start">
+                                            <div className="p-3 rounded-2xl bg-primary/5 border border-primary/10 text-start">
+                                                <div className="flex items-center gap-2 mb-1 text-start">
+                                                    <Calendar size={12} className="text-primary/70" />
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-start">{t("date_label")}</span>
+                                                </div>
+                                                <p className="text-xs font-black text-foreground text-start">
+                                                    {requestedDate.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' })}
+                                                </p>
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-primary/5 border border-primary/10 text-start">
+                                                <div className="flex items-center gap-2 mb-1 text-start">
+                                                    <Clock size={12} className="text-primary/70" />
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-start">{t("time_label")}</span>
+                                                </div>
+                                                <p className="text-xs font-black text-foreground ltr:font-mono text-start">{startTime}</p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+
+                                    <CardFooter className="pt-2 pb-6 text-start">
+                                        <Button
+                                            onClick={() => router.push("/prof")}
+                                            className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 shadow-lg shadow-primary/20 text-start"
+                                        >
+                                            {active ? t("go_to_live_session") : t("check_on_local_server")} <ChevronRight size={14} />
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
+                            );
+                        })}
+                        </>
                     )}
                 </div>
 

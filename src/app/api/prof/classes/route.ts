@@ -9,7 +9,8 @@ import {
     getProfessorByUserId,
     getSchedulesByProfessor,
     getActiveSessionsByProfessor,
-    getSubjectsByProfessor
+    getSubjectsByProfessor,
+    getApprovedMakeUpRequestsByProfessor
 } from "@/lib/sanity/queries";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -26,18 +27,20 @@ export async function GET() {
             return NextResponse.json({ message: "Professor record not found" }, { status: 404 });
         }
 
-        // 2. Fetch schedules and active sessions
-        const [schedules, activeSessions, subjects] = await Promise.all([
+        // 2. Fetch schedules, active sessions, and makeup requests
+        const [schedules, activeSessions, subjects, makeUpRequests] = await Promise.all([
             sanityClient.fetch(getSchedulesByProfessor, { professorId: professor._id }),
             sanityClient.fetch(getActiveSessionsByProfessor, { professorId: professor._id }),
-            sanityClient.fetch(getSubjectsByProfessor, { professorId: professor._id })
+            sanityClient.fetch(getSubjectsByProfessor, { professorId: professor._id }),
+            sanityClient.fetch(getApprovedMakeUpRequestsByProfessor, { professorId: professor._id })
         ]);
 
         return NextResponse.json({
             professor,
             schedules: schedules || [],
             activeSessions: activeSessions || [],
-            subjects: subjects || []
+            subjects: subjects || [],
+            makeUpRequests: makeUpRequests || []
         });
     } catch (error: any) {
         console.error("Error fetching professor classes:", error);

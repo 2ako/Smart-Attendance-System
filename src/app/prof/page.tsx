@@ -306,31 +306,36 @@ export default function ProfessorDashboard() {
                             <Radio size={12} className={session?.status === "open" ? "animate-pulse" : ""} />
                             {!session ? t("no_active_session") : session.status === "open" ? t("session_active") : t("session_closed")}
                         </div>
-                        {session?.schedule?.subject && (
+                        {(session?.schedule?.subject || session?.subject) && (
                             <div className="flex items-center gap-2 text-start">
                                 <Badge variant="secondary" className="px-2 py-0.5 text-[10px] font-black uppercase border-none bg-primary/10 text-primary">
-                                    {session.schedule.subject.degree}
+                                    {(session?.schedule?.subject?.degree || session?.subject?.degree)}
                                 </Badge>
                                 <Badge variant="outline" className="px-2 py-0.5 text-[10px] font-black uppercase border-primary/20 text-primary">
-                                    {session.schedule.subject.level}
+                                    {(session?.schedule?.subject?.level || session?.subject?.level)}
                                 </Badge>
                                 <Badge variant="default" className="px-2 py-0.5 text-[10px] font-black uppercase shadow-sm">
-                                    {t(`format_${(session.schedule.subject.type || "lecture").toLowerCase()}`)}
+                                    {t(`format_${((session?.schedule?.subject?.type || session?.subject?.type) || "lecture").toLowerCase()}`)}
                                 </Badge>
+                                {session?.isMakeUp && (
+                                    <Badge className="px-2 py-0.5 text-[10px] font-black uppercase bg-amber-500 hover:bg-amber-600 text-white shadow-sm border-none">
+                                        {t("makeup_class")}
+                                    </Badge>
+                                )}
                             </div>
                         )}
                     </div>
                     <h1 className="text-4xl font-extrabold tracking-tight text-foreground text-start">
-                        {session?.schedule?.subject?.name || t("ready_to_start")}
+                        {session?.schedule?.subject?.name || session?.subject?.name || t("ready_to_start")}
                     </h1>
                     <div className="mt-2 flex items-center gap-3 text-start">
                         <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs text-start">
-                            {session?.schedule?.subject?.code && `${session.schedule.subject.code} • `}
-                            {session?.schedule?.room || t("awaiting_session_start")}
+                            {(session?.schedule?.subject?.code || session?.subject?.code) && `${session.schedule?.subject?.code || session?.subject?.code} • `}
+                            {session?.schedule?.room || session?.roomName || session?.room || t("awaiting_session_start")}
                         </p>
-                        {session?.schedule?.subject?.studyField && (
+                        {(session?.schedule?.subject?.studyField || session?.subject?.studyField) && (
                             <Badge variant="outline" className="h-5 px-2 text-[9px] font-bold uppercase tracking-tighter text-muted-foreground/60 border-primary/20 bg-muted/30">
-                                {session.schedule.subject.studyField}
+                                {session.schedule?.subject?.studyField || session?.subject?.studyField}
                             </Badge>
                         )}
                     </div>
@@ -469,7 +474,7 @@ export default function ProfessorDashboard() {
                                                             <SelectContent className="rounded-xl border-border text-start">
                                                                 {allStudents
                                                                     .filter(student => {
-                                                                        const sub = session?.schedule?.subject;
+                                                                        const sub = session?.schedule?.subject || session?.subject;
                                                                         const alreadyMarked = attendance.find(a => a.student?._id === student._id);
                                                                         if (alreadyMarked) return false;
                                                                         if (!sub) return true;

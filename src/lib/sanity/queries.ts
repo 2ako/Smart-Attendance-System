@@ -139,6 +139,11 @@ export const getSchedulesByProfessor = `*[_type == "schedule" && professor._ref 
   room
 } | order(day asc, startTime asc)`;
 
+export const getApprovedMakeUpRequestsByProfessor = `*[_type == "makeUpRequest" && professor._ref == $professorId && status == "approved"]{
+  ...,
+  subject->{ _id, name, code, type }
+} | order(requestedDate asc)`;
+
 // ── Rooms ─────────────────────────────────────────────────────
 export const getAllRooms = `*[_type == "room" && (!defined($studyField) || $studyField == "" || studyField match $studyField || studyField._ref == $studyFieldId)] | order(name asc)`;
 
