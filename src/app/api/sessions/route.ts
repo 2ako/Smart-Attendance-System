@@ -73,13 +73,14 @@ export async function POST(req: NextRequest) {
 
     if (requestId) {
         // Opening a make-up class manually
-        const makeupRequest = await sanityClient.fetch(`*[_type == "makeUpRequest" && _id == $id][0]{ subject, type, room }`, { id: requestId });
+        const makeupRequest = await sanityClient.fetch(`*[_type == "makeUpRequest" && _id == $id][0]{ subject, type, room, group }`, { id: requestId });
         if (!makeupRequest) return NextResponse.json({ message: "Make-up request not found" }, { status: 404 });
         
         sessionDoc.isMakeUp = true;
         sessionDoc.subject = makeupRequest.subject;
         sessionDoc.type = makeupRequest.type;
         sessionDoc.room = makeupRequest.room;
+        sessionDoc.group = makeupRequest.group;
     } else {
         // Prevent duplicate open sessions for same schedule
         const existing = await sanityClient.fetch(getActiveSessionBySchedule, { scheduleId });

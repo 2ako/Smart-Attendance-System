@@ -6,7 +6,7 @@
 export const getUserByUsername = `*[_type == "user" && (username == $username || email == $username)][0]{
   ...,
   "studyField": studyField
-}`;
+ Pal}`;
 
 export const getUserById = `*[_type == "user" && _id == $id][0]{
   ...,
@@ -214,6 +214,7 @@ export const getActiveSessionsByProfessor = `*[_type == "session" && professor._
   ...,
   "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, group, studyField }, subject->{ name, code, type, level, specialty, group, studyField }),
   "roomName": coalesce(schedule->room->name, room),
+  "group": coalesce(schedule->group, group),
   schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
 } | order(startTime desc)`;
 
@@ -221,6 +222,7 @@ export const getAllSessionsByProfessor = `*[_type == "session" && professor._ref
   ...,
   "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, group, studyField }, subject->{ name, code, type, level, specialty, group, studyField }),
   "roomName": coalesce(schedule->room->name, room),
+  "group": coalesce(schedule->group, group),
   schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room },
   "attendanceCount": count(*[_type == "attendance" && session._ref == ^._id])
 } | order(startTime desc)`;
@@ -229,6 +231,7 @@ export const getSessionById = `*[_type == "session" && _id == $sessionId][0]{
   ...,
   "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, group, studyField }, subject->{ name, code, type, level, specialty, group, studyField }),
   "roomName": coalesce(schedule->room->name, room),
+  "group": coalesce(schedule->group, group),
   schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
 }`;
 
@@ -349,4 +352,3 @@ export const getSubmissionsByAssignment = `*[_type == "submission" && assignment
 
 // ── Academic Configuration ────────────────────────────────────
 export const getAllAcademicConfigs = `*[_type == "academicConfig"] | order(level asc)`;
-

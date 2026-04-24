@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { professorId, subjectId, type, requestedDate, requestedTime, comment } = body;
+        const { professorId, subjectId, type, group, requestedDate, requestedTime, comment } = body;
 
         if (!professorId || !subjectId || !requestedDate || !requestedTime) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -54,9 +54,10 @@ export async function POST(req: NextRequest) {
             professor: { _type: "reference", _ref: professorId },
             subject: { _type: "reference", _ref: subjectId },
             type: type || "cour",
+            group: group || "all",
             requestedDate,
             requestedTime,
-            adminComment: comment,
+            professorComment: comment,
             status: "pending",
         });
 

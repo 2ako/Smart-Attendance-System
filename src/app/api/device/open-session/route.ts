@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
             `*[_type == "makeUpRequest" && professor._ref == $profId && room == $roomName && requestedDate == $today && status == "approved"][0]{
                 _id,
                 subject->{ _id, name },
-                type
+                type,
+                group
             }`,
             { profId: professor._id, roomName: device.room?.name, today }
         );
@@ -125,6 +126,7 @@ export async function POST(req: NextRequest) {
         sessionDoc.isMakeUp = true;
         sessionDoc.subject = { _type: "reference", _ref: makeupRequest.subject?._id };
         sessionDoc.type = makeupRequest.type;
+        sessionDoc.group = makeupRequest.group;
         sessionDoc.room = device.room?.name;
     } else {
         sessionDoc.schedule = { _type: "reference", _ref: scheduleId };

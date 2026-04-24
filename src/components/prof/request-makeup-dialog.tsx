@@ -33,6 +33,7 @@ export function RequestMakeUpDialog({
     const { t } = useTranslation();
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
+    const [group, setGroup] = useState("all");
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -51,6 +52,7 @@ export function RequestMakeUpDialog({
                     professorId,
                     subjectId: schedule?.subject?._id,
                     type: schedule?.subject?.type || "cour",
+                    group: group,
                     requestedDate: date,
                     requestedTime: time,
                     comment,
@@ -121,6 +123,25 @@ export function RequestMakeUpDialog({
                                 />
                             </div>
                         </div>
+
+                        {(schedule?.subject?.type === "td" || schedule?.subject?.type === "tp") && (
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                                    {t("makeup_group")}
+                                </Label>
+                                <select
+                                    value={group}
+                                    onChange={(e) => setGroup(e.target.value)}
+                                    className="w-full h-14 px-4 rounded-2xl border-none bg-muted/50 focus:ring-2 focus:ring-primary font-bold text-sm transition-all appearance-none"
+                                >
+                                    <option value="all">{t("all")}</option>
+                                    <option value="G1">G1</option>
+                                    <option value="G2">G2</option>
+                                    <option value="G3">G3</option>
+                                    <option value="G4">G4</option>
+                                </select>
+                            </div>
+                        )}
 
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">

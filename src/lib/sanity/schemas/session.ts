@@ -20,6 +20,7 @@ const session = {
         { name: "subject", title: "Direct Subject Reference", type: "reference", to: [{ type: "subject" }] }, // Used for make-up
         { name: "room", title: "Direct Room Reference", type: "string" }, // Used for make-up
         { name: "type", title: "Class Type", type: "string" }, // Used for make-up (cour, td, tp)
+        { name: "group", title: "Group", type: "string" }, // Used for make-up
     ],
 };
 export default session;

@@ -45,6 +45,11 @@ const makeUpRequest = {
             initialValue: "pending"
         },
         {
+            name: "professorComment",
+            title: "Professor's Comment",
+            type: "text"
+        },
+        {
             name: "adminComment",
             title: "Admin Comment",
             type: "text"
@@ -53,6 +58,13 @@ const makeUpRequest = {
             name: "room",
             title: "Assigned Room",
             type: "string" // Assigned upon approval
+        },
+        {
+            name: "group",
+            title: "Group",
+            type: "string",
+            options: { list: ["G1", "G2", "G3", "G4", "all"] },
+            initialValue: "all"
         },
         {
             name: "session",

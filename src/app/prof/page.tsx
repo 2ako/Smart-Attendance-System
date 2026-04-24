@@ -328,7 +328,7 @@ export default function ProfessorDashboard() {
                     <h1 className="text-4xl font-extrabold tracking-tight text-foreground text-start">
                         {session?.schedule?.subject?.name || session?.subject?.name || t("ready_to_start")}
                     </h1>
-                    <div className="mt-2 flex items-center gap-3 text-start">
+                    <div className="mt-2 flex flex-wrap items-center gap-3 text-start">
                         <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs text-start">
                             {(session?.schedule?.subject?.code || session?.subject?.code) && `${session.schedule?.subject?.code || session?.subject?.code} • `}
                             {session?.schedule?.room || session?.roomName || session?.room || t("awaiting_session_start")}
@@ -336,6 +336,16 @@ export default function ProfessorDashboard() {
                         {(session?.schedule?.subject?.studyField || session?.subject?.studyField) && (
                             <Badge variant="outline" className="h-5 px-2 text-[9px] font-bold uppercase tracking-tighter text-muted-foreground/60 border-primary/20 bg-muted/30">
                                 {session.schedule?.subject?.studyField || session?.subject?.studyField}
+                            </Badge>
+                        )}
+                        {session?.isMakeUp && (
+                            <Badge variant="outline" className="h-5 px-2 text-[9px] font-black uppercase tracking-widest text-amber-600 border-amber-500/30 bg-amber-500/10 border-dashed animate-pulse">
+                                {t("makeup_class")}
+                            </Badge>
+                        )}
+                        {session?.group && session.group !== "all" && (
+                            <Badge variant="outline" className="h-5 px-2 text-[9px] font-black uppercase tracking-widest text-primary border-primary/30 bg-primary/10">
+                                {t("group_prefix")} {session.group}
                             </Badge>
                         )}
                     </div>
@@ -495,7 +505,12 @@ export default function ProfessorDashboard() {
 
                                                                         // 3. Group match based on Type (TD/TP only)
                                                                         if (subType === "td" || subType === "tp") {
-                                                                            return student.group?.trim().toUpperCase() === sub.group?.trim().toUpperCase();
+                                                                            const sessionGroup = (session as any)?.group?.trim().toUpperCase();
+                                                                            const subGroup = sub.group?.trim().toUpperCase();
+                                                                            const targetGroup = sessionGroup || subGroup;
+                                                                            
+                                                                            if (targetGroup === "ALL") return true;
+                                                                            return student.group?.trim().toUpperCase() === targetGroup;
                                                                         }
 
                                                                         // For "Cours", all students from the Level/Specialty/StudyField match are eligible

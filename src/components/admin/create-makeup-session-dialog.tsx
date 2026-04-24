@@ -131,6 +131,22 @@ export function CreateMakeUpSessionDialog({
                             </div>
                             <p className="text-sm font-black text-foreground text-start">{request?.requestedTime}</p>
                         </div>
+                        {request?.group && (
+                            <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 text-start col-span-2">
+                                <div className="flex items-center gap-2 mb-1 text-start">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary text-start">{t("makeup_group")}</span>
+                                </div>
+                                <p className="text-sm font-black text-primary text-start">{request.group === 'all' ? t('all_groups_concerned') : request.group}</p>
+                            </div>
+                        )}
+                        {request?.professorComment && (
+                            <div className="p-4 rounded-2xl bg-muted/20 border border-border/30 text-start col-span-2">
+                                <div className="flex items-center gap-2 mb-1 text-start">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground text-start">{t("professor_comment")}</span>
+                                </div>
+                                <p className="text-xs font-medium text-muted-foreground italic text-start">"{request.professorComment}"</p>
+                            </div>
+                        )}
                     </div>
 
                     <div className="space-y-4 text-start">

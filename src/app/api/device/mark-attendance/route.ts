@@ -100,11 +100,17 @@ export async function POST(req: NextRequest) {
 
     // 3. Group match based on Type
     if (subType === "td" || subType === "tp") {
-        if (student.group?.trim().toUpperCase() !== subject.group?.trim().toUpperCase()) {
-            return NextResponse.json({
-                ok: false,
-                error: `Group mismatch: Your group (${student.group}) doesn't match session`
-            }, { status: 400 });
+        const sessionGroup = sessionWithSubject?.group?.trim().toUpperCase();
+        const subGroup = subject.group?.trim().toUpperCase();
+        const targetGroup = sessionGroup || subGroup;
+
+        if (targetGroup && targetGroup !== "ALL") {
+            if (student.group?.trim().toUpperCase() !== targetGroup) {
+                return NextResponse.json({
+                    ok: false,
+                    error: `Group mismatch: Your group (${student.group}) doesn't match session`
+                }, { status: 400 });
+            }
         }
     }
     // ──────────────────────────────────────────────────────────
