@@ -103,13 +103,13 @@ export default function MyClassesPage() {
         loadData();
     }, [user?.id]);
 
-    const handleStartSession = async (scheduleId: string) => {
-        setIsStartingSession(scheduleId);
+    const handleStartSession = async (scheduleId?: string, requestId?: string) => {
+        setIsStartingSession(scheduleId || requestId || "loading");
         try {
             const res = await fetch("/api/sessions", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ scheduleId, duration: 90 }), // Default 90 min
+                body: JSON.stringify({ scheduleId, requestId, duration: 90 }), // Default 90 min
             });
 
             if (!res.ok) {
@@ -355,12 +355,35 @@ export default function MyClassesPage() {
                                     </CardContent>
 
                                     <CardFooter className="pt-2 pb-6 text-start">
-                                        <Button
-                                            onClick={() => router.push("/prof")}
-                                            className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 shadow-lg shadow-primary/20 text-start"
-                                        >
-                                            {active ? t("go_to_live_session") : t("check_on_local_server")} <ChevronRight size={14} />
-                                        </Button>
+                                        {active ? (
+                                            <Button
+                                                onClick={() => router.push("/prof")}
+                                                className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 shadow-lg shadow-primary/20 text-start"
+                                            >
+                                                {t("go_to_live_session")} <ChevronRight size={14} />
+                                            </Button>
+                                        ) : (
+                                            <div className="flex flex-col gap-2 w-full text-start">
+                                                <Button
+                                                    onClick={() => handleStartSession(undefined, request._id)}
+                                                    disabled={isStartingSession !== null || process.env.NEXT_PUBLIC_IS_LOCAL_SERVER !== "true"}
+                                                    variant="outline"
+                                                    className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 text-start"
+                                                >
+                                                    {isStartingSession === request._id ? (
+                                                        <Loader2 size={16} className="animate-spin" />
+                                                    ) : (
+                                                        <Play size={14} fill="currentColor" />
+                                                    )}
+                                                    {t("start_session")}
+                                                </Button>
+                                                {process.env.NEXT_PUBLIC_IS_LOCAL_SERVER !== "true" && (
+                                                    <p className="text-[9px] text-destructive/70 font-bold uppercase text-center mt-1">
+                                                        {t("local_server_only_notice") || "Available only on local server"}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
                                     </CardFooter>
                                 </Card>
                             );
