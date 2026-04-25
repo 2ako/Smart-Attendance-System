@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const studyField = searchParams.get("studyField") || user?.studyField || "";
+    const rawStudyField = searchParams.get("studyField") || user?.studyField || "";
+    const studyField = typeof rawStudyField === 'object' && rawStudyField !== null ? (rawStudyField as any)._ref : rawStudyField;
     const level = searchParams.get("level") || "all";
     const specialty = searchParams.get("specialty") || "all";
     const group = searchParams.get("group") || "all";

@@ -90,7 +90,10 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
                                 }`,
                                 { id: update.result._id }
                             );
-                            onEventRef.current({ type: "session_update", session: fullSession || update.result });
+                            
+                            // Merge the latest mutation values to bypass eventual consistency delays in the fetch API
+                            const mergedSession = { ...fullSession, ...update.result };
+                            onEventRef.current({ type: "session_update", session: mergedSession });
                         }
                     },
                     error: (err) => {
