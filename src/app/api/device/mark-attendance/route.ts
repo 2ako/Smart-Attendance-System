@@ -80,35 +80,54 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Validation Logic ──────────────────────────────────────
-    const studentLevel = student.level?.trim().toUpperCase();
-    const subLevel = subject.level?.trim().toUpperCase();
-    const studentField = student.studyField?.trim().toLowerCase();
-    const subField = subject.studyField?.trim().toLowerCase();
-    const studentSpecialty = student.specialty?.trim().toLowerCase();
-    const subSpecialty = subject.specialty?.trim().toLowerCase();
-    const subType = subject.type?.trim().toLowerCase();
+    // Helper to extract string value from potential reference or nested object
+    const getString = (val: any) => {
+        if (!val) return "";
+        if (typeof val === "string") return val;
+        if (val.code) return val.code;
+        if (val.name) return val.name;
+        if (val.title) return val.title;
+        return "";
+    };
+
+    const studentLevel = getString(student.level).trim().toUpperCase();
+    const subLevel = getString(subject.level).trim().toUpperCase();
+    const studentField = getString(student.studyField).trim().toLowerCase();
+    const subField = getString(subject.studyField).trim().toLowerCase();
+    const studentSpecialty = getString(student.specialty).trim().toLowerCase();
+    const subSpecialty = getString(subject.specialty).trim().toLowerCase();
+    const subType = (subject.type || "").trim().toLowerCase();
 
     // 1. Level and StudyField MUST match always
-    if (studentLevel !== subLevel || studentField !== subField) {
-        return NextResponse.json({ ok: false, error: "Level or study field mismatch" }, { status: 400 });
+    const fieldMatch = studentField === subField || 
+                     (studentField.length > 2 && subField.startsWith(studentField)) ||
+                     (subField.length > 2 && studentField.startsWith(subField));
+
+    if (studentLevel !== subLevel || !fieldMatch) {
+        return NextResponse.json({ 
+            ok: false, 
+            error: `Level/Field mismatch: Student(${studentLevel}/${studentField}) vs Session(${subLevel}/${subField})` 
+        }, { status: 400 });
     }
 
     // 2. Specialty must match if defined on subject
-    if (subSpecialty && studentSpecialty !== subSpecialty) {
-        return NextResponse.json({ ok: false, error: "Specialty mismatch" }, { status: 400 });
+    if (subSpecialty && subSpecialty !== "all" && subSpecialty !== "none") {
+        if (studentSpecialty !== subSpecialty) {
+            return NextResponse.json({ ok: false, error: "Specialty mismatch" }, { status: 400 });
+        }
     }
 
     // 3. Group match based on Type
     if (subType === "td" || subType === "tp") {
-        const sessionGroup = sessionWithSubject?.group?.trim().toUpperCase();
-        const subGroup = subject.group?.trim().toUpperCase();
+        const sessionGroup = getString(sessionWithSubject?.group).trim().toUpperCase();
+        const subGroup = getString(subject.group).trim().toUpperCase();
         const targetGroup = sessionGroup || subGroup;
 
         if (targetGroup && targetGroup !== "ALL") {
             if (student.group?.trim().toUpperCase() !== targetGroup) {
                 return NextResponse.json({
                     ok: false,
-                    error: `Group mismatch: Your group (${student.group}) doesn't match session`
+                    error: `Group mismatch: Your group (${student.group}) doesn't match session (${targetGroup})`
                 }, { status: 400 });
             }
         }

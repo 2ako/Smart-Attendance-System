@@ -483,39 +483,56 @@ export default function ProfessorDashboard() {
                                                             </SelectTrigger>
                                                             <SelectContent className="rounded-xl border-border text-start">
                                                                 {allStudents
-                                                                    .filter(student => {
-                                                                        const sub = session?.schedule?.subject || session?.subject;
-                                                                        const alreadyMarked = attendance.find(a => a.student?._id === student._id);
-                                                                        if (alreadyMarked) return false;
-                                                                        if (!sub) return true;
+                                                                        .filter(student => {
+                                                                            const sub = session?.schedule?.subject || session?.subject;
+                                                                            const alreadyMarked = attendance.find(a => a.student?._id === student._id);
+                                                                            if (alreadyMarked) return false;
+                                                                            if (!sub) return true;
 
-                                                                        const studentLevel = student.level?.trim().toUpperCase();
-                                                                        const subLevel = sub.level?.trim().toUpperCase();
-                                                                        const studentField = student.studyField?.trim().toLowerCase();
-                                                                        const subField = sub.studyField?.trim().toLowerCase();
-                                                                        const studentSpecialty = student.specialty?.trim().toLowerCase();
-                                                                        const subSpecialty = sub.specialty?.trim().toLowerCase();
-                                                                        const subType = sub.type?.trim().toLowerCase();
+                                                                            // Helper to extract string value from potential reference or nested object
+                                                                            const getString = (val: any) => {
+                                                                                if (!val) return "";
+                                                                                if (typeof val === "string") return val;
+                                                                                if (val.code) return val.code;
+                                                                                if (val.name) return val.name;
+                                                                                if (val.title) return val.title;
+                                                                                return "";
+                                                                            };
 
-                                                                        // 1. Level and StudyField MUST match always
-                                                                        if (studentLevel !== subLevel || studentField !== subField) return false;
+                                                                            const studentLevel = getString(student.level).trim().toUpperCase();
+                                                                            const subLevel = getString(sub.level).trim().toUpperCase();
+                                                                            const studentField = getString(student.studyField).trim().toLowerCase();
+                                                                            const subField = getString(sub.studyField).trim().toLowerCase();
+                                                                            const studentSpecialty = getString(student.specialty).trim().toLowerCase();
+                                                                            const subSpecialty = getString(sub.specialty).trim().toLowerCase();
+                                                                            const subType = (sub.type || "").trim().toLowerCase();
 
-                                                                        // 2. Specialty must match if defined on subject
-                                                                        if (subSpecialty && studentSpecialty !== subSpecialty) return false;
-
-                                                                        // 3. Group match based on Type (TD/TP only)
-                                                                        if (subType === "td" || subType === "tp") {
-                                                                            const sessionGroup = (session as any)?.group?.trim().toUpperCase();
-                                                                            const subGroup = sub.group?.trim().toUpperCase();
-                                                                            const targetGroup = sessionGroup || subGroup;
+                                                                            // 1. Level and StudyField MUST match always
+                                                                            // Relax matching for StudyField (lenient check)
+                                                                            const fieldMatch = studentField === subField || 
+                                                                                             (studentField.length > 2 && subField.startsWith(studentField)) ||
+                                                                                             (subField.length > 2 && studentField.startsWith(subField));
                                                                             
-                                                                            if (targetGroup === "ALL") return true;
-                                                                            return student.group?.trim().toUpperCase() === targetGroup;
-                                                                        }
+                                                                            if (studentLevel !== subLevel || !fieldMatch) return false;
 
-                                                                        // For "Cours", all students from the Level/Specialty/StudyField match are eligible
-                                                                        return true;
-                                                                    })
+                                                                            // 2. Specialty must match if defined on subject
+                                                                            if (subSpecialty && subSpecialty !== "all" && subSpecialty !== "none") {
+                                                                                if (studentSpecialty !== subSpecialty) return false;
+                                                                            }
+
+                                                                            // 3. Group match based on Type (TD/TP only)
+                                                                            if (subType === "td" || subType === "tp") {
+                                                                                const sessionGroup = (session as any)?.group?.trim().toUpperCase();
+                                                                                const subGroup = (sub.group || "").trim().toUpperCase();
+                                                                                const targetGroup = sessionGroup || subGroup;
+                                                                                
+                                                                                if (!targetGroup || targetGroup === "ALL") return true;
+                                                                                return student.group?.trim().toUpperCase() === targetGroup;
+                                                                            }
+
+                                                                            // For "Cours", all students from the Level/Specialty/StudyField match are eligible
+                                                                            return true;
+                                                                        })
                                                                     .map(student => (
                                                                         <SelectItem key={student._id} value={student._id} className="rounded-lg text-start">
                                                                             {student.firstName} {student.lastName} ({student.matricule}) — {student.group}

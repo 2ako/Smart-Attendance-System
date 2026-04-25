@@ -74,9 +74,23 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
             const sessionSub = sanityClient
                 .listen(sessionQuery, { sessionId }, { includeResult: true })
                 .subscribe({
-                    next: (update: any) => {
+                    next: async (update: any) => {
                         if (update.type === "mutation" && update.result) {
-                            onEventRef.current({ type: "session_update", session: update.result });
+                            // Fetch full projected session to get subject metadata
+                            const fullSession = await sanityClient.fetch(
+                                `*[_type == "session" && _id == $id][0]{
+                                    ...,
+                                    "subject": coalesce(
+                                        schedule->subject->{ name, code, type, level, specialty, group, studyField },
+                                        subject->{ name, code, type, level, specialty, group, studyField }
+                                    ),
+                                    "roomName": coalesce(schedule->room->name, room),
+                                    "group": coalesce(schedule->group, group),
+                                    schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
+                                }`,
+                                { id: update.result._id }
+                            );
+                            onEventRef.current({ type: "session_update", session: fullSession || update.result });
                         }
                     },
                     error: (err) => {
@@ -92,9 +106,23 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
             const newSessionSub = sanityClient
                 .listen(newSessionQuery, { professorId }, { includeResult: true })
                 .subscribe({
-                    next: (update: any) => {
+                    next: async (update: any) => {
                         if (update.type === "mutation" && update.transition === "appear" && update.result) {
-                            onEventRef.current({ type: "session_update", session: update.result });
+                             // Fetch full projected session to get subject metadata
+                             const fullSession = await sanityClient.fetch(
+                                `*[_type == "session" && _id == $id][0]{
+                                    ...,
+                                    "subject": coalesce(
+                                        schedule->subject->{ name, code, type, level, specialty, group, studyField },
+                                        subject->{ name, code, type, level, specialty, group, studyField }
+                                    ),
+                                    "roomName": coalesce(schedule->room->name, room),
+                                    "group": coalesce(schedule->group, group),
+                                    schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
+                                }`,
+                                { id: update.result._id }
+                            );
+                            onEventRef.current({ type: "session_update", session: fullSession || update.result });
                         }
                     },
                     error: (err) => {
