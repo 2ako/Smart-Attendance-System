@@ -61,7 +61,10 @@ export async function POST(req: NextRequest) {
     const session = await sanityClient.fetch(
         `*[_type == "session" && _id == $id][0]{
             ...,
-            "subject": schedule->subject->{ type, level, specialty, group, studyField }
+            "subject": coalesce(
+                schedule->subject->{ type, level, specialty, group, studyField },
+                subject->{ type, level, specialty, group, studyField }
+            )
         }`,
         { id: sessionId }
     );
@@ -78,29 +81,51 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Validation Logic
+    // Helper to extract string value from potential reference or nested object
+    const getString = (val: any) => {
+        if (!val) return "";
+        if (typeof val === "string") return val;
+        if (val.code) return val.code;
+        if (val.name) return val.name;
+        if (val.title) return val.title;
+        return "";
+    };
+
     const { subject } = session;
-    const studentLevel = student.level?.trim().toUpperCase();
-    const subLevel = subject.level?.trim().toUpperCase();
-    const studentField = student.studyField?.trim().toLowerCase();
-    const subField = subject.studyField?.trim().toLowerCase();
-    const studentSpecialty = student.specialty?.trim().toLowerCase();
-    const subSpecialty = subject.specialty?.trim().toLowerCase();
-    const subType = subject.type?.trim().toLowerCase();
+    const studentLevel = getString(student.level).trim().toUpperCase();
+    const subLevel = getString(subject.level).trim().toUpperCase();
+    const studentField = getString(student.studyField).trim().toLowerCase();
+    const subField = getString(subject.studyField).trim().toLowerCase();
+    const studentSpecialty = getString(student.specialty).trim().toLowerCase();
+    const subSpecialty = getString(subject.specialty).trim().toLowerCase();
+    const subType = (subject.type || "").trim().toLowerCase();
 
     // Level and StudyField MUST match
-    if (studentLevel !== subLevel || studentField !== subField) {
+    const fieldMatch = studentField === subField || 
+                     (studentField.length > 2 && subField.startsWith(studentField)) ||
+                     (subField.length > 2 && studentField.startsWith(subField));
+
+    if (studentLevel !== subLevel || !fieldMatch) {
         return NextResponse.json({ message: `Level/Field mismatch. Student: ${studentLevel}/${studentField}, Subject: ${subLevel}/${subField}` }, { status: 400 });
     }
 
     // Specialty must match if defined on subject
-    if (subSpecialty && studentSpecialty !== subSpecialty) {
-        return NextResponse.json({ message: `Specialty mismatch. Student: ${studentSpecialty}, Subject: ${subSpecialty}` }, { status: 400 });
+    if (subSpecialty && subSpecialty !== "all" && subSpecialty !== "none") {
+        if (studentSpecialty !== subSpecialty) {
+            return NextResponse.json({ message: `Specialty mismatch. Student: ${studentSpecialty}, Subject: ${subSpecialty}` }, { status: 400 });
+        }
     }
 
     // Group match based on Type
     if (subType === "td" || subType === "tp") {
-        if (student.group?.trim().toUpperCase() !== subject.group?.trim().toUpperCase()) {
-            return NextResponse.json({ message: `Student group (${student.group}) does not match session group (${subject.group})` }, { status: 400 });
+        const sessionGroup = getString(session?.group).trim().toUpperCase();
+        const subGroup = getString(subject.group).trim().toUpperCase();
+        const targetGroup = sessionGroup || subGroup;
+
+        if (targetGroup && targetGroup !== "ALL") {
+            if (student.group?.trim().toUpperCase() !== targetGroup) {
+                return NextResponse.json({ message: `Student group (${student.group}) does not match session group (${targetGroup})` }, { status: 400 });
+            }
         }
     }
     // If "Cours", any group in the same Level/Specialty is allowed

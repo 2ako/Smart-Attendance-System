@@ -96,7 +96,19 @@ export async function POST(req: NextRequest) {
         await sanityClient.patch(requestId).set({ session: { _type: "reference", _ref: session._id } }).commit();
     }
 
-    return NextResponse.json({ session }, { status: 201 });
+    // Refetch the projected session to include coalesce for subject
+    const projectedSession = await sanityClient.fetch(`*[_type == "session" && _id == $id][0]{
+        ...,
+        "subject": coalesce(
+            schedule->subject->{ name, code, type, level, specialty, group, studyField },
+            subject->{ name, code, type, level, specialty, group, studyField }
+        ),
+        "roomName": coalesce(schedule->room->name, room),
+        "group": coalesce(schedule->group, group),
+        schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
+    }`, { id: session._id });
+
+    return NextResponse.json({ session: projectedSession }, { status: 201 });
 }
 
 export async function PUT(req: NextRequest) {

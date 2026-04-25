@@ -373,7 +373,7 @@ export default function ProfessorDashboard() {
                                                 <div className="text-start">
                                                     <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1 text-start">{t("time_remaining")}</p>
                                                     {session ? (
-                                                        <CountdownTimer endTime={session.endTime} isActive={session.status === "open"} />
+                                                        <CountdownTimer endTime={session.endTime} isActive={session.status === "open"} onEnd={handleCloseSession} />
                                                     ) : (
                                                         <div className="text-2xl font-black text-muted-foreground/30">00:00:00</div>
                                                     )}
