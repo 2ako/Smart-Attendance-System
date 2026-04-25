@@ -520,17 +520,15 @@ export default function ProfessorDashboard() {
                                                                                 if (studentSpecialty !== subSpecialty) return false;
                                                                             }
 
-                                                                            // 3. Group match based on Type (TD/TP only)
-                                                                            if (subType === "td" || subType === "tp") {
-                                                                                const sessionGroup = (session as any)?.group?.trim().toUpperCase();
-                                                                                const subGroup = (sub.group || "").trim().toUpperCase();
-                                                                                const targetGroup = sessionGroup || subGroup;
-                                                                                
-                                                                                if (!targetGroup || targetGroup === "ALL") return true;
-                                                                                return student.group?.trim().toUpperCase() === targetGroup;
+                                                                            // 3. Group match (Apply to ALL class types if a specific group is targetted)
+                                                                            const sessionGroup = getString((session as any)?.group).trim().toUpperCase();
+                                                                            const subGroup = getString(sub.group).trim().toUpperCase();
+                                                                            const targetGroup = sessionGroup || subGroup;
+                                                                            
+                                                                            if (targetGroup && targetGroup !== "ALL") {
+                                                                                if (student.group?.trim().toUpperCase() !== targetGroup) return false;
                                                                             }
-
-                                                                            // For "Cours", all students from the Level/Specialty/StudyField match are eligible
+                                                                            
                                                                             return true;
                                                                         })
                                                                     .map(student => (

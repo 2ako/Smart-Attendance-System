@@ -117,19 +117,17 @@ export async function POST(req: NextRequest) {
         }
     }
 
-    // 3. Group match based on Type
-    if (subType === "td" || subType === "tp") {
-        const sessionGroup = getString(sessionWithSubject?.group).trim().toUpperCase();
-        const subGroup = getString(subject.group).trim().toUpperCase();
-        const targetGroup = sessionGroup || subGroup;
+    // 3. Group match (Apply to ALL class types if a specific group is targetted)
+    const sessionGroup = getString(sessionWithSubject?.group).trim().toUpperCase();
+    const subGroup = getString(subject.group).trim().toUpperCase();
+    const targetGroup = sessionGroup || subGroup;
 
-        if (targetGroup && targetGroup !== "ALL") {
-            if (student.group?.trim().toUpperCase() !== targetGroup) {
-                return NextResponse.json({
-                    ok: false,
-                    error: `Group mismatch: Your group (${student.group}) doesn't match session (${targetGroup})`
-                }, { status: 400 });
-            }
+    if (targetGroup && targetGroup !== "ALL") {
+        if (student.group?.trim().toUpperCase() !== targetGroup) {
+            return NextResponse.json({
+                ok: false,
+                error: `Group mismatch: Your group (${student.group}) doesn't match session (${targetGroup})`
+            }, { status: 400 });
         }
     }
     // ──────────────────────────────────────────────────────────

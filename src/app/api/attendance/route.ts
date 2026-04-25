@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
 
     const student = await sanityClient.fetch(
         `*[_type == "student" && _id == $id][0]{
-            level, specialty, group, studyField
+            _id, firstName, lastName, matricule, level, specialty, degree, group, studyField, user->{ name }
         }`,
         { id: studentId }
     );
@@ -116,19 +116,16 @@ export async function POST(req: NextRequest) {
         }
     }
 
-    // Group match based on Type
-    if (subType === "td" || subType === "tp") {
-        const sessionGroup = getString(session?.group).trim().toUpperCase();
-        const subGroup = getString(subject.group).trim().toUpperCase();
-        const targetGroup = sessionGroup || subGroup;
+    // 3. Group match (Apply to ALL class types if a specific group is targetted)
+    const sessionGroup = getString(session?.group).trim().toUpperCase();
+    const subGroup = getString(subject.group).trim().toUpperCase();
+    const targetGroup = sessionGroup || subGroup;
 
-        if (targetGroup && targetGroup !== "ALL") {
-            if (student.group?.trim().toUpperCase() !== targetGroup) {
-                return NextResponse.json({ message: `Student group (${student.group}) does not match session group (${targetGroup})` }, { status: 400 });
-            }
+    if (targetGroup && targetGroup !== "ALL") {
+        if (student.group?.trim().toUpperCase() !== targetGroup) {
+            return NextResponse.json({ message: `Student group (${student.group}) does not match session group (${targetGroup})` }, { status: 400 });
         }
     }
-    // If "Cours", any group in the same Level/Specialty is allowed
 
     const now = new Date().toISOString();
     const attendance = await sanityClient.create({
@@ -154,7 +151,30 @@ export async function POST(req: NextRequest) {
         console.error("Failed to create manual attendance notification:", notifErr);
     });
 
-    return NextResponse.json({ attendance }, { status: 201 });
+    // We use the already-fetched student object to bypass Sanity eventual consistency delays
+    const projectedAttendance = {
+        _id: attendance._id,
+        _type: "attendance",
+        session: { _ref: sessionId, _type: "reference" },
+        student: { // Reconstruct using the full object we retrieved for validation
+            _id: student._id,
+            firstName: student.firstName,
+            lastName: student.lastName,
+            matricule: student.matricule,
+            studyField: student.studyField,
+            specialty: student.specialty,
+            degree: student.degree,
+            level: student.level,
+            group: student.group,
+            user: student.user
+        },
+        timestamp: now,
+        status,
+        timeIn: now,
+        markedBy: "manual"
+    };
+
+    return NextResponse.json({ attendance: projectedAttendance }, { status: 201 });
 }
 
 export async function DELETE(req: NextRequest) {
