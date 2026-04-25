@@ -6,7 +6,7 @@
 export const getUserByUsername = `*[_type == "user" && (username == $username || email == $username)][0]{
   ...,
   "studyField": studyField
- Pal}`;
+}`;
 
 export const getUserById = `*[_type == "user" && _id == $id][0]{
   ...,
