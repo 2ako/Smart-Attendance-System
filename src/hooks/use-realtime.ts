@@ -33,6 +33,16 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
         if (!enabled) return;
 
         const subscriptions: any[] = [];
+        
+        // Helper to bypass Sanity eventual consistency delays for newly created elements
+        const fetchRobustly = async (query: string, params: any) => {
+            for (let i = 0; i < 4; i++) {
+                const result = await sanityClient.fetch(query, params);
+                if (result) return result;
+                await new Promise(r => setTimeout(r, 600));
+            }
+            return null;
+        };
 
         // 1. Listen for Attendance changes (New/Update/Delete)
         if (sessionId) {
@@ -45,8 +55,8 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
                             if (update.transition === "appear" || update.transition === "update") {
                                 const record = update.result;
                                 if (record) {
-                                    const fullRecord = await sanityClient.fetch(
-                                        `*[_id == $id][0]{
+                                    const fullRecord = await fetchRobustly(
+                                        `*[_type == "attendance" && _id == $id][0]{
                                             ...,
                                             student->{ _id, firstName, lastName, matricule, studyField, specialty, degree, level, group, user->{ name } }
                                         }`,
@@ -77,7 +87,7 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
                     next: async (update: any) => {
                         if (update.type === "mutation" && update.result) {
                             // Fetch full projected session to get subject metadata
-                            const fullSession = await sanityClient.fetch(
+                            const fullSession = await fetchRobustly(
                                 `*[_type == "session" && _id == $id][0]{
                                     ...,
                                     "subject": coalesce(
@@ -92,7 +102,7 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
                             );
                             
                             // Merge the latest mutation values to bypass eventual consistency delays in the fetch API
-                            const mergedSession = { ...fullSession, ...update.result };
+                            const mergedSession = { ...(fullSession || {}), ...update.result };
                             onEventRef.current({ type: "session_update", session: mergedSession });
                         }
                     },
@@ -112,7 +122,7 @@ export function useRealtime({ onEvent, sessionId, professorId, enabled = true }:
                     next: async (update: any) => {
                         if (update.type === "mutation" && update.transition === "appear" && update.result) {
                              // Fetch full projected session to get subject metadata
-                             const fullSession = await sanityClient.fetch(
+                             const fullSession = await fetchRobustly(
                                 `*[_type == "session" && _id == $id][0]{
                                     ...,
                                     "subject": coalesce(
