@@ -338,7 +338,7 @@ export default function MyClassesPage() {
                                             <div className="p-3 rounded-2xl bg-primary/5 border border-primary/10 text-start">
                                                 <div className="flex items-center gap-2 mb-1 text-start">
                                                     <Calendar size={12} className="text-primary/70" />
-                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-start">{t("date_label")}</span>
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-start">{t("makeup_date")}</span>
                                                 </div>
                                                 <p className="text-xs font-black text-foreground text-start">
                                                     {requestedDate.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' })}
@@ -347,7 +347,7 @@ export default function MyClassesPage() {
                                             <div className="p-3 rounded-2xl bg-primary/5 border border-primary/10 text-start">
                                                 <div className="flex items-center gap-2 mb-1 text-start">
                                                     <Clock size={12} className="text-primary/70" />
-                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-start">{t("time_label")}</span>
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground text-start">{t("makeup_time")}</span>
                                                 </div>
                                                 <p className="text-xs font-black text-foreground ltr:font-mono text-start">{startTime}</p>
                                             </div>

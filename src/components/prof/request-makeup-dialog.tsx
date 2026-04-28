@@ -145,7 +145,7 @@ export function RequestMakeUpDialog({
 
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
-                                {t("comment")} ({t("optional")})
+                                {t("professor_comment")} ({t("optional")})
                             </Label>
                             <Textarea
                                 value={comment}
@@ -174,7 +174,7 @@ export function RequestMakeUpDialog({
                             {isSubmitting ? (
                                 <Loader2 size={16} className="animate-spin" />
                             ) : (
-                                t("launch_portal") // Or "submit"
+                                t("send")
                             )}
                             {t("confirm")}
                         </Button>
