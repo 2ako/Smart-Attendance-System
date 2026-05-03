@@ -18,6 +18,7 @@ import {
     Trash2,
     MapPin,
     ShieldCheck,
+    Sparkles,
 } from "lucide-react";
 import { AcademicStructureManager } from "@/components/admin/academic-structure-manager";
 import { StudentDialog } from "@/components/admin/student-dialog";
@@ -208,10 +209,31 @@ export default function AdminDashboard() {
                             <Card className="rounded-3xl border-border bg-card shadow-sm hover:border-primary/30 transition-colors bg-gradient-to-br from-card to-primary/5 text-start">
                                 <CardContent className="p-8 h-full flex flex-col justify-center items-center text-center text-start">
                                     <div className="h-16 w-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mb-6 text-start">
-                                        <Shield size={32} />
+                                        <Sparkles size={32} />
                                     </div>
-                                    <h3 className="text-xl font-black uppercase text-foreground mb-2 tracking-tight text-start">{t("access_control")}</h3>
+                                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-[8px] font-black uppercase mb-2">
+                                        AI Engine V2.0
+                                    </div>
+                                    <h3 className="text-xl font-black uppercase text-foreground mb-2 tracking-tight text-start">{t("smart_scheduler")}</h3>
                                     <p className="text-sm font-medium text-muted-foreground mb-8 max-w-sm text-start">
+                                        {t("smart_scheduler_desc")}
+                                    </p>
+                                    <Link href="/admin/scheduler" className="w-full text-start">
+                                        <Button className="w-full rounded-2xl font-bold uppercase tracking-widest text-[10px] h-12 shadow-xl shadow-primary/10 border border-primary/20 bg-primary text-primary-foreground hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-start">
+                                            {t("open_scheduler")} <ChevronRight size={14} className="rtl:rotate-180" />
+                                        </Button>
+                                    </Link>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="rounded-3xl border-border bg-card shadow-sm hover:border-primary/30 transition-colors text-start">
+                                <CardHeader className="p-8 border-b border-border/50 text-start">
+                                    <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-3 text-start">
+                                        <Shield size={18} className="text-primary" /> {t("access_control")}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-8 text-start">
+                                     <p className="text-sm font-medium text-muted-foreground mb-8 max-w-sm text-start">
                                         {t("access_control_desc")}
                                     </p>
                                     <Link href="/admin/users" className="w-full text-start">

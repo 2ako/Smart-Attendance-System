@@ -77,6 +77,7 @@ export const getAllSubjects = `*[_type == "subject" && (
 )]{
   ...,
   professor->{ ..., user->{ name } },
+  groups,
   "scheduleInfo": *[_type == "schedule" && subject._ref == ^._id][0]{
     day,
     startTime,
@@ -97,7 +98,7 @@ export const getSubjectsByProfessor = `*[_type == "subject" && professor._ref ==
 export const getStudentCourses = `*[_type == "subject" && academicYear == $academicYear && degree == $degree && level == $level && (
   (!defined(studyField) || studyField == "" || lower(studyField) == "all" || lower(studyField) == lower($studyField) || (lower($studyField) == "info" && lower(studyField) == "informatique") || (lower($studyField) == "informatique" && lower(studyField) == "info")) &&
   (!defined(specialty) || specialty == "" || lower(specialty) == "none" || lower(specialty) == "all" || lower(specialty) == lower($specialty)) &&
-  (!defined(group) || group == "" || lower(group) == "all" || group == $group)
+  (!defined(groups) || groups == "" || lower(groups) == "all" || $group in groups)
 )]{
   ...,
   "subjectDetails": {
@@ -130,13 +131,15 @@ export const getAllSchedules = `*[_type == "schedule" && (
   ...,
   subject->{ _id, name, code, studyField },
   professor->{ ..., user->{ name } },
-  room
+  room,
+  groups
 } | order(day asc, startTime asc)`;
 
 export const getSchedulesByProfessor = `*[_type == "schedule" && professor._ref == $professorId]{
   ...,
   subject->{ _id, name, code, type },
-  room
+  room,
+  groups
 } | order(day asc, startTime asc)`;
 
 export const getApprovedMakeUpRequestsByProfessor = `*[_type == "makeUpRequest" && professor._ref == $professorId && status == "approved"]{
@@ -168,7 +171,7 @@ export const getDeviceByToken = `*[_type == "device" && deviceToken == $token &&
 // ── Sessions ──────────────────────────────────────────────────
 export const getActiveSessionBySchedule = `*[_type == "session" && schedule._ref == $scheduleId && status == "open" && dateTime(endTime) > dateTime(now())][0]{
   ...,
-  schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room, professor->{ ..., user->{ name } } }
+  schedule->{ ..., subject->{ name, code, type, level, specialty, groups, studyField }, room, professor->{ ..., user->{ name } } }
 }`;
 
 export const getFinishedSessionsByStudyField = `*[_type == "session" && (status == "closed" || dateTime(endTime) < dateTime(now())) && 
@@ -183,7 +186,7 @@ export const getFinishedSessionsByStudyField = `*[_type == "session" && (status 
   startTime,
   endTime,
   status,
-  "subject": schedule->subject->{ _id, name, code, level, specialty, degree, group, studyField },
+  "subject": schedule->subject->{ _id, name, code, level, specialty, degree, groups, studyField },
   "professor": professor->user->{ name },
   "attendanceCount": count(*[_type == "attendance" && session._ref == ^._id && status == "present"]),
   "lateCount": count(*[_type == "attendance" && session._ref == ^._id && status == "late"]),
@@ -198,7 +201,7 @@ export const getSessionCohort = `*[_type == "student" &&
    (lower($studyField) == "info" && (studyField match "informatique" || studyField == "INFORMATIQUE"))
   ) && 
   (!defined($specialty) || specialty == $specialty) &&
-  (!defined($group) || $group == "All" || group == $group)
+  (!defined($group) || $group == "All" || $group in groups || group == $group)
 ]{
   _id,
   matricule,
@@ -212,27 +215,27 @@ export const getSessionCohort = `*[_type == "student" &&
 
 export const getActiveSessionsByProfessor = `*[_type == "session" && professor._ref == $professorId && status == "open" && dateTime(endTime) > dateTime(now())]{
   ...,
-  "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, group, studyField }, subject->{ name, code, type, level, specialty, group, studyField }),
+  "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, groups, studyField }, subject->{ name, code, type, level, specialty, groups, studyField }),
   "roomName": coalesce(schedule->room->name, room),
-  "group": coalesce(schedule->group, group),
-  schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
+  "groups": coalesce(schedule->groups, groups),
+  schedule->{ ..., subject->{ name, code, type, level, specialty, groups, studyField }, room }
 } | order(startTime desc)`;
 
 export const getAllSessionsByProfessor = `*[_type == "session" && professor._ref == $professorId]{
   ...,
-  "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, group, studyField }, subject->{ name, code, type, level, specialty, group, studyField }),
+  "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, groups, studyField }, subject->{ name, code, type, level, specialty, groups, studyField }),
   "roomName": coalesce(schedule->room->name, room),
-  "group": coalesce(schedule->group, group),
-  schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room },
+  "groups": coalesce(schedule->groups, groups),
+  schedule->{ ..., subject->{ name, code, type, level, specialty, groups, studyField }, room },
   "attendanceCount": count(*[_type == "attendance" && session._ref == ^._id])
 } | order(startTime desc)`;
 
 export const getSessionById = `*[_type == "session" && _id == $sessionId][0]{
   ...,
-  "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, group, studyField }, subject->{ name, code, type, level, specialty, group, studyField }),
+  "subject": coalesce(schedule->subject->{ name, code, type, level, specialty, groups, studyField }, subject->{ name, code, type, level, specialty, groups, studyField }),
   "roomName": coalesce(schedule->room->name, room),
-  "group": coalesce(schedule->group, group),
-  schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
+  "groups": coalesce(schedule->groups, groups),
+  schedule->{ ..., subject->{ name, code, type, level, specialty, groups, studyField }, room }
 }`;
 
 // ── Attendance ────────────────────────────────────────────────

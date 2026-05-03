@@ -99,11 +99,23 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
     const currentConfig = configs.find(c => c.level === selectedLevel) || { level: selectedLevel, specialties: [], groups: [] };
     const originalConfig = originalConfigs.find(c => c.level === selectedLevel) || { level: selectedLevel, specialties: [], groups: [] };
 
-    const hasChanges = JSON.stringify(currentConfig.specialties) !== JSON.stringify(originalConfig.specialties) ||
-        JSON.stringify(currentConfig.groups) !== JSON.stringify(originalConfig.groups);
+    const hasChanges = JSON.stringify(currentConfig.specialties || []) !== JSON.stringify(originalConfig?.specialties || []) ||
+        JSON.stringify(currentConfig.groups || []) !== JSON.stringify(originalConfig?.groups || []);
 
     const updateConfig = (newData: any) => {
-        setConfigs(prev => prev.map(c => c.level === selectedLevel ? { ...c, ...newData } : c));
+        setConfigs(prev => {
+            const exists = prev.some(c => c.level === selectedLevel);
+            if (!exists) {
+                return [...prev, {
+                    level: selectedLevel,
+                    studyField: currentUser?.studyField || "GLOBAL",
+                    specialties: [],
+                    groups: [],
+                    ...newData
+                }];
+            }
+            return prev.map(c => c.level === selectedLevel ? { ...c, ...newData } : c);
+        });
     };
 
     const addSpecialty = () => {
@@ -441,7 +453,7 @@ export function AcademicStructureManager({ initialConfigs, initialUser }: Academ
                 <div className="pt-8 flex flex-col items-center">
                     <Button
                         onClick={handleSave}
-                        disabled={saving || JSON.stringify(currentConfig) === JSON.stringify(originalConfigs.find(c => c.level === selectedLevel))}
+                        disabled={saving || !hasChanges}
                         className={cn(
                             "min-w-[280px] h-14 rounded-2xl bg-primary text-primary-foreground font-black uppercase tracking-[0.2em] text-[11px] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-30 disabled:grayscale disabled:scale-100 relative overflow-hidden group/save"
                         )}

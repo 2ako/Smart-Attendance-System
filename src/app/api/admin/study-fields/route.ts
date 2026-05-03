@@ -5,17 +5,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { sanityClient } from "@/lib/sanity/client";
-import { getCurrentUser, hasRole } from "@/lib/auth";
-
-/**
- * Helper to ensure the user is a Super Admin
- */
-async function getSuperAdmin(user: any) {
-    if (!hasRole(user, ["admin"])) return null;
-    // Super Admin is an admin with no assigned studyField
-    if (user.studyField) return null;
-    return user;
-}
+import { getCurrentUser, isSuperAdmin, isAssignedAdmin } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
     try {
@@ -62,7 +52,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const user = await getCurrentUser();
-        if (!await getSuperAdmin(user)) {
+        if (!isSuperAdmin(user)) {
             return NextResponse.json({ message: "Forbidden: Super Admin only" }, { status: 403 });
         }
 
@@ -92,15 +82,16 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
     try {
         const user = await getCurrentUser();
-        if (!await getSuperAdmin(user)) {
-            return NextResponse.json({ message: "Forbidden: Super Admin only" }, { status: 403 });
-        }
-
         const body = await req.json();
-        const { _id, name, code, systemType, years, specialties } = body;
+        const { _id, name, code, systemType, years, specialties, levelGroups } = body;
+
+        if (!isAssignedAdmin(user, code) && !isAssignedAdmin(user, _id)) {
+            return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
+        }
 
         if (!_id) return NextResponse.json({ message: "ID is required" }, { status: 400 });
 
+        // Update main studyField document
         const updated = await sanityClient.patch(_id).set({
             name,
             code: code?.toUpperCase(),
@@ -109,17 +100,39 @@ export async function PUT(req: NextRequest) {
             specialties: specialties || [],
         }).commit();
 
+        // ── [SYNC] Synchronize Level-wide groups & Level-specific Specialties ──
+        const fieldCode = code?.toUpperCase() || _id;
+        for (const level of years) {
+            const levelSpecificGroups = levelGroups?.[level] || [];
+            const levelSpecificSpecialties = (specialties || []).filter((s: any) => 
+                s.levels?.includes(level)
+            ).map((s: any) => ({
+                name: s.name,
+                groups: s.groups || ["G1"]
+            }));
+
+            const configId = `academic-config-${fieldCode.toLowerCase()}-${level.toLowerCase()}`;
+            await sanityClient.createOrReplace({
+                _id: configId,
+                _type: "academicConfig",
+                level,
+                studyField: fieldCode,
+                groups: levelSpecificGroups,
+                specialties: levelSpecificSpecialties
+            });
+        }
+
         return NextResponse.json({ studyField: updated });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error updating study field:", error);
-        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ message: error.message || "Internal Server Error" }, { status: 500 });
     }
 }
 
 export async function DELETE(req: NextRequest) {
     try {
         const user = await getCurrentUser();
-        if (!await getSuperAdmin(user)) {
+        if (!isSuperAdmin(user)) {
             return NextResponse.json({ message: "Forbidden: Super Admin only" }, { status: 403 });
         }
 

@@ -63,7 +63,7 @@ export interface Subject extends SanityDocument {
   degree?: "Licence" | "Master";
   level?: "L1" | "L2" | "L3" | "M1" | "M2";
   academicYear?: string;
-  group?: string;
+  groups: string[];
   type?: "Cours" | "TD" | "TP";
   semester?: number;
   creditHours?: number;

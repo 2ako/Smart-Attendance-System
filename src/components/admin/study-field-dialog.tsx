@@ -49,6 +49,7 @@ export function StudyFieldDialog({
         systemType: "LMD",
         years: [] as string[],
         specialties: [] as SpecialtyData[],
+        levelGroups: {} as Record<string, string[]>,
     });
 
     useEffect(() => {
@@ -64,6 +65,7 @@ export function StudyFieldDialog({
                             ? { name: s, levels: [], groups: [] }
                             : { name: s.name || "", levels: s.levels || [], groups: s.groups || [] }
                     ),
+                    levelGroups: studyField.levelGroups || {},
                 });
             } else {
                 setFormData({
@@ -72,6 +74,7 @@ export function StudyFieldDialog({
                     systemType: "LMD",
                     years: ["L1", "L2", "L3", "M1", "M2"],
                     specialties: [],
+                    levelGroups: {},
                 });
             }
         }
@@ -147,6 +150,40 @@ export function StudyFieldDialog({
         newGroups[groupIndex] = value.toUpperCase();
         newSpecs[specIndex] = { ...newSpecs[specIndex], groups: newGroups };
         setFormData({ ...formData, specialties: newSpecs });
+    };
+    // ── Level-wide Group helpers ──
+    const addLevelGroup = (level: string) => {
+        const currentGroups = formData.levelGroups[level] || [];
+        setFormData({
+            ...formData,
+            levelGroups: {
+                ...formData.levelGroups,
+                [level]: [...currentGroups, `G${currentGroups.length + 1}`]
+            }
+        });
+    };
+
+    const removeLevelGroup = (level: string, groupIndex: number) => {
+        const currentGroups = formData.levelGroups[level] || [];
+        setFormData({
+            ...formData,
+            levelGroups: {
+                ...formData.levelGroups,
+                [level]: currentGroups.filter((_, i) => i !== groupIndex)
+            }
+        });
+    };
+
+    const updateLevelGroupName = (level: string, groupIndex: number, value: string) => {
+        const currentGroups = [...(formData.levelGroups[level] || [])];
+        currentGroups[groupIndex] = value.toUpperCase();
+        setFormData({
+            ...formData,
+            levelGroups: {
+                ...formData.levelGroups,
+                [level]: currentGroups
+            }
+        });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -283,6 +320,65 @@ export function StudyFieldDialog({
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("no_levels_defined")}</p>
                                 </div>
                             )}
+                        </div>
+
+                        {/* Independent Groups (Level-wide) Section */}
+                        <div className="space-y-4 pt-4 border-t border-border/50">
+                            <div className="flex items-center justify-between mb-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-2">
+                                    <Plus size={12} className="text-primary" />
+                                    {t("independent_groups_label") || "أفواج عامة للمستويات"}
+                                </Label>
+                                <p className="text-[8px] font-bold text-muted-foreground uppercase">{t("independent_groups_desc") || "تستخدم في حالة عدم وجود تخصصات"}</p>
+                            </div>
+
+                            <div className="space-y-3">
+                                {formData.years.map((level) => (
+                                    <div key={level} className="p-3 rounded-xl bg-muted/20 border border-border/30 space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <Badge variant="outline" className="text-[9px] font-black border-primary/20 text-primary bg-primary/5">
+                                                {level}
+                                            </Badge>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => addLevelGroup(level)}
+                                                className="h-6 px-2 text-[8px] font-black uppercase tracking-widest text-primary hover:bg-primary/5 gap-1"
+                                            >
+                                                <Plus size={10} /> {t("add_group")}
+                                            </Button>
+                                        </div>
+
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {(formData.levelGroups[level] || []).map((group, groupIndex) => (
+                                                <div key={groupIndex} className="flex gap-1 items-center">
+                                                    <Input
+                                                        value={group}
+                                                        onChange={(e) => updateLevelGroupName(level, groupIndex, e.target.value)}
+                                                        className="h-7 rounded-lg bg-background border-border/50 px-2 font-bold text-[9px] focus-visible:ring-primary uppercase"
+                                                        placeholder="G1"
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => removeLevelGroup(level, groupIndex)}
+                                                        className="h-7 w-7 rounded-lg text-muted-foreground hover:bg-destructive/5 hover:text-destructive shrink-0"
+                                                    >
+                                                        <X size={10} />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                            {(formData.levelGroups[level] || []).length === 0 && (
+                                                <p className="col-span-3 text-[8px] text-muted-foreground/40 italic py-1 ltr:ml-1 rtl:mr-1">
+                                                    {t("no_groups_hint") || "لا توجد أفواج حالياً"}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Specialties Section */}

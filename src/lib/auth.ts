@@ -71,3 +71,23 @@ export async function validateDeviceToken(
     );
     return !!device;
 }
+/**
+ * Helper to check if user is a Super Admin (no specific study field)
+ */
+export function isSuperAdmin(user: JwtPayload | null): boolean {
+    return hasRole(user, ["admin"]) && !user?.studyField;
+}
+
+/**
+ * Helper to check if Faculty Admin is assigned to a specific field
+ */
+export function isAssignedAdmin(user: JwtPayload | null, field: { code?: string; _id?: string }): boolean {
+    if (!hasRole(user, ["admin"])) return false;
+    if (!user?.studyField) return true; // Super admin has access to all
+    
+    const fieldCode = field.code?.toUpperCase();
+    const fieldId = field._id;
+    const userField = user.studyField.toUpperCase();
+
+    return userField === fieldCode || userField === fieldId;
+}

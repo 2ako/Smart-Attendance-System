@@ -10,7 +10,7 @@ const schedule = {
         { name: "day", title: "Day", type: "string", options: { list: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] } },
         { name: "startTime", title: "Start Time", type: "string" },
         { name: "endTime", title: "End Time", type: "string" },
-        { name: "group", title: "Student Group", type: "string" },
+        { name: "groups", title: "Student Groups", type: "array", of: [{ type: "string" }] },
     ],
 };
 export default schedule;

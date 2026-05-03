@@ -43,11 +43,21 @@ export async function POST(req: NextRequest) {
     if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
+    const { professorId, ...rest } = body;
+
+    const dataToSave = {
+        ...rest,
+        studyField: user?.studyField || body.studyField || null
+    };
+
+    if (professorId) {
+        dataToSave.professor = { _type: "reference", _ref: professorId };
+    }
+
     const doc = await sanityClient.create({
         _id: body._id || `subject-${Math.random().toString(36).substr(2, 9)}`,
         _type: "subject",
-        ...body,
-        studyField: user?.studyField || body.studyField || null
+        ...dataToSave
     });
     return NextResponse.json({ subject: doc }, { status: 201 });
 }
@@ -56,18 +66,25 @@ export async function PUT(req: NextRequest) {
     const user = await getCurrentUser();
     if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
-    const { _id, ...data } = await req.json();
+    const { _id, professorId, ...data } = await req.json();
     const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]`, { id: _id });
 
     // Safety check: ensure admin can only edit subjects in their scope
-    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
+    // Enhanced: Allow if existing studyField is missing or matches
+    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField && existing.studyField !== "all") {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 
-    const updated = await sanityClient.patch(_id).set({
+    const updateData: any = {
         ...data,
         studyField: user?.studyField || data.studyField || existing?.studyField
-    }).commit();
+    };
+
+    if (professorId) {
+        updateData.professor = { _type: "reference", _ref: professorId };
+    }
+
+    const updated = await sanityClient.patch(_id).set(updateData).commit();
     return NextResponse.json({ subject: updated });
 }
 

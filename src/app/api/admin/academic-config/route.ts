@@ -1,18 +1,26 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { sanityClient } from "@/lib/sanity/client";
+import { getCurrentUser, isAssignedAdmin } from "@/lib/auth";
 
 export async function POST(req: Request) {
     console.log(">>> [POST] /api/admin/academic-config hit");
-    console.log(">>> Token present:", !!process.env.SANITY_API_TOKEN);
     try {
+        const user = await getCurrentUser();
+        if (!user || user.role !== "admin") {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
         const doc = await req.json();
+
+        // Permission Check: Faculty Admins can only modify their assigned studyField
+        if (user.studyField && !isAssignedAdmin(user, { code: doc.studyField })) {
+            return NextResponse.json({ message: "Forbidden: You only have access to your assigned department" }, { status: 403 });
+        }
 
         // Prepare the document for Sanity
         const { _rev, _createdAt, _updatedAt, ...cleanDoc } = doc;
 
-        // Prepared doc with stable ID scoped to studyField and level
-        // This prevents different departments from overwriting each other's L1/L2 configs
         const studyFieldCode = cleanDoc.studyField || "GLOBAL";
         const finalId = cleanDoc._id || `academic-config-${studyFieldCode.toLowerCase()}-${cleanDoc.level?.toLowerCase() || 'unknown'}`;
 
@@ -27,7 +35,7 @@ export async function POST(req: Request) {
         const result = await sanityClient.createOrReplace(preparedDoc);
 
         // ── [SYNC] Update Parent Study Field ──────────────────────────
-        // Ensure that any specialties defined here are also listed in the studyField document
+        // Critical: Ensure specialties mentioned here have this level in their 'levels' array
         if (studyFieldCode !== "GLOBAL") {
             try {
                 const parentField = await sanityClient.fetch(
@@ -35,50 +43,52 @@ export async function POST(req: Request) {
                     { code: studyFieldCode }
                 );
 
-                if (parentField && preparedDoc.specialties) {
+                if (parentField) {
+                    const currentLevel = preparedDoc.level;
                     const existingSpecs = parentField.specialties || [];
-                    const newSpecsFromConfig = preparedDoc.specialties.map((s: any) => ({
-                        name: s.name,
-                        groups: s.groups || []
-                        // Note: we don't necessarily overwrite levels here as they are scoped in the config
-                    }));
+                    const configSpecs = preparedDoc.specialties || [];
 
-                    // Basic merge: Add missing specialty names to the studyField
                     let updatedSpecs = [...existingSpecs];
-                    newSpecsFromConfig.forEach((newS: any) => {
+                    
+                    configSpecs.forEach((newS: any) => {
                         const idx = updatedSpecs.findIndex((ex: any) =>
                             (typeof ex === 'string' ? ex : ex.name) === newS.name
                         );
+                        
                         if (idx === -1) {
-                            updatedSpecs.push(newS);
+                            // New specialty found in config, add it with the current level
+                            updatedSpecs.push({
+                                name: newS.name,
+                                groups: newS.groups || ["G1"],
+                                levels: [currentLevel]
+                            });
                         } else {
-                            // Optionally update groups if they changed for this level?
-                            // For now, just ensuring visibility
+                            // Existing specialty: Ensure current level is included
+                            const specObj = typeof updatedSpecs[idx] === 'string' 
+                                ? { name: updatedSpecs[idx], levels: [], groups: ["G1"] }
+                                : { ...updatedSpecs[idx] };
+                            
+                            const levels = specObj.levels || [];
+                            if (!levels.includes(currentLevel)) {
+                                specObj.levels = [...levels, currentLevel];
+                                updatedSpecs[idx] = specObj;
+                            }
                         }
                     });
 
                     await sanityClient.patch(parentField._id).set({ specialties: updatedSpecs }).commit();
-                    console.log(`Synced ${newSpecsFromConfig.length} specialties to Study Field: ${studyFieldCode}`);
+                    console.log(`Synced specialties level-mapping for level: ${currentLevel}`);
                 }
             } catch (syncError) {
                 console.error("Non-critical Sync Error:", syncError);
-                // We don't fail the primary operation for sync issues
             }
         }
 
         return NextResponse.json(result);
     } catch (error: any) {
-        console.error("CRITICAL: Sanity Mutation Error:", {
-            message: error.message,
-            statusCode: error.statusCode,
-            response: error.response?.body,
-        });
-
+        console.error("CRITICAL: Sanity Mutation Error:", error);
         return NextResponse.json(
-            {
-                message: error.message || "Academic structure sync failed",
-                details: error.response?.body?.message || null
-            },
+            { message: error.message || "Academic structure sync failed" },
             { status: error.statusCode || 500 }
         );
     }

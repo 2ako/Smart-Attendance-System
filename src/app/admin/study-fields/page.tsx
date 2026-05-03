@@ -93,7 +93,18 @@ export default function StudyFieldsPage() {
                         groups: Array.from(s.groups).sort()
                     }));
 
-                    return { ...field, specialties: finalSpecialties.length > 0 ? finalSpecialties : field.specialties };
+                    const levelGroups: Record<string, string[]> = {};
+                    relatedConfigs.forEach((config: any) => {
+                        if (config.groups && config.groups.length > 0) {
+                            levelGroups[config.level] = config.groups;
+                        }
+                    });
+
+                    return { 
+                        ...field, 
+                        specialties: finalSpecialties.length > 0 ? finalSpecialties : field.specialties,
+                        levelGroups
+                    };
                 });
 
                 setStudyFields(mergedFields);

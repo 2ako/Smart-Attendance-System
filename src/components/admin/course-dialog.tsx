@@ -64,15 +64,11 @@ export function CourseDialog({
         specialty: "",
         degree: "Licence" as "Licence" | "Master",
         level: "L1",
-        type: (course?.type === "Cours") ? "Cours" : (course?.type || "Cours"),
-        group: (course?.type === "Cours" || (!course && "Cours" === "Cours")) ? "All" : (course?.group || ""),
+        type: "Cours" as "Cours" | "TD" | "TP",
+        groups: [] as string[],
         academicYear: new Date().getFullYear().toString(),
         professorId: "",
         semester: 1,
-        day: "Monday",
-        startTime: "08:00",
-        endTime: "10:00",
-        roomId: "",
     });
 
     useEffect(() => {
@@ -86,17 +82,12 @@ export function CourseDialog({
                     specialty: course.specialty || "",
                     degree: (course as any).degree || "Licence",
                     level: (course as any).level || "L1",
-                    type: course.type || "Cours",
-                    group: course.group || "",
+                    type: (course.type as any) || "Cours",
+                    groups: (course as any).groups || (course.group ? [course.group] : []),
                     academicYear: course.academicYear || new Date().getFullYear().toString(),
                     professorId: (course.professor as any)?._id || "",
                     semester: (course as any).semester || 1,
-                    day: course.scheduleInfo?.day || "Monday",
-                    startTime: course.scheduleInfo?.startTime || "08:00",
-                    endTime: course.scheduleInfo?.endTime || "10:00",
-                    roomId: typeof course.scheduleInfo?.room === 'string' ? course.scheduleInfo.room : (course.scheduleInfo?.room as any)?._id || "",
                 });
-                setRoomSearch(typeof course.scheduleInfo?.room === 'string' ? course.scheduleInfo.room : (course.scheduleInfo?.room as any)?._id || "");
             } else {
                 setFormData({
                     name: "",
@@ -106,16 +97,11 @@ export function CourseDialog({
                     degree: "Licence",
                     level: "L1",
                     type: "Cours",
-                    group: "All",
+                    groups: ["All"],
                     academicYear: new Date().getFullYear().toString(),
                     professorId: "",
                     semester: 1,
-                    day: "Monday",
-                    startTime: "08:00",
-                    endTime: "10:00",
-                    roomId: "",
                 });
-                setRoomSearch("");
             }
 
             // Fetch study fields for selection
@@ -240,16 +226,7 @@ export function CourseDialog({
                 throw new Error(data.message || "Something went wrong");
             }
 
-            // Strict Room Validation check before submitting
-            const matchedRoom = rooms.find(r => r.name.toLowerCase() === roomSearch.toLowerCase());
-            if (!matchedRoom) {
-                throw new Error(t("error_invalid_room"));
-            }
-
-            // Ensure the room conflict isn't present for the final room name
-            if (getRoomConflict(matchedRoom.name)) {
-                throw new Error(t("error_room_occupied"));
-            }
+            // Removed legacy room occupancy checks for automated scheduling
 
             toast.success(course ? t("success_course_updated") : t("success_course_created"));
             onSuccess();
@@ -548,8 +525,8 @@ export function CourseDialog({
                                 <Select
                                     value={formData.type}
                                     onValueChange={(val) => {
-                                        const newGroup = val === "Cours" ? "All" : (formData.group === "All" ? "" : formData.group);
-                                        setFormData({ ...formData, type: val as any, group: newGroup });
+                                        const newGroups = val === "Cours" ? ["All"] : (formData.groups.includes("All") ? [] : formData.groups);
+                                        setFormData({ ...formData, type: val as any, groups: newGroups });
                                     }}
                                 >
                                     <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all">
@@ -567,14 +544,13 @@ export function CourseDialog({
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("group")}</Label>
+                                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("groups")}</Label>
                                 {(() => {
                                     const currentField = studyFields.find((f: any) =>
                                         f.code?.toUpperCase().trim() === formData.studyField?.toUpperCase().trim() ||
                                         f._id === formData.studyField
                                     );
 
-                                    // Prioritized Match: Filter by Level, then sort so session-scoped config comes first
                                     const matchingConfigs = academicConfigs.filter((c: any) =>
                                         c.level?.toUpperCase().trim() === formData.level?.toUpperCase().trim()
                                     );
@@ -605,30 +581,69 @@ export function CourseDialog({
                                             ? levelConfig.groups
                                             : [];
 
-                                    return formData.type === "Cours" ? (
-                                        <div className="h-12 bg-primary/5 border-2 border-primary/20 rounded-2xl px-4 flex items-center gap-2 group shadow-sm transition-all animate-in fade-in zoom-in duration-300">
-                                            <Users size={18} className="text-primary" />
-                                            <span className="text-xs font-black uppercase tracking-widest text-primary">{t("all_groups_concerned")}</span>
-                                            <Badge variant="outline" className="ltr:ml-auto rtl:mr-auto border-primary/30 text-[8px] font-bold text-primary px-1.5 py-0">AUTO</Badge>
-                                        </div>
-                                    ) : (
-                                        <Select
-                                            value={formData.group}
-                                            onValueChange={(val) => setFormData({ ...formData, group: val })}
-                                        >
-                                            <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all font-medium uppercase text-xs">
-                                                <SelectValue placeholder={t("select_group")} />
-                                            </SelectTrigger>
-                                            <SelectContent className="rounded-2xl border-border bg-background shadow-xl">
-                                                {groups.map((g: string) => (
-                                                    <SelectItem key={g} value={g} className="rounded-xl font-medium uppercase text-xs">
+                                    if (formData.type === "Cours") {
+                                        return (
+                                            <div className="h-12 bg-primary/5 border-2 border-primary/20 rounded-2xl px-4 flex items-center gap-2 group shadow-sm transition-all animate-in fade-in zoom-in duration-300">
+                                                <Users size={18} className="text-primary" />
+                                                <span className="text-xs font-black uppercase tracking-widest text-primary">{t("all_groups_concerned")}</span>
+                                                <Badge variant="outline" className="ltr:ml-auto rtl:mr-auto border-primary/30 text-[8px] font-bold text-primary px-1.5 py-0">AUTO</Badge>
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {groups.map((g: string) => {
+                                                const isSelected = formData.groups.includes(g);
+                                                return (
+                                                    <button
+                                                        key={g}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newGroups = isSelected
+                                                                ? formData.groups.filter(gr => gr !== g)
+                                                                : [...formData.groups, g];
+                                                            setFormData({ ...formData, groups: newGroups });
+                                                        }}
+                                                        className={cn(
+                                                            "h-10 rounded-xl text-[10px] font-bold uppercase tracking-tight transition-all border-2",
+                                                            isSelected 
+                                                                ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20" 
+                                                                : "bg-muted/30 text-muted-foreground border-transparent hover:bg-muted/50"
+                                                        )}
+                                                    >
                                                         {t("group")} {g}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    )
+                                                    </button>
+                                                );
+                                            })}
+                                            {groups.length === 0 && (
+                                                <div className="col-span-3 py-2 text-center text-[10px] font-bold text-muted-foreground italic">
+                                                    {t("no_groups_found")}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
                                 })()}
+                            </div>
+
+                        </div>
+
+                        {/* Professor & Semester Section */}
+                        <div className="pt-4 border-t border-border/50 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("semester")}</Label>
+                                <Select
+                                    value={formData.semester.toString()}
+                                    onValueChange={(val) => setFormData({ ...formData, semester: parseInt(val) })}
+                                >
+                                    <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-2xl border-border bg-background shadow-xl">
+                                        <SelectItem value="1" className="rounded-xl">{t("semester")} 1</SelectItem>
+                                        <SelectItem value="2" className="rounded-xl">{t("semester")} 2</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div className="space-y-2">
@@ -651,194 +666,6 @@ export function CourseDialog({
                                         ))}
                                     </SelectContent>
                                 </Select>
-                            </div>
-                        </div>
-
-                        {/* Scheduling Section */}
-                        <div className="pt-4 border-t border-border/50">
-                            <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/50 mb-4 block">
-                                {t("scheduling_details")}
-                            </Label>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("semester")}</Label>
-                                    <Select
-                                        value={formData.semester.toString()}
-                                        onValueChange={(val) => setFormData({ ...formData, semester: parseInt(val) })}
-                                    >
-                                        <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent className="rounded-2xl border-border bg-background shadow-xl">
-                                            <SelectItem value="1" className="rounded-xl">{t("semester")} 1</SelectItem>
-                                            <SelectItem value="2" className="rounded-xl">{t("semester")} 2</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("day")}</Label>
-                                    <Select
-                                        value={formData.day}
-                                        onValueChange={(val) => setFormData({ ...formData, day: val })}
-                                    >
-                                        <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent className="rounded-2xl border-border bg-background shadow-xl">
-                                            {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(d => (
-                                                <SelectItem key={d} value={d} className="rounded-xl">{t(d.toLowerCase())}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                                <div className="space-y-2">
-                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("start_time")}</Label>
-                                    <Input
-                                        type="time"
-                                        value={formData.startTime}
-                                        onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                                        className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("end_time")}</Label>
-                                    <Input
-                                        type="time"
-                                        value={formData.endTime}
-                                        onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                                        className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Enhanced Room Selection */}
-                            <div className="space-y-2 mt-4 relative">
-                                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("classroom_room")}</Label>
-                                <div className="relative group z-[20]">
-                                    <div className="absolute inset-y-0 ltr:left-0 rtl:right-0 flex items-center ltr:pl-4 rtl:pr-4 pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
-                                        <MapPin size={18} />
-                                    </div>
-                                    <Input
-                                        placeholder={t("search_rooms")}
-                                        value={roomSearch}
-                                        onChange={(e) => {
-                                            setRoomSearch(e.target.value);
-                                            setFormData({ ...formData, roomId: e.target.value });
-                                            setIsRoomDropdownOpen(true);
-                                        }}
-                                        onFocus={() => setIsRoomDropdownOpen(true)}
-                                        className="h-12 ltr:pl-12 rtl:pr-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all"
-                                        required
-                                    />
-
-                                    {/* Availability Status Badge logic restricted to system rooms only */}
-                                    {roomSearch && (
-                                        <div className="absolute ltr:right-4 rtl:left-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
-                                            {(() => {
-                                                const matchedRoom = rooms.find(r => r.name.toLowerCase() === roomSearch.toLowerCase());
-                                                if (!matchedRoom) return null; // Only show status for rooms that exist in system
-
-                                                const conflict = getRoomConflict(matchedRoom.name);
-                                                if (conflict) {
-                                                    return (
-                                                        <div className="flex items-center gap-1.5 text-destructive bg-destructive/10 px-2.5 py-1 rounded-lg border border-destructive/20 animate-pulse">
-                                                            <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
-                                                            <span className="text-[10px] font-bold uppercase tracking-tight">{t("unavailable")}</span>
-                                                        </div>
-                                                    );
-                                                }
-                                                return (
-                                                    <div className="flex items-center gap-1.5 text-green-500 bg-green-500/10 px-2.5 py-1 rounded-lg border border-green-500/20">
-                                                        <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                                                        <span className="text-[10px] font-bold uppercase tracking-tight">{t("available")}</span>
-                                                    </div>
-                                                );
-                                            })()}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Selection Dropdown */}
-                                {isRoomDropdownOpen && (
-                                    <>
-                                        {/* Localized backdrop to allow closing by clicking outside, with careful Z-index */}
-                                        <div
-                                            className="fixed inset-0 z-[15]"
-                                            onClick={() => setIsRoomDropdownOpen(false)}
-                                        />
-                                        <div className="absolute top-full left-0 right-0 mt-2 p-2 bg-background border border-border shadow-2xl rounded-2xl z-[25] max-h-60 overflow-y-auto scrollbar-none animate-in fade-in slide-in-from-top-2 duration-200">
-                                            {rooms
-                                                .filter(r =>
-                                                    r.name.toLowerCase().includes(roomSearch.toLowerCase())
-                                                )
-                                                .map(room => {
-                                                    const conflict = getRoomConflict(room.name);
-                                                    return (
-                                                        <button
-                                                            key={room._id}
-                                                            type="button"
-                                                            onClick={() => {
-                                                                setRoomSearch(room.name);
-                                                                setFormData({ ...formData, roomId: room.name });
-                                                                setIsRoomDropdownOpen(false);
-                                                            }}
-                                                            className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 transition-colors text-left group"
-                                                        >
-                                                            <div className="flex-1">
-                                                                <p className="font-bold text-sm text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{room.name}</p>
-                                                            </div>
-                                                            <div className="ml-4 ltr:text-left rtl:text-right">
-                                                                {conflict ? (
-                                                                    <div className="ltr:text-right rtl:text-left">
-                                                                        <div className="flex items-center gap-1.5 text-destructive bg-destructive/10 px-2.5 py-1 rounded-lg border border-destructive/20">
-                                                                            <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
-                                                                            <span className="text-[10px] font-bold uppercase tracking-tight">{t("unavailable")}</span>
-                                                                        </div>
-                                                                        <p className="text-[9px] text-destructive/60 mt-1 font-medium">{t("conflicting_with")}: {conflict}</p>
-                                                                    </div>
-                                                                ) : (
-                                                                    <div className="flex items-center gap-1.5 text-green-500 bg-green-500/10 px-2.5 py-1 rounded-lg border border-green-500/20">
-                                                                        <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                                                                        <span className="text-[10px] font-bold uppercase tracking-tight">{t("available")}</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </button>
-                                                    );
-                                                })}
-
-                                            {rooms.length > 0 && rooms.filter(r =>
-                                                r.name.toLowerCase().includes(roomSearch.toLowerCase())
-                                            ).length === 0 && (
-                                                    <div className="p-4 text-center">
-                                                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                                                            {t("no_rooms_matching")} "{roomSearch}"
-                                                        </p>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="mt-2 text-[10px] font-black uppercase text-primary"
-                                                            onClick={() => setIsRoomDropdownOpen(false)}
-                                                        >
-                                                            {t("use_custom_room")}
-                                                        </Button>
-                                                    </div>
-                                                )}
-
-                                            {rooms.length === 0 && (
-                                                <div className="p-4 text-center">
-                                                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                                                        {t("no_rooms_registered")}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </>
-                                )}
                             </div>
                         </div>
                     </div>

@@ -81,6 +81,7 @@ const facultyAdminNav: NavItem[] = [
     { label: "IoT Devices", key: "devices", href: "/admin/devices", icon: <Cpu size={20} /> },
     { label: "Make-up Classes", key: "makeup_classes", href: "/admin/make-up-classes", icon: <CalendarDays size={20} /> },
     { label: "Absences", key: "absences", href: "/admin/absences", icon: <History size={20} /> },
+    { label: "Smart Scheduler", key: "smart_scheduler", href: "/admin/scheduler", icon: <Cpu size={20} /> },
     { label: "Absence Notes", key: "justifications", href: "/admin/justifications", icon: <FileText size={20} />, badge: 0 },
     { label: "Settings", key: "settings", href: "/admin/settings", icon: <Settings size={20} /> },
 ];
