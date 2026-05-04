@@ -83,7 +83,7 @@ export function CourseDialog({
                     degree: (course as any).degree || "Licence",
                     level: (course as any).level || "L1",
                     type: (course.type as any) || "Cours",
-                    groups: (course as any).groups || (course.group ? [course.group] : []),
+                    groups: (course as any).groups || ((course as any).group ? [(course as any).group] : []),
                     academicYear: course.academicYear || new Date().getFullYear().toString(),
                     professorId: (course.professor as any)?._id || "",
                     semester: (course as any).semester || 1,

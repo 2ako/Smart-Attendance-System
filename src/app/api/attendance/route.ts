@@ -62,9 +62,10 @@ export async function POST(req: NextRequest) {
         `*[_type == "session" && _id == $id][0]{
             ...,
             "subject": coalesce(
-                schedule->subject->{ type, level, specialty, group, studyField },
-                subject->{ type, level, specialty, group, studyField }
-            )
+                schedule->subject->{ type, level, specialty, groups, studyField },
+                subject->{ type, level, specialty, groups, studyField }
+            ),
+            "group": coalesce(schedule->group, group)
         }`,
         { id: sessionId }
     );
@@ -81,7 +82,6 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Validation Logic
-    // Helper to extract string value from potential reference or nested object
     const getString = (val: any) => {
         if (!val) return "";
         if (typeof val === "string") return val;
@@ -98,7 +98,6 @@ export async function POST(req: NextRequest) {
     const subField = getString(subject.studyField).trim().toLowerCase();
     const studentSpecialty = getString(student.specialty).trim().toLowerCase();
     const subSpecialty = getString(subject.specialty).trim().toLowerCase();
-    const subType = (subject.type || "").trim().toLowerCase();
 
     // Level and StudyField MUST match
     const fieldMatch = studentField === subField || 
@@ -116,10 +115,8 @@ export async function POST(req: NextRequest) {
         }
     }
 
-    // 3. Group match (Apply to ALL class types if a specific group is targetted)
-    const sessionGroup = getString(session?.group).trim().toUpperCase();
-    const subGroup = getString(subject.group).trim().toUpperCase();
-    const targetGroup = sessionGroup || subGroup;
+    // 3. Group match
+    const targetGroup = getString(session?.group).trim().toUpperCase();
 
     if (targetGroup && targetGroup !== "ALL") {
         if (student.group?.trim().toUpperCase() !== targetGroup) {
@@ -151,12 +148,11 @@ export async function POST(req: NextRequest) {
         console.error("Failed to create manual attendance notification:", notifErr);
     });
 
-    // We use the already-fetched student object to bypass Sanity eventual consistency delays
     const projectedAttendance = {
         _id: attendance._id,
         _type: "attendance",
         session: { _ref: sessionId, _type: "reference" },
-        student: { // Reconstruct using the full object we retrieved for validation
+        student: {
             _id: student._id,
             firstName: student.firstName,
             lastName: student.lastName,

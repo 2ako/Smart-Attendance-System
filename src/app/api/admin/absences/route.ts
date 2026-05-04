@@ -25,7 +25,11 @@ export async function GET(req: NextRequest) {
             const session = await sanityClient.fetch(
                 `*[_type == "session" && _id == $id][0]{
                     ...,
-                    "subject": schedule->subject->{ name, code, level, specialty, group, studyField }
+                    "subject": coalesce(
+                        schedule->subject->{ name, code, level, specialty, groups, studyField },
+                        subject->{ name, code, level, specialty, groups, studyField }
+                    ),
+                    "group": coalesce(schedule->group, group)
                 }`,
                 { id: sessionId }
             );
@@ -39,7 +43,7 @@ export async function GET(req: NextRequest) {
                 level: session.subject.level,
                 studyField: session.subject.studyField,
                 specialty: session.subject.specialty || null,
-                group: session.subject.group || null,
+                group: session.group || null,
             });
 
             return NextResponse.json({ session, cohort });
@@ -60,7 +64,8 @@ export async function GET(req: NextRequest) {
 
         if (level) filtered = filtered.filter((s: any) => s.subject?.level === level);
         if (specialty) filtered = filtered.filter((s: any) => s.subject?.specialty === specialty);
-        if (group) filtered = filtered.filter((s: any) => s.subject?.group === group);
+        // Note: Filter sessions by the SPECIFIC group they were held for
+        if (group) filtered = filtered.filter((s: any) => s.group === group);
         if (professor) {
             filtered = filtered.filter((s: any) =>
                 s.professor?.name?.toLowerCase().includes(professor.toLowerCase())

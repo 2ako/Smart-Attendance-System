@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
         if (!existingSession) {
             return NextResponse.json(
-                { status: 404, code: "NO_ACTIVE_SESSION", description: "Aucune جلسه نشطة لإغلاقها" },
+                { status: 404, code: "NO_ACTIVE_SESSION", description: "Aucun جلسه نشطة لإغلاقها" },
                 { status: 404 }
             );
         }
@@ -60,9 +60,12 @@ export async function POST(req: NextRequest) {
 
         try {
             // Materialize absences (Same logic as manual closure)
-            // Need subject details from the session
             const sessionDetails = await sanityClient.fetch(`*[_type == "session" && _id == $id][0]{
-                "subject": schedule->subject->{ level, specialty, group, studyField }
+                "subject": coalesce(
+                    schedule->subject->{ level, specialty, studyField },
+                    subject->{ level, specialty, studyField }
+                ),
+                "group": coalesce(schedule->group, group)
             }`, { id: existingSession._id });
 
             if (sessionDetails?.subject) {
@@ -72,7 +75,7 @@ export async function POST(req: NextRequest) {
                     level: sessionDetails.subject.level,
                     studyField: sessionDetails.subject.studyField,
                     specialty: sessionDetails.subject.specialty || null,
-                    group: sessionDetails.subject.group || null,
+                    group: sessionDetails.group || null,
                 });
 
                 const absentees = cohort.filter((s: any) => !s.attendance);

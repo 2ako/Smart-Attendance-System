@@ -37,7 +37,11 @@ export async function POST(req: NextRequest) {
         const session = await sanityClient.fetch(
             `*[_type == "session" && _id == $id][0]{
                 ...,
-                "subject": schedule->subject->{ type, level, specialty, group, studyField }
+                "subject": coalesce(
+                    schedule->subject->{ type, level, specialty, groups, studyField },
+                    subject->{ type, level, specialty, groups, studyField }
+                ),
+                "group": coalesce(schedule->group, group)
             }`,
             { id: Session_ID }
         );
@@ -89,8 +93,11 @@ export async function POST(req: NextRequest) {
                 );
             }
 
-            if ((subType === "td" || subType === "tp") &&
-                student.group?.trim().toUpperCase() !== subject.group?.trim().toUpperCase()) {
+            // In our system, a session is specific to a group (from schedule) OR 'All' for Cours.
+            const sessionGroup = (session.group || "All").trim().toUpperCase();
+            const studentGroup = (student.group || "").trim().toUpperCase();
+
+            if (sessionGroup !== "ALL" && studentGroup !== sessionGroup) {
                 return NextResponse.json(
                     { status: 400, code: "GROUP_MISMATCH", description: "Groupe incorrect pour cette session" },
                     { status: 400 }
@@ -129,7 +136,7 @@ export async function POST(req: NextRequest) {
             markedBy: "device",
         });
 
-        // Notify student (optional/fire-and-forget)
+        // Notify student (optional)
         try {
             await sanityClient.create({
                 _type: "notification",

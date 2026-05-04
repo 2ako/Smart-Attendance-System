@@ -26,7 +26,8 @@ export async function GET(req: NextRequest) {
         const session = await sanityClient.fetch(
             `*[_type == "session" && _id == $id][0]{ 
                 ..., 
-                "subject": schedule->subject->{ name, code, type, level, specialty, degree, group, studyField },
+                "subject": schedule->subject->{ name, code, type, level, specialty, degree, groups, studyField },
+                "group": coalesce(schedule->group, group),
                 "professor": professor->user->{ name },
                 "scheduleProfessor": schedule->professor->user->{ name }
             }`,
@@ -61,7 +62,7 @@ export async function GET(req: NextRequest) {
                 level: session.subject.level,
                 studyField: session.subject.studyField,
                 specialty: session.subject.specialty || null,
-                group: session.subject.group || null,
+                group: session.group || null,
             }
         );
 
@@ -153,7 +154,7 @@ export async function GET(req: NextRequest) {
                 generatePage(groupName, groupRecords, index === 0);
             });
         } else {
-            const targetGroup = (session.subject?.group || "N/A").trim();
+            const targetGroup = (session.group || "N/A").trim();
             generatePage(targetGroup, fullAttendance, true);
         }
 

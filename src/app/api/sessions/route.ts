@@ -100,12 +100,12 @@ export async function POST(req: NextRequest) {
     const projectedSession = await sanityClient.fetch(`*[_type == "session" && _id == $id][0]{
         ...,
         "subject": coalesce(
-            schedule->subject->{ name, code, type, level, specialty, group, studyField },
-            subject->{ name, code, type, level, specialty, group, studyField }
+            schedule->subject->{ name, code, type, level, specialty, groups, studyField },
+            subject->{ name, code, type, level, specialty, groups, studyField }
         ),
         "roomName": coalesce(schedule->room->name, room),
         "group": coalesce(schedule->group, group),
-        schedule->{ ..., subject->{ name, code, type, level, specialty, group, studyField }, room }
+        schedule->{ ..., subject->{ name, code, type, level, specialty, groups, studyField }, room }
     }`, { id: session._id });
 
     return NextResponse.json({ session: projectedSession }, { status: 201 });
@@ -144,7 +144,7 @@ export async function PUT(req: NextRequest) {
                 level: session.subject.level,
                 studyField: session.subject.studyField,
                 specialty: session.subject.specialty || null,
-                group: session.subject.group || null,
+                group: session.group || null,
             });
 
             const absentees = cohort.filter((s: any) => !s.attendance);

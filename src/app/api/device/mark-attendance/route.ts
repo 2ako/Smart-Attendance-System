@@ -38,9 +38,10 @@ export async function POST(req: NextRequest) {
         `*[_type == "session" && _id == $id][0]{
             ...,
             "subject": coalesce(
-                schedule->subject->{ type, level, specialty, group, studyField },
-                subject->{ type, level, specialty, group, studyField }
-            )
+                schedule->subject->{ type, level, specialty, groups, studyField },
+                subject->{ type, level, specialty, groups, studyField }
+            ),
+            "group": coalesce(schedule->group, group)
         }`,
         { id: sessionId }
     );
@@ -118,9 +119,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Group match (Apply to ALL class types if a specific group is targetted)
-    const sessionGroup = getString(sessionWithSubject?.group).trim().toUpperCase();
-    const subGroup = getString(subject.group).trim().toUpperCase();
-    const targetGroup = sessionGroup || subGroup;
+    const targetGroup = getString(sessionWithSubject?.group).trim().toUpperCase();
 
     if (targetGroup && targetGroup !== "ALL") {
         if (student.group?.trim().toUpperCase() !== targetGroup) {

@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
     const session = await sanityClient.fetch(
         `*[_type == "session" && _id == $id][0]{ 
             ..., 
-            "subject": schedule->subject->{ name, code, type, level, specialty, group, studyField },
+            "subject": schedule->subject->{ name, code, type, level, specialty, groups, studyField },
+            "group": coalesce(schedule->group, group),
             "professor": professor->user->{ name },
             "scheduleProfessor": schedule->professor->user->{ name }
         }`,
@@ -40,7 +41,6 @@ export async function GET(req: NextRequest) {
     const isCours = sessionType.toLowerCase() === "cours";
 
     // 2. Fetch ALL students that SHOULD be in this session (Cohort)
-    // Use the same lenient studyField matching as in other places
     const cohort = await sanityClient.fetch(
         `*[_type == "student" && 
           level == $level && 
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
             level: session.subject.level,
             studyField: session.subject.studyField,
             specialty: session.subject.specialty || null,
-            group: session.subject.group || null,
+            group: session.group || null,
         }
     );
 
@@ -113,8 +113,6 @@ export async function GET(req: NextRequest) {
 
     // 5. Logic for split by group (Cours) or single group (TD/TP)
     if (isCours) {
-        // Find all unique groups
-        // Filter out null/undefined and normalize
         const groups = Array.from(new Set(fullAttendance.map((a: any) => (a.student?.group || "N/A").trim()))).sort();
 
         if (groups.length === 0) {
@@ -140,7 +138,7 @@ export async function GET(req: NextRequest) {
             });
         }
     } else {
-        const targetGroup = (session.subject?.group || "N/A").trim();
+        const targetGroup = (session.group || "N/A").trim();
         const data = formatData(fullAttendance);
         const academicInfo = `${session.subject?.level || ""} ${session.subject?.specialty || ""}`.trim();
         const ws = XLSX.utils.aoa_to_sheet([

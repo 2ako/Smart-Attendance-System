@@ -219,7 +219,9 @@ export default function SubjectCatalogPage() {
                                                                     {subject.level}
                                                                 </Badge>
                                                                 <span className="text-xs font-medium text-foreground/70">
-                                                                    {subject.group === "All" ? t("all_groups_concerned") : `${t("group_prefix")} ${subject.group}`}
+                                                                    {subject.groups && subject.groups.length > 0 ? 
+                                                                        subject.groups.join(", ") : 
+                                                                        (subject.group === "All" ? t("all_groups_concerned") : `${t("group_prefix")} ${subject.group || ""}`)}
                                                                 </span>
                                                             </div>
                                                             <p className="text-[10px] text-muted-foreground font-bold uppercase truncate max-w-[150px] text-start">
@@ -335,7 +337,9 @@ export default function SubjectCatalogPage() {
                                                     {subject.type}
                                                 </Badge>
                                                 <Badge variant="outline" className="text-[9px] font-bold px-2 py-1 border-muted-foreground/20 text-muted-foreground uppercase">
-                                                    {subject.group === "All" ? t("all") : `${t("group_prefix")} ${subject.group}`}
+                                                    {subject.groups && subject.groups.length > 0 ? 
+                                                        subject.groups.join(", ") : 
+                                                        (subject.group === "All" ? t("all") : `${t("group_prefix")} ${subject.group || ""}`)}
                                                 </Badge>
                                             </div>
 
