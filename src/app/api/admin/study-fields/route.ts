@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { sanityClient } from "@/lib/sanity/client";
-import { getCurrentUser, isSuperAdmin, isAssignedAdmin } from "@/lib/auth";
+import { getCurrentUser, hasRole, isSuperAdmin, isAssignedAdmin } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
     try {

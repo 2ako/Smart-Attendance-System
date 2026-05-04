@@ -73,7 +73,7 @@ export function CreateMakeUpSessionDialog({
         setIsSubmitting(true);
         try {
             const roomName = rooms.find(r => r._id === selectedRoomId)?.name;
-            const res = await fetch("/api/admin/make-up-requests", {
+            const res = await fetch("/api/admin/makeup-requests", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

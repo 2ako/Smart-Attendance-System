@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
                 tokenLength: token.length,
                 cookieOptions,
                 nodeEnv: process.env.NODE_ENV
-            }
+			}
         });
     } catch (error) {
         console.error("Login error:", error);

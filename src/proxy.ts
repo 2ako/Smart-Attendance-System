@@ -19,8 +19,9 @@ const roleRouteMap: Record<string, string> = {
 
 import { TOKEN_COOKIE_NAME } from "@/lib/auth";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl;
+    console.log("Middleware hitting:", pathname);
 
     // Skip API routes and static files
     if (pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname === "/login") {

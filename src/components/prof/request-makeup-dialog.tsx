@@ -45,7 +45,7 @@ export function RequestMakeUpDialog({
 
         setIsSubmitting(true);
         try {
-            const res = await fetch("/api/prof/make-up-requests", {
+            const res = await fetch("/api/prof/makeup-requests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

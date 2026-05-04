@@ -48,7 +48,7 @@ export default function AdminMakeUpClassesPage() {
     const fetchRequests = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch("/api/admin/make-up-requests");
+            const res = await fetch("/api/admin/makeup-requests");
             if (res.ok) {
                 const data = await res.json();
                 setRequests(data.requests || []);
@@ -68,7 +68,7 @@ export default function AdminMakeUpClassesPage() {
     const handleReject = async (id: string) => {
         setUpdatingId(id);
         try {
-            const res = await fetch("/api/admin/make-up-requests", {
+            const res = await fetch("/api/admin/makeup-requests", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id, status: "rejected" }),

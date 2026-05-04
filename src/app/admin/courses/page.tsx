@@ -240,7 +240,7 @@ export default function AdminCoursesPage() {
                                                                 <Users size={12} className="text-zinc-400" />
                                                             </div>
                                                             <span className="text-[10px] font-black uppercase tracking-widest text-primary ltr:mr-1 rtl:ml-1">
-                                                                {course.type === "Cours" ? t("all") : (course.group || "N/A")}
+                                                                {course.type === "Cours" ? t("all") : ((course as any).group || "N/A")}
                                                             </span>
                                                             <Badge variant="outline" className="text-[8px] font-bold h-4 px-1 border-primary/20 text-primary/70">{(course as any).level || "L1"}</Badge>
                                                         </div>
@@ -374,7 +374,7 @@ export default function AdminCoursesPage() {
                                                     <Users size={12} />
                                                     <span className="text-[9px] font-bold uppercase tracking-widest">{t("cohort")}</span>
                                                 </div>
-                                                <p className="text-xs font-black text-primary">{(course as any).level || "L1"} - {course.group || "G1"}</p>
+                                                <p className="text-xs font-black text-primary">{(course as any).level || "L1"} - {(course as any).group || "G1"}</p>
                                             </div>
                                             <div className="p-3 rounded-2xl bg-background/50 border border-border/40 space-y-1">
                                                 <div className="flex items-center gap-1.5 text-zinc-400">
