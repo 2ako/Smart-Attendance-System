@@ -27,7 +27,9 @@ export const TIME_CONFIGS = [
 
 export interface Gene {
     subjectId: string;
+    subjectName?: string;
     professorId: string;
+    professorName?: string;
     roomId: string;
     slotId: number; // Index in the total timeline
     groups?: string[];

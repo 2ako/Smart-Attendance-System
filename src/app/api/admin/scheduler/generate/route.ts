@@ -4,11 +4,15 @@ import { SchedulerEngine } from "@/lib/scheduler/engine";
 
 export async function GET() {
     try {
+        const allSubjects = await sanityClient.fetch(`*[_type == "subject"]{ _id }`);
         // 1. Fetch academic data
         const subjects = await sanityClient.fetch(`*[_type == "subject" && defined(professor)]{
             _id, name, code, level, specialty, groups, type,
             professor->{ _id, name }
         }`);
+        
+        console.log(`[Scheduler API] Total Subjects in DB: ${allSubjects.length}`);
+        console.log(`[Scheduler API] Subjects with Professors: ${subjects.length}`);
         
         const rooms = await sanityClient.fetch(`*[_type == "room"]{
             _id, name, capacity, studyField->{ name }

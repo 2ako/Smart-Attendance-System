@@ -24,6 +24,17 @@ export class SchedulerEngine {
      * Entry point: Hybrid Generation
      */
     public async generate(): Promise<Chromosome> {
+        const totalRooms = this.input.rooms.length;
+        const totalSlots = DAYS.length * SLOTS_PER_DAY;
+        const totalCapacity = totalRooms * totalSlots;
+        
+        console.log(`[Scheduler Engine] Starting generation for ${this.input.subjects.length} subjects.`);
+        console.log(`[Scheduler Engine] Infrastructure: ${totalRooms} rooms, ${totalSlots} slots, Total Capacity: ${totalCapacity}`);
+
+        if (this.input.subjects.length > totalCapacity) {
+            console.warn(`[Scheduler Engine] WARNING: SUBJECT OVERFLOW detected! Total subjects (${this.input.subjects.length}) exceeds total room capacity (${totalCapacity}). Some conflicts are unavoidable.`);
+        }
+
         this.initializePopulation();
         
         for (let g = 0; g < this.generations; g++) {
@@ -48,52 +59,53 @@ export class SchedulerEngine {
     private initializePopulation() {
         const totalSlots = DAYS.length * SLOTS_PER_DAY;
 
-        // Warm Start: If existing schedules provided, use them as seeds
-        if (this.input.existingSchedules && this.input.existingSchedules.length > 0) {
-            const seedGenes: Gene[] = this.input.existingSchedules.map(s => ({
-                subjectId: s.subject?._id,
-                professorId: s.professor?._id,
-                roomId: s.room, // Note: Schema uses string for room
-                slotId: this.getSlotId(s.day, s.startTime),
-                groups: s.groups || [s.group].filter(Boolean),
-                type: s.subject?.type
-            }));
-            this.population.push(evaluateFitness({ genes: seedGenes, fitness: 0, conflicts: [] }));
-        }
-
-        // Smart Initialization: Greedy-ish
-        while (this.population.length < this.populationSize) {
-            const genes: Gene[] = this.input.subjects.flatMap(sub => {
-                const dayIdx = Math.floor(Math.random() * DAYS.length);
-                const slotIdx = Math.floor(Math.random() * SLOTS_PER_DAY);
-                const room = this.input.rooms[Math.floor(Math.random() * this.input.rooms.length)];
+        // Helper to generate a full set of genes
+        const generateFullSet = (useExisting = false) => {
+            return this.input.subjects.flatMap(sub => {
+                // Check if this subject already has a placement in existingSchedules
+                const existing = useExisting ? this.input.existingSchedules?.find(s => s.subject?._id === sub._id) : null;
                 
+                const dayIdx = existing ? DAYS.indexOf(existing.day as any) : Math.floor(Math.random() * DAYS.length);
+                const slotIdx = existing ? Math.floor((parseInt(existing.startTime.split(":")[0]) - 8) / 1.5) : Math.floor(Math.random() * SLOTS_PER_DAY);
+                const roomName = existing ? existing.room : this.input.rooms[Math.floor(Math.random() * this.input.rooms.length)].name;
+
                 const baseGene = {
                     subjectId: sub._id,
-                    professorId: sub.professor?._ref || sub.professor?._id,
-                    roomId: room.name,
-                    slotId: dayIdx * SLOTS_PER_DAY + slotIdx,
+                    subjectName: sub.name,
+                    professorId: sub.professor?._ref || sub.professor?._id || "UNKNOWN_PROF",
+                    professorName: sub.professor?.name || "Unknown",
+                    roomId: roomName,
+                    slotId: Math.max(0, Math.min(totalSlots - 1, dayIdx * SLOTS_PER_DAY + slotIdx)),
                     level: sub.level,
                     specialty: sub.specialty,
-                    type: sub.type
+                    type: sub.type || "Cours"
                 };
 
-                // Split TD/TP into separate genes for each group
                 if ((sub.type === "TD" || sub.type === "TP") && sub.groups && sub.groups.length > 1) {
-                    return sub.groups.map(group => ({
+                    return sub.groups.map((group: string, idx: number) => ({
                         ...baseGene,
                         groups: [group],
-                        // Randomize slot slightly for each group to avoid starting with immediate horizontal conflicts
-                        slotId: Math.min(totalSlots - 1, baseGene.slotId + Math.floor(Math.random() * 5))
+                        // If it's a seed, we try to preserve the existing slot for the first group at least
+                        slotId: existing ? baseGene.slotId : Math.min(totalSlots - 1, baseGene.slotId + idx)
                     }));
                 }
 
-                // Lectures (Cours) or single-group TD/TP stay as one gene
                 return [{
                     ...baseGene,
                     groups: sub.groups || [sub.group].filter(Boolean)
                 }];
             });
+        };
+
+        // 1. Add "Seeded" Chromosome (Honors existing schedules if possible)
+        if (this.input.existingSchedules && this.input.existingSchedules.length > 0) {
+            const seedGenes = generateFullSet(true);
+            this.population.push(evaluateFitness({ genes: seedGenes, fitness: 0, conflicts: [] }));
+        }
+
+        // 2. Fill the rest with random (but complete) chromosomes
+        while (this.population.length < this.populationSize) {
+            const genes = generateFullSet(false);
             this.population.push(evaluateFitness({ genes, fitness: 0, conflicts: [] }));
         }
         
