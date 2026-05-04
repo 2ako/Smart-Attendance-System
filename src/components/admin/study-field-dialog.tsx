@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Loader2, Plus, X, GraduationCap, Settings2, Layers, Tag } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/context";

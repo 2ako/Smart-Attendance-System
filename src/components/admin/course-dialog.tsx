@@ -50,12 +50,8 @@ export function CourseDialog({
     const { user: currentUser } = useAuth();
     const [loading, setLoading] = useState(false);
     const [professors, setProfessors] = useState<Professor[]>([]);
-    const [rooms, setRooms] = useState<any[]>([]);
-    const [allSubjects, setAllSubjects] = useState<any[]>([]);
     const [studyFields, setStudyFields] = useState<any[]>([]);
     const [academicConfigs, setAcademicConfigs] = useState<any[]>([]);
-    const [roomSearch, setRoomSearch] = useState("");
-    const [isRoomDropdownOpen, setIsRoomDropdownOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -133,52 +129,14 @@ export function CourseDialog({
 
     const fetchInitialData = async () => {
         try {
-            const [profsRes, roomsRes, subsRes] = await Promise.all([
-                fetch("/api/professors"),
-                fetch("/api/admin/rooms"),
-                fetch("/api/admin/subjects")
-            ]);
-
-            const [profsData, roomsData, subsData] = await Promise.all([
-                profsRes.json(),
-                roomsRes.json(),
-                subsRes.json()
-            ]);
-
+            const profsRes = await fetch("/api/professors");
+            const profsData = await profsRes.json();
             if (profsRes.ok) setProfessors(profsData.professors || []);
-            if (roomsRes.ok) setRooms(roomsData.rooms || []);
-            if (subsRes.ok) setAllSubjects(subsData.subjects || []);
-
         } catch (error) {
             console.error("Failed to fetch initial data:", error);
         }
     };
 
-    // Conflict Detection Logic
-    const getRoomConflict = (roomName: string) => {
-        if (!roomName || !formData.day || !formData.startTime || !formData.endTime) return null;
-
-        const toNum = (t: string) => parseInt(t.replace(":", ""), 10);
-        const start = toNum(formData.startTime);
-        const end = toNum(formData.endTime);
-
-        const conflict = allSubjects.find((s: any) => {
-            // Skip current course if editing
-            if (course && s._id === course._id) return false;
-
-            const info = s.scheduleInfo;
-            if (!info || (info.room !== roomName && (info.room as any)?._id !== roomName)) return false;
-            if (info.day !== formData.day) return false;
-
-            const sStart = toNum(info.startTime);
-            const sEnd = toNum(info.endTime);
-
-            // Conflict if: [start, end] overlaps with [sStart, sEnd]
-            return (start < sEnd && end > sStart);
-        });
-
-        return conflict ? conflict.name : null;
-    };
 
 
     const handleDegreeChange = (val: string) => {
@@ -200,8 +158,7 @@ export function CourseDialog({
             ...formData,
             degree,
             level: defaultLevel,
-            specialty: "",
-            group: ""
+            specialty: ""
         });
     };
 
@@ -341,7 +298,7 @@ export function CourseDialog({
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ltr:ml-1 rtl:mr-1">{t("level")}</Label>
                                 <Select
                                     value={formData.level}
-                                    onValueChange={(val) => setFormData({ ...formData, level: val, specialty: "", group: "" })}
+                                    onValueChange={(val) => setFormData({ ...formData, level: val, specialty: "", groups: [] })}
                                 >
                                     <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all">
                                         <SelectValue />
@@ -435,7 +392,7 @@ export function CourseDialog({
                                             ...formData,
                                             studyField: val,
                                             specialty: "",
-                                            group: ""
+                                            groups: []
                                         })}
                                     >
                                         <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all font-medium">
@@ -494,7 +451,7 @@ export function CourseDialog({
                                     return (
                                         <Select
                                             value={formData.specialty || "none"}
-                                            onValueChange={(val) => setFormData({ ...formData, specialty: val === "none" ? "" : val, group: "" })}
+                                            onValueChange={(val) => setFormData({ ...formData, specialty: val === "none" ? "" : val, groups: [] })}
                                         >
                                             <SelectTrigger className="h-12 bg-muted/30 border-none rounded-2xl focus:bg-background transition-all font-medium uppercase text-xs">
                                                 <SelectValue placeholder={t("select_specialty")} />
