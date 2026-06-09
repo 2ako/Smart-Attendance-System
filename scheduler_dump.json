@@ -1,0 +1,4511 @@
+{
+  "subjects": [
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZ3d",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Algorithms & Data Structures (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyZJ",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZDB",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Mathematical Logic (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZFZ",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Operating Systems (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZHx",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Computer Networks (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZQu",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Computer Networks (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZTI",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Software Engineering (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZVg",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Artificial Intelligence (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZbe",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Information Security (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZfE",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Mobile Computing (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZhc",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Distributed Systems (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZmz",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Distributed Systems (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZqZ",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Cloud Computing (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZvw",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Computer Architecture (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkZyK",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Numerical Analysis (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkaCe",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Theory of Computation (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkaF2",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Theory of Computation (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkaKP",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Image Processing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkaMn",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Big Data Analytics (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkaQN",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Big Data Analytics (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkaSl",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Internet of Things (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxu5",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkaV9",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Internet of Things (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkab7",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Cybersecurity (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkae6",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Cybersecurity (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkagU",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Natural Language Processing (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkais",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Graph Theory (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkane",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Advanced Databases (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNua7LG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkatc",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mathematical Logic (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNua7LG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkb6k",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Artificial Intelligence (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbCi",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Artificial Intelligence (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbGI",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Information Security (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbKT",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mobile Computing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbNS",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Machine Learning (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbQR",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Machine Learning (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbVo",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Computer Architecture (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbYC",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Probability and Statistics (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbaa",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Probability and Statistics (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbsU",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Optimization Techniques (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkbw4",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Optimization Techniques (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkc9C",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Embedded Systems (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcDN",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Big Data Analytics (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcFl",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Internet of Things (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcPu",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Cybersecurity (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcSt",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Natural Language Processing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcVH",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Robotics (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcXf",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Graph Theory (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcbF",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Graph Theory (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcep",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Advanced Databases (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcho",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Advanced Databases (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkckC",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Advanced Databases (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcnm",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Algorithms & Data Structures (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkcqA",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mathematical Logic (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkeYO",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Software Engineering (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkejj",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Artificial Intelligence (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkemi",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Information Security (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkeph",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Information Security (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxu5",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkes5",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Web Development (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkeuT",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Web Development (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkewr",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mobile Computing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkfeQ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Machine Learning (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkfgo",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Distributed Systems (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkfjC",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Distributed Systems (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkfmm",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cloud Computing (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkfzu",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Computer Architecture (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkg2I",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Computer Architecture (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkg8G",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Probability and Statistics (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkgWj",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Optimization Techniques (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkgZ7",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Optimization Techniques (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkgkS",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cybersecurity (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyZJ",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkgmq",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cybersecurity (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkgxa",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Natural Language Processing (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZzaI",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkgzy",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Graph Theory (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkh2M",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Advanced Databases (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkh4k",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Algorithms & Data Structures (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkh78",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mathematical Logic (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkh9W",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mathematical Logic (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkhBu",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Computer Networks (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkhFU",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Artificial Intelligence (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkhHs",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Information Security (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNua7LG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TP"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkhM3",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Distributed Systems (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkhOR",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Distributed Systems (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkhQp",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cloud Computing (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSkhUP",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Human-Computer Interaction (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXxJR",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Mathematical Logic (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXxUU",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Mathematical Logic (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXxdK",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Operating Systems (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXxqa",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Database Management (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXyCg",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Artificial Intelligence (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXyLW",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Artificial Intelligence (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXyUM",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Web Development (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXydC",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Mobile Computing (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wXz1V",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Cloud Computing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY5P2",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Human-Computer Interaction (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY5Xs",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Human-Computer Interaction (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY5gi",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Human-Computer Interaction (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY5pY",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Computer Architecture (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY5yO",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Computer Architecture (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY6pQ",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Probability and Statistics (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY72g",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Optimization Techniques (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY7BW",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Embedded Systems (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY7KM",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Image Processing (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY7TC",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Internet of Things (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY7if",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Cybersecurity (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY89B",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Robotics (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYNG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY8I1",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Graph Theory (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY8Qr",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Advanced Databases (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY8mx",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Algorithms & Data Structures (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY90D",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mathematical Logic (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wY9BG",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mathematical Logic (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYA8v",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Operating Systems (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYAHl",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Software Engineering (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYAQb",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Software Engineering (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYAg4",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Artificial Intelligence (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZzaI",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYAtK",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Information Security (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYB2A",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Information Security (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNua7LG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYBJq",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Cloud Computing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYC8f",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Numerical Analysis (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYCHV",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Numerical Analysis (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYCQL",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Probability and Statistics (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYCoe",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Optimization Techniques (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYECp",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Embedded Systems (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyZJ",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYEjy",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Image Processing (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYEzR",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Big Data Analytics (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYJL1",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Internet of Things (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYJTr",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Internet of Things (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxu5",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYJch",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Cybersecurity (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYKC3",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mathematical Logic (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYKaM",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Operating Systems (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYKnc",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Operating Systems (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYKyf",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Computer Networks (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYLBv",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Database Management (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYLMy",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Database Management (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYLaE",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Database Management (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYM7N",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Software Engineering (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYMP3",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Artificial Intelligence (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYMXt",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Information Security (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYMl9",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Web Development (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxu5",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYOVQ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Numerical Analysis (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyZJ",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYPrO",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Embedded Systems (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYQ0E",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Image Processing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxu5",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYQ94",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Internet of Things (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYQHu",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Internet of Things (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYQQk",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Robotics (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYQZa",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Robotics (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYQiQ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Advanced Databases (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYQrG",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Advanced Databases (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYR06",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Algorithms & Data Structures (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYRFZ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Database Management (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYRSp",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Database Management (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYRmi",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Software Engineering (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYS4O",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Software Engineering (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYSFR",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Information Security (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYSX7",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Web Development (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYSfx",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mobile Computing (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYSon",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Machine Learning (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYSxd",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Machine Learning (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYT6T",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Machine Learning (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TP"
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wYTWz",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cloud Computing (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyZJ",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua7TH",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Algorithms & Data Structures (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua7vu",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Computer Networks (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua83v",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Database Management (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua88V",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L1",
+      "name": "Software Engineering (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua8D5",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Information Security (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua8Io",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Web Development (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua8OX",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Web Development (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua8UG",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Mobile Computing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua8Zz",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Machine Learning (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua8i0",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Machine Learning (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZzaI",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua91T",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Distributed Systems (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua98L",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L2",
+      "name": "Cloud Computing (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": null,
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua9iz",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Numerical Analysis (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua9nZ",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Numerical Analysis (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua9s9",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Probability and Statistics (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxXB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNua9wj",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Probability and Statistics (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaA1J",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Optimization Techniques (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYNG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaA8B",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Embedded Systems (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaAIU",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Image Processing (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": "ISIL",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaAPM",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Big Data Analytics (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZzaI",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaAXN",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Natural Language Processing (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaAbx",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Robotics (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaAmG",
+      "groups": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "level": "L3",
+      "name": "Advanced Databases (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaAt8",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Algorithms & Data Structures (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkY9X",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaAxi",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Algorithms & Data Structures (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaBKc",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Operating Systems (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaBPC",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Operating Systems (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNua7LG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaBUv",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Computer Networks (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaBbn",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Computer Networks (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaBhW",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Database Management (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaBm6",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Database Management (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaCzg",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Web Development (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaD4G",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Web Development (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaD8q",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mobile Computing (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNua7LG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDDQ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Machine Learning (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDKI",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Distributed Systems (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDOs",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Distributed Systems (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDTS",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Cloud Computing (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDY2",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Human-Computer Interaction (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxe3",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDg3",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Human-Computer Interaction (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDo4",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Computer Architecture (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDse",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Numerical Analysis (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaDzW",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Theory of Computation (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaE46",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Theory of Computation (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYNG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaEVa",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Image Processing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaEek",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Big Data Analytics (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZxu5",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaF3w",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Natural Language Processing (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaF8W",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Natural Language Processing (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpBd",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaFD6",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Robotics (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaFHg",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Robotics (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaFPh",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Graph Theory (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaFWZ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Algorithms & Data Structures (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaFb9",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Mathematical Logic (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaFlS",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Operating Systems (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYTp",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaFrB",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M1",
+      "name": "Computer Networks (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWl0",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaIqh",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mobile Computing (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaIxZ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mobile Computing (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJ3I",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Machine Learning (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJAA",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cloud Computing (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJEk",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cloud Computing (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJNu",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Human-Computer Interaction (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJUm",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Human-Computer Interaction (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJZM",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Human-Computer Interaction (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SI",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJdw",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Numerical Analysis (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJiW",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Numerical Analysis (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNua7LG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaJqX",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Probability and Statistics (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZzaI",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaL0g",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Probability and Statistics (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaL6P",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Theory of Computation (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLAz",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Theory of Computation (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLFZ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Optimization Techniques (TP)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLNa",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Embedded Systems (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXppP",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLSA",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Image Processing (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLld",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Image Processing (TP)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZx4Y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLqD",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Big Data Analytics (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZy8y",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLun",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Big Data Analytics (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZwjw",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaLzN",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cybersecurity (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZzaI",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaM7O",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Natural Language Processing (Cours)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyTa",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMFP",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Natural Language Processing (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMJz",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Graph Theory (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZyZJ",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMOZ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Algorithms & Data Structures (Cours)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYKH",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMeb",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mathematical Logic (TP)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkYNG",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TP"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMjB",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Operating Systems (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXpKT",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMnl",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Operating Systems (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMsL",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Computer Networks (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaMwv",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Computer Networks (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaN1V",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Database Management (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaNOP",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Artificial Intelligence (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqKL",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaNSz",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Artificial Intelligence (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXqie",
+        "name": null
+      },
+      "room": null,
+      "specialty": "SIAA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaNXZ",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Information Security (TD)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXrkj",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaNeR",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Web Development (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkXig",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaNkA",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Mobile Computing (Cours)",
+      "professor": {
+        "_id": "SKF7Uc4hD777mU6Q3wXoTR",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "Cours"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaO5v",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Cloud Computing (TD)",
+      "professor": {
+        "_id": "p4qN48LIhvFeJGFxNuZygB",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuaOAV",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "Human-Computer Interaction (TD)",
+      "professor": {
+        "_id": "B6qUbx5V3vkkKCjzbSkWnO",
+        "name": null
+      },
+      "room": null,
+      "specialty": "IA",
+      "type": "TD"
+    },
+    {
+      "_id": "subject-1r8d6f21m",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "artificial intellegence",
+      "professor": {
+        "_id": "lrEKT3mkAq04ZNADnZ15Wi",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TD"
+    },
+    {
+      "_id": "subject-5hvc4b6mu",
+      "groups": [
+        "G1",
+        "G2"
+      ],
+      "level": "M2",
+      "name": "artificial intellegence",
+      "professor": {
+        "_id": "lrEKT3mkAq04ZNADnZ15Wi",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": "TP"
+    },
+    {
+      "_id": "subject-ai",
+      "groups": null,
+      "level": "M2",
+      "name": "artificial intellegence",
+      "professor": {
+        "_id": "lrEKT3mkAq04ZNADnZ15Wi",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": null
+    },
+    {
+      "_id": "subject-erg",
+      "groups": null,
+      "level": "M2",
+      "name": "ergonomie web",
+      "professor": {
+        "_id": "lrEKT3mkAq04ZNADnZ15Wi",
+        "name": null
+      },
+      "room": null,
+      "specialty": "RSD",
+      "type": null
+    },
+    {
+      "_id": "subject-web",
+      "groups": null,
+      "level": "M2",
+      "name": "web 3",
+      "professor": {
+        "_id": "lrEKT3mkAq04ZNADnZ15Wi",
+        "name": null
+      },
+      "room": null,
+      "specialty": "GL",
+      "type": null
+    }
+  ],
+  "rooms": [
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSn4wz",
+      "name": "salle 22",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSn67C",
+      "name": "salle 25",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSn6Y3",
+      "name": "salle 26",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSn7Ib",
+      "name": "salle 28",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSnAMN",
+      "name": "salle 35",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSnGoD",
+      "name": "salle 38",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSnI1P",
+      "name": "salle 40",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSnMIN",
+      "name": "Amphi 2",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "B6qUbx5V3vkkKCjzbSnOFW",
+      "name": "Salle tp4",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "JIz3g7LvdHBOwcUTBdttHI",
+      "name": "salle 20",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3whwwt",
+      "name": "salle 21",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wiKG1",
+      "name": "salle 27",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wiNZW",
+      "name": "salle 31",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wiTS7",
+      "name": "salle 34",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wiUNZ",
+      "name": "salle 36",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wiXGY",
+      "name": "salle 37",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wigdh",
+      "name": "Amphi 1",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "SKF7Uc4hD777mU6Q3wisrc",
+      "name": "Salle tp1",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNufp9y",
+      "name": "salle 23",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNuft4k",
+      "name": "salle 24",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNufxIz",
+      "name": "salle 29",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNufxlc",
+      "name": "salle 30",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNufyb9",
+      "name": "salle 32",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNufzJo",
+      "name": "salle 33",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNugEIX",
+      "name": "Amphi 3",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNugEeI",
+      "name": "Amphi 4",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNugI5I",
+      "name": "Salle tp2",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "p4qN48LIhvFeJGFxNugIvy",
+      "name": "Salle tp3",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    },
+    {
+      "_id": "rl86LHKph9JM72qUZvFTxQ",
+      "name": "salle 39",
+      "studyField": {
+        "_id": "j0B5CSauGKXr39MLqczpjk",
+        "code": "INFO",
+        "name": "INFORMATIQUE"
+      },
+      "type": null
+    }
+  ]
+}

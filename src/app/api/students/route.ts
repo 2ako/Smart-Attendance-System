@@ -157,40 +157,55 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ message: "ID required" }, { status: 400 });
         }
 
-        // Get the user ref before deleting
-        const existing = await sanityClient.fetch(`*[_type == "student" && _id == $id][0]{ user, studyField }`, { id });
+        // 1. Get the user ref and any referencing documents before deleting
+        const existing = await sanityClient.fetch(`*[_type == "student" && _id == $id][0]{ 
+            user, 
+            studyField,
+            "referencingIds": *[references(^._id)]{ _id }
+        }`, { id });
+
+        if (!existing) {
+            return NextResponse.json({ message: "Student not found" }, { status: 404 });
+        }
 
         const userField = user?.studyField?.trim().toLowerCase();
         const existingField = existing?.studyField?.trim().toLowerCase();
 
         // Safety check: ensure admin can only delete students in their scope (lenient matching)
         const isOutOfScope = user?.role === "admin" && userField && existingField &&
-            !(existingField === userField || (userField.length >= 3 && existingField.startsWith(userField)) || (existingField.length >= 3 && userField.startsWith(existingField)));
+            !(existingField === userField || (userField.length >= 3 && existingField.startsWith(userField)) || (existingField.startsWith(userField)));
 
         if (isOutOfScope) {
             return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
         }
 
-        // Delete student document
-        await sanityClient.delete(id);
+        // 2. Prepare transaction for cascading delete
+        const transaction = sanityClient.transaction();
 
-        // Delete associated user account
-        if (existing?.user?._ref) {
-            await sanityClient.delete(existing.user._ref);
+        // Add all referencing documents to the transaction
+        if (existing.referencingIds && Array.isArray(existing.referencingIds)) {
+            existing.referencingIds.forEach((ref: { _id: string }) => {
+                transaction.delete(ref._id);
+            });
         }
 
-        return NextResponse.json({ message: "Student deleted" });
+        // Add associated user account if exists
+        if (existing?.user?._ref) {
+            transaction.delete(existing.user._ref);
+        }
+
+        // Finally, delete the student document itself
+        transaction.delete(id);
+
+        // Commit the transaction
+        await transaction.commit();
+
+        return NextResponse.json({ 
+            message: "Student and all related records deleted successfully",
+            deletedCount: (existing.referencingIds?.length || 0) + 2
+        });
     } catch (error: any) {
         console.error("DELETE Student Error:", error);
-
-        // Check for reference constraint errors from Sanity
-        if (error.message?.includes("reference")) {
-            return NextResponse.json(
-                { message: "Cannot delete this student because they are referenced in attendance records. Delete those records first." },
-                { status: 409 }
-            );
-        }
-
         return NextResponse.json(
             { message: error.message || "Failed to delete student" },
             { status: 500 }

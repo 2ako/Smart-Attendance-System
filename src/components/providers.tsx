@@ -9,7 +9,7 @@ import { I18nProvider } from "@/lib/i18n/context";
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <I18nProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem enableColorScheme={false}>
                 <AuthProvider>
                     {children}
                     <Toaster position="top-right" richColors closeButton />

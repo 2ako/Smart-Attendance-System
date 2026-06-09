@@ -69,9 +69,10 @@ export async function PUT(req: NextRequest) {
     const { _id, professorId, ...data } = await req.json();
     const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]`, { id: _id });
 
+    const existingSf = typeof existing?.studyField === "object" ? (existing.studyField._ref || existing.studyField._id) : existing?.studyField;
+
     // Safety check: ensure admin can only edit subjects in their scope
-    // Enhanced: Allow if existing studyField is missing or matches
-    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField && existing.studyField !== "all") {
+    if (user?.role === "admin" && user?.studyField !== "all" && existingSf && existingSf !== "all" && existingSf !== user.studyField) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 
@@ -96,10 +97,36 @@ export async function DELETE(req: NextRequest) {
     if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
 
     const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]{ studyField }`, { id });
-    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
+    const existingSf = typeof existing?.studyField === "object" ? (existing.studyField._ref || existing.studyField._id) : existing?.studyField;
+
+    if (user?.role === "admin" && user?.studyField !== "all" && existingSf && existingSf !== "all" && existingSf !== user.studyField) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 
     await sanityClient.delete(id);
     return NextResponse.json({ message: "Subject deleted" });
+}
+
+export async function PATCH(req: NextRequest) {
+    const user = await getCurrentUser();
+    if (!hasRole(user, ["admin"])) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+
+    const sfCode = user?.studyField || "";
+    
+    // Wipe scheduleInfo for all subjects in scope
+    let query = `*[_type == "subject"]`;
+    if (sfCode && sfCode !== "all") {
+        query = `*[_type == "subject" && studyField == $sf || (studyField._ref == $sf)]`;
+    }
+
+    const subjects = await sanityClient.fetch(query, { sf: sfCode });
+    
+    const transaction = sanityClient.transaction();
+    subjects.forEach((s: any) => {
+        transaction.patch(s._id, p => p.unset(['scheduleInfo']));
+    });
+    
+    await transaction.commit();
+    
+    return NextResponse.json({ message: "All schedules reset" });
 }

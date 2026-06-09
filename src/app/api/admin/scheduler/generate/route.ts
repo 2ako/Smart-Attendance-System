@@ -6,20 +6,19 @@ export async function GET() {
     try {
         const allSubjects = await sanityClient.fetch(`*[_type == "subject"]{ _id }`);
         // 1. Fetch academic data
-        const subjects = await sanityClient.fetch(`*[_type == "subject" && defined(professor)]{
-            _id, name, code, level, specialty, groups, type,
-            professor->{ _id, name }
+        const subjects = await sanityClient.fetch(`*[_type == "subject"]{
+            _id, name, code, level, specialty, studyField->{ name, code }, groups, type,
+            professor->{ _id, firstName, lastName, user->{ name } }
         }`);
         
-        console.log(`[Scheduler API] Total Subjects in DB: ${allSubjects.length}`);
-        console.log(`[Scheduler API] Subjects with Professors: ${subjects.length}`);
+        console.log(`[Scheduler API] Total Subjects Fetched: ${subjects.length}`);
         
         const rooms = await sanityClient.fetch(`*[_type == "room"]{
-            _id, name, capacity, studyField->{ name }
+            _id, name, capacity, studyField->{ _id, name, code }
         }`);
 
         const professors = await sanityClient.fetch(`*[_type == "professor"]{
-            _id, name
+            _id, firstName, lastName, user->{ name }
         }`);
 
         const existingSchedules = await sanityClient.fetch(`*[_type == "schedule"]{
@@ -34,11 +33,11 @@ export async function GET() {
             subjects,
             rooms,
             professors,
-            existingSchedules
+            existingSchedules: [] // Don't constrain by old schedules during regeneration
         });
 
         if (subjects.length === 0) {
-            return NextResponse.json({ success: false, error: "No subjects with assigned professors found." }, { status: 400 });
+            return NextResponse.json({ success: false, error: "No subjects found in database." }, { status: 400 });
         }
 
         const result = await engine.generate();
@@ -46,11 +45,11 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             schedule: result,
+            infrastructure: { rooms },
             stats: {
                 totalSubjects: subjects.length,
                 totalRooms: rooms.length,
-                fitness: result.fitness,
-                conflicts: result.conflicts
+                ...result.stats
             }
         });
     } catch (error: any) {
@@ -72,15 +71,15 @@ export async function POST(req: Request) {
             const DAYS = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
             const SLOTS = [
                 { start: "08:00", end: "09:30" },
-                { start: "09:40", end: "11:10" },
-                { start: "11:20", end: "12:50" },
-                { start: "13:10", end: "14:40" },
-                { start: "14:50", end: "16:20" },
-                { start: "16:30", end: "18:00" },
+                { start: "09:30", end: "11:00" },
+                { start: "11:00", end: "12:30" },
+                { start: "12:30", end: "14:00" },
+                { start: "14:00", end: "15:30" },
+                { start: "15:30", end: "17:00" },
             ];
             const dayIdx = Math.floor(slotId / 6);
             const slotIdx = slotId % 6;
-            return { day: DAYS[dayIdx], ...SLOTS[slotIdx] };
+            return { day: DAYS[dayIdx] || "Saturday", ...SLOTS[slotIdx] };
         };
 
         // 1. Fetch old schedules to delete

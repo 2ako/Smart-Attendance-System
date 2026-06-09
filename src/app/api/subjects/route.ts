@@ -53,7 +53,13 @@ export async function PUT(req: NextRequest) {
     const { _id, ...data } = await req.json();
 
     const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]`, { id: _id });
-    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
+    
+    const userField = user?.studyField?.trim().toLowerCase();
+    const subjectField = existing?.studyField?.trim().toLowerCase();
+    const isSuperAdmin = !userField || userField === "all" || userField === "common";
+
+    if (user?.role === "admin" && !isSuperAdmin && subjectField && userField && 
+        !(subjectField === userField || (userField.length >= 3 && subjectField.startsWith(userField)) || (subjectField.length >= 3 && userField.startsWith(subjectField)))) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 
@@ -72,7 +78,13 @@ export async function DELETE(req: NextRequest) {
     if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
 
     const existing = await sanityClient.fetch(`*[_type == "subject" && _id == $id][0]{ studyField }`, { id });
-    if (user?.role === "admin" && user?.studyField && existing?.studyField && existing.studyField !== user.studyField) {
+
+    const userField = user?.studyField?.trim().toLowerCase();
+    const subjectField = existing?.studyField?.trim().toLowerCase();
+    const isSuperAdmin = !userField || userField === "all" || userField === "common";
+
+    if (user?.role === "admin" && !isSuperAdmin && subjectField && userField && 
+        !(subjectField === userField || (userField.length >= 3 && subjectField.startsWith(userField)) || (subjectField.length >= 3 && userField.startsWith(subjectField)))) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 

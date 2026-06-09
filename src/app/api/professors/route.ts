@@ -79,7 +79,13 @@ export async function PUT(req: NextRequest) {
 
     // Safety check: ensure admin can only edit professors in their scope
     const existingProf = await sanityClient.fetch(`*[_type == "professor" && _id == $id][0]`, { id: _id });
-    if (user?.role === "admin" && user?.studyField && existingProf?.department && existingProf.department !== user.studyField) {
+    
+    const userField = user?.studyField?.trim().toLowerCase();
+    const profField = existingProf?.department?.trim().toLowerCase();
+    const isSuperAdmin = !userField || userField === "all" || userField === "common";
+
+    if (user?.role === "admin" && !isSuperAdmin && profField && userField && 
+        !(profField === userField || (userField.length >= 3 && profField.startsWith(userField)) || (profField.length >= 3 && userField.startsWith(profField)))) {
         return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
     }
 
@@ -119,19 +125,56 @@ export async function DELETE(req: NextRequest) {
         const existing = await sanityClient.fetch(`*[_type == "professor" && _id == $id][0]{ user, department }`, { id });
 
         // Safety check: ensure admin can only delete professors in their scope
-        if (user?.role === "admin" && user?.studyField && existing?.department && existing.department !== user.studyField) {
+        const userField = user?.studyField?.trim().toLowerCase();
+        const profField = existing?.department?.trim().toLowerCase();
+        const isSuperAdmin = !userField || userField === "all" || userField === "common";
+
+        if (user?.role === "admin" && !isSuperAdmin && profField && userField && 
+            !(profField === userField || (userField.length >= 3 && profField.startsWith(userField)) || (profField.length >= 3 && userField.startsWith(profField)))) {
             return NextResponse.json({ message: "Forbidden: Out of scope" }, { status: 403 });
         }
 
-        // Delete professor document
+        console.log(`[API] Deleting professor ${id} and cleaning up dependencies...`);
+
+        // 1. Cascade Delete: Schedules associated with this professor
+        const schedules = await sanityClient.fetch(`*[_type == "schedule" && professor._ref == $id]._id`, { id });
+        if (schedules.length > 0) {
+            console.log(`[API] Deleting ${schedules.length} orphan schedules...`);
+            await Promise.all(schedules.map((sid: string) => sanityClient.delete(sid)));
+        }
+
+        // 2. Cascade Delete: Sessions associated with this professor
+        const sessions = await sanityClient.fetch(`*[_type == "session" && professor._ref == $id]._id`, { id });
+        if (sessions.length > 0) {
+            console.log(`[API] Deleting ${sessions.length} sessions...`);
+            await Promise.all(sessions.map((sid: string) => sanityClient.delete(sid)));
+        }
+
+        // 3. Nullify Subject References: Any subject pointing to this professor
+        const subjects = await sanityClient.fetch(`*[_type == "subject" && professor._ref == $id]._id`, { id });
+        if (subjects.length > 0) {
+            console.log(`[API] Nullifying professor reference in ${subjects.length} subjects...`);
+            await Promise.all(subjects.map((sid: string) => 
+                sanityClient.patch(sid).unset(["professor"]).commit()
+            ));
+        }
+
+        // 4. Cleanup Make-up Requests: Any request pointing to this professor
+        const makeups = await sanityClient.fetch(`*[_type == "makeUpRequest" && professor._ref == $id]._id`, { id });
+        if (makeups.length > 0) {
+            console.log(`[API] Deleting ${makeups.length} makeup requests...`);
+            await Promise.all(makeups.map((mid: string) => sanityClient.delete(mid)));
+        }
+
+        // 5. Delete professor document
         await sanityClient.delete(id);
 
-        // Delete associated user account
+        // 4. Delete associated user account
         if (existing?.user?._ref) {
             await sanityClient.delete(existing.user._ref);
         }
 
-        return NextResponse.json({ message: "Professor deleted" });
+        return NextResponse.json({ message: "Professor and all associated data deleted successfully" });
     } catch (error: any) {
         console.error("DELETE Professor Error:", error);
 

@@ -1,0 +1,16 @@
+Starting Transactional Deep Audit...
+Step 1: Auditing professors...
+Current professors in system: 213
+Attempting to discard 113 professors via transactions...
+Progress: Deleted 10 professors.
+Progress: Deleted 20 professors.
+Progress: Deleted 30 professors.
+Progress: Deleted 40 professors.
+Progress: Deleted 50 professors.
+Progress: Deleted 60 professors.
+Progress: Deleted 70 professors.
+Progress: Deleted 80 professors.
+Progress: Deleted 90 professors.
+Progress: Deleted 100 professors.
+Progress: Deleted 110 professors.
+FINAL PROFESSOR COUNT: 100

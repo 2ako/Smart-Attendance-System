@@ -32,6 +32,8 @@ import { sanityClient } from "@/lib/sanity/client";
 import { getStudentByUserId, getAttendanceByStudent, getAttendanceCount } from "@/lib/sanity/queries";
 
 import { useTranslation } from "@/lib/i18n/context";
+import { TimetableView } from "@/components/shared/timetable-view";
+import { CalendarDays } from "lucide-react";
 
 export default function StudentDashboard() {
     const { t, lang } = useTranslation();
@@ -49,6 +51,7 @@ export default function StudentDashboard() {
     const [config, setConfig] = useState({ absentThreshold: 3 });
     const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(1);
+    const [activeTab, setActiveTab] = useState<"history" | "timetable">("history");
     const perPage = 6;
 
     useEffect(() => {
@@ -117,7 +120,37 @@ export default function StudentDashboard() {
                     </p>
                 </div>
 
-                {/* ── Stat Cards ─────────────────────────────────────── */}
+                {/* ── Tabs ─────────────────────────────────────────── */}
+                <div className="flex bg-card p-1.5 rounded-2xl shadow-sm border border-border w-fit mb-8 animate-enter [animation-delay:50ms] text-start">
+                    <button
+                        onClick={() => setActiveTab("history")}
+                        className={cn(
+                            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center",
+                            activeTab === "history" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        <Calendar size={14} />
+                        {t("history")}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("timetable")}
+                        className={cn(
+                            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center",
+                            activeTab === "timetable" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        <CalendarDays size={14} />
+                        {t("timetable")}
+                    </button>
+                </div>
+
+                {activeTab === "timetable" ? (
+                    <div className="animate-enter text-start">
+                        <TimetableView />
+                    </div>
+                ) : (
+                    <>
+                        {/* ── Stat Cards ─────────────────────────────────────── */}
                 <div className="mb-10 text-start">
                     {isLoading ? (
                         <StatsSkeleton />
@@ -313,7 +346,9 @@ export default function StudentDashboard() {
                         </Card>
                     )}
                 </div>
-            </main>
-        </div>
+            </>
+        )}
+    </main>
+</div>
     );
 }

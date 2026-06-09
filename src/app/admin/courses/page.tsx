@@ -107,6 +107,22 @@ export default function AdminCoursesPage() {
         setDialogOpen(true);
     };
 
+    const handleResetAll = async () => {
+        if (!confirm(t("confirm_reset_all_schedules"))) return;
+        
+        try {
+            const res = await fetch("/api/admin/subjects", { method: "PATCH" });
+            if (res.ok) {
+                toast.success(t("success"));
+                fetchCourses();
+            } else {
+                toast.error(t("error"));
+            }
+        } catch (error) {
+            toast.error(t("error"));
+        }
+    };
+
     const confirmDelete = async () => {
         if (!courseToDelete) return;
 
@@ -153,13 +169,23 @@ export default function AdminCoursesPage() {
                             </p>
                         </div>
 
-                        <Button
-                            onClick={handleAddClick}
-                            className="relative z-10 rounded-2xl bg-primary text-primary-foreground h-14 px-8 font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all text-start"
-                        >
-                            <Plus className="ltr:mr-2 rtl:ml-2 h-5 w-5 text-start" />
-                            {t("new_course")}
-                        </Button>
+                        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10">
+                            <Button
+                                onClick={handleResetAll}
+                                variant="outline"
+                                className="rounded-2xl border-destructive/20 text-destructive h-14 px-8 font-black uppercase tracking-widest text-[10px] hover:bg-destructive hover:text-destructive-foreground transition-all shadow-sm"
+                            >
+                                <Trash2 className="ltr:mr-2 rtl:ml-2 h-4 w-4" />
+                                {t("reset_all_schedules")}
+                            </Button>
+                            <Button
+                                onClick={handleAddClick}
+                                className="rounded-2xl bg-primary text-primary-foreground h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                            >
+                                <Plus className="ltr:mr-2 rtl:ml-2 h-5 w-5" />
+                                {t("new_course")}
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Main Content Area */}

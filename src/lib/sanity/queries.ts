@@ -95,10 +95,12 @@ export const getSubjectsByProfessor = `*[_type == "subject" && professor._ref ==
   type
 } | order(name asc)`;
 
-export const getStudentCourses = `*[_type == "subject" && academicYear == $academicYear && degree == $degree && level == $level && (
+export const getStudentCourses = `*[_type == "subject" && 
+  (lower(degree) == lower($degree) || $degree == "all" || !defined(degree)) && 
+  (lower(level) == lower($level) || $level == "all" || !defined(level)) && (
   (!defined(studyField) || studyField == "" || lower(studyField) == "all" || lower(studyField) == lower($studyField) || (lower($studyField) == "info" && lower(studyField) == "informatique") || (lower($studyField) == "informatique" && lower(studyField) == "info")) &&
   (!defined(specialty) || specialty == "" || lower(specialty) == "none" || lower(specialty) == "all" || lower(specialty) == lower($specialty)) &&
-  (!defined(groups) || groups == "" || lower(groups) == "all" || $group in groups)
+  (!defined(groups) || "all" in groups || "all" in groups || "All" in groups || "ALL" in groups || $group in groups)
 )]{
   ...,
   "subjectDetails": {
@@ -140,6 +142,21 @@ export const getSchedulesByProfessor = `*[_type == "schedule" && professor._ref 
   subject->{ _id, name, code, type },
   room,
   groups
+} | order(day asc, startTime asc)`;
+
+export const getSchedulesByStudent = `*[_type == "schedule" && (
+  subject->level == $level && (
+    !defined(subject->studyField) || subject->studyField == "" || subject->studyField == "all" || subject->studyField == $studyField || subject->studyField match $studyField || (lower($studyField) == "info" && subject->studyField match "informatique")
+  ) && (
+    !defined(subject->specialty) || subject->specialty == "" || subject->specialty == "none" || subject->specialty == "all" || subject->specialty == $specialty
+  ) && (
+    !defined(groups) || "all" in groups || "all" in groups || "All" in groups || "ALL" in groups || $group in groups
+  )
+)]{
+  ...,
+  subject->{ _id, name, code, type, studyField, specialty, level },
+  professor->{ ..., user->{ name } },
+  room->{ _id, name }
 } | order(day asc, startTime asc)`;
 
 export const getApprovedMakeUpRequestsByProfessor = `*[_type == "makeUpRequest" && professor._ref == $professorId && status == "approved"]{
@@ -201,7 +218,7 @@ export const getSessionCohort = `*[_type == "student" &&
    (lower($studyField) == "info" && (studyField match "informatique" || studyField == "INFORMATIQUE"))
   ) && 
   (!defined($specialty) || specialty == $specialty) &&
-  (!defined($group) || $group == "All" || $group in groups || group == $group)
+  (!defined($group) || $group == "All" || $group in groups || "All" in groups || "all" in groups)
 ]{
   _id,
   matricule,

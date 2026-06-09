@@ -103,25 +103,40 @@ export function NotificationBell() {
         }
     };
 
-    const fetchNotifications = useCallback(async () => {
-        if (!user?.id) return;
+    const [loading, setLoading] = useState(false);
+
+    const fetchNotifications = useCallback(async (signal?: AbortSignal) => {
+        if (!user?.id || loading) return;
+        setLoading(true);
         try {
-            const res = await fetch("/api/notifications");
+            const res = await fetch("/api/notifications", { signal });
             if (res.ok) {
                 const data = await res.json();
                 setNotifications(data.notifications || []);
                 setUnreadCount(data.unreadCount || 0);
             }
-        } catch (err) {
-            console.error("Error fetching notifications:", err);
+        } catch (err: any) {
+            if (err.name !== 'AbortError') {
+                console.error("Error fetching notifications:", err);
+            }
+        } finally {
+            setLoading(false);
         }
-    }, [user?.id]);
+    }, [user?.id, loading]);
 
     useEffect(() => {
-        fetchNotifications();
-        const interval = setInterval(fetchNotifications, 60000);
-        return () => clearInterval(interval);
-    }, [fetchNotifications]);
+        const controller = new AbortController();
+        fetchNotifications(controller.signal);
+        
+        const interval = setInterval(() => {
+            fetchNotifications(controller.signal);
+        }, 60000);
+
+        return () => {
+            controller.abort();
+            clearInterval(interval);
+        };
+    }, [user?.id]); // Only re-run if user changes
 
     const markAllRead = async () => {
         try {

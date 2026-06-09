@@ -66,9 +66,6 @@ export class SchedulerEngine {
                 scheduleInfo: null 
             };
         });
-        
-        // 1.5 Auto-Assign Professors to Unassigned Subjects
-        this.autoAssignProfessors();
 
         // 2. Initialize Index Maps
         this.profMap.clear();
@@ -210,55 +207,13 @@ export class SchedulerEngine {
             const fieldMatched = compatible.filter(r => {
                 const rf = this.normalizeField(r.studyField?.code || r.studyField?.name || r.studyField || "");
                 const sf = this.normalizeField(studyField);
-                // ROOM RELAXATION: Prefer matching field, but allow 'all' or empty.
-                // We will relax this further inside the greedy search if needed.
                 return rf === "" || rf === "all" || rf === "common" || rf === sf;
             });
             if (fieldMatched.length > 0) return fieldMatched;
         }
 
         if (compatible.length === 0) return this.input.rooms;
-        return compatible; // Fallback to all compatible-type rooms regardless of field
-    }
-
-    private autoAssignProfessors() {
-        const unassigned = this.input.subjects.filter(s => !s.professor || !s.professor._id);
-        if (unassigned.length === 0) return;
-
-        console.log(`[Scheduler] Auto-assigning ${unassigned.length} subjects...`);
-
-        // Initialize load map
-        const profLoads = new Map<string, number>();
-        this.input.professors.forEach(p => profLoads.set(p._id, 0));
-
-        // Count current assignments
-        this.input.subjects.forEach(s => {
-            if (s.professor?._id) {
-                profLoads.set(s.professor._id, (profLoads.get(s.professor._id) || 0) + 1);
-            }
-        });
-
-        // Assign unassigned subjects to least-loaded professors
-        unassigned.forEach(sub => {
-            // Sort professors by load and pick the one with least subjects
-            // We prioritize professors who aren't "Helpers" if possible
-            const candidates = [...this.input.professors].sort((a, b) => {
-                const loadA = profLoads.get(a._id) || 0;
-                const loadB = profLoads.get(b._id) || 0;
-                return loadA - loadB;
-            });
-
-            const bestProf = candidates[0];
-            if (bestProf) {
-                sub.professor = {
-                    _id: bestProf._id,
-                    firstName: bestProf.firstName,
-                    lastName: bestProf.lastName,
-                    user: bestProf.user
-                };
-                profLoads.set(bestProf._id, (profLoads.get(bestProf._id) || 0) + 1);
-            }
-        });
+        return compatible;
     }
 
     private getId(val: any): string {
@@ -404,26 +359,19 @@ export class SchedulerEngine {
     private evolve(generation: number) {
         if (this.population.length === 0) return;
         
-        const newPopulation: Chromosome[] = this.population.slice(0, 15); // Slightly larger elite
+        const newPopulation: Chromosome[] = this.population.slice(0, 10); // Elite set
         
-        // Diversity Heat: If stalled, crank up the heat
-        let mutationRate = 0.15;
-        if (this.generationsSinceImprovement > 15) {
-            mutationRate = 0.5; // Extreme heat to break local optima
-        } else if (this.generationsSinceImprovement > 5) {
-            mutationRate = 0.25;
-        }
-
-        // Random Injection: Every 15 generations, inject some fresh blood
-        if (generation > 0 && generation % 15 === 0) {
-            for (let i = 0; i < 5; i++) {
-                newPopulation.push(this.createRandomChromosome());
-            }
+        // Heat-based Mutation: If stalled, crank up the heat
+        let mutationRate = 0.1;
+        if (this.generationsSinceImprovement > 20) {
+            mutationRate = 0.4; // High heat for extreme diversity
+        } else if (this.generationsSinceImprovement > 10) {
+            mutationRate = 0.2;
         }
 
         while (newPopulation.length < this.populationSize) {
             let child: Chromosome;
-            if (Math.random() < 0.8) { // Crossover biased
+            if (Math.random() < 0.7) {
                 const p1 = this.tournamentSelect();
                 const p2 = this.tournamentSelect();
                 child = this.crossover(p1, p2);
@@ -572,13 +520,5 @@ export class SchedulerEngine {
     private updateTabuList(hash: string) {
         this.tabuList.push(hash);
         if (this.tabuList.length > this.tabuSize) this.tabuList.shift();
-    }
-
-    private createRandomChromosome(): Chromosome {
-        const genes: Gene[] = this.input.subjects.map(sub => {
-            const slot = Math.floor(Math.random() * (6 * 6));
-            return this.createGene(sub, sub.groups || [], slot);
-        });
-        return evaluateFitness({ genes, fitness: 0, conflicts: [] }, false, SHARED_BUFFERS);
     }
 }

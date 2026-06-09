@@ -43,8 +43,11 @@ import {
     Square,
     AlertCircle,
     Fingerprint,
+    CalendarDays,
 } from "lucide-react";
 import { Skeleton, StatsSkeleton, TableSkeleton } from "@/components/ui/skeleton";
+import { TimetableView } from "@/components/shared/timetable-view";
+import { cn } from "@/lib/utils";
 
 // Types
 interface AttendanceRecord {
@@ -79,6 +82,7 @@ export default function ProfessorDashboard() {
     const [session, setSession] = useState<any>(null);
     const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState<"session" | "timetable">("session");
 
     // 1. Initial Profile & Session & Attendance Fetch
     useEffect(() => {
@@ -351,8 +355,38 @@ export default function ProfessorDashboard() {
                     </div>
                 </div>
 
-                <div className="mb-10 grid grid-cols-1 gap-8 lg:grid-cols-3 text-start">
-                    {isLoading ? (
+                {/* ── Tabs ─────────────────────────────────────────── */}
+                <div className="mb-8 flex bg-card p-1.5 rounded-2xl shadow-sm border border-border w-fit animate-enter [animation-delay:50ms] text-start">
+                    <button
+                        onClick={() => setActiveTab("session")}
+                        className={cn(
+                            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center",
+                            activeTab === "session" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        <Radio size={14} className={session?.status === "open" ? "animate-pulse" : ""} />
+                        {t("session_active")}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("timetable")}
+                        className={cn(
+                            "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all gap-2 flex items-center",
+                            activeTab === "timetable" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        <CalendarDays size={14} />
+                        {t("timetable")}
+                    </button>
+                </div>
+
+                {activeTab === "timetable" ? (
+                    <div className="animate-enter text-start">
+                        <TimetableView />
+                    </div>
+                ) : (
+                    <>
+                        <div className="mb-10 grid grid-cols-1 gap-8 lg:grid-cols-3 text-start">
+                            {isLoading ? (
                         <>
                             <div className="lg:col-span-2 text-start"><Skeleton className="h-[200px] w-full rounded-2xl" /></div>
                             <Skeleton className="h-[200px] w-full rounded-2xl" />
@@ -619,7 +653,9 @@ export default function ProfessorDashboard() {
                         </Card>
                     )}
                 </div>
-            </main>
-        </div>
+            </>
+        )}
+    </main>
+</div>
     );
 }

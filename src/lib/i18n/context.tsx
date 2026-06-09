@@ -1,7 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Language, translations } from "./translations";
+import { Language } from "./types";
+import { translations } from "./translations";
 
 interface I18nContextType {
     lang: Language;
@@ -35,7 +36,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     };
 
     const t = (key: string, data?: Record<string, any>): string => {
-        let text = translations[lang][key] || key;
+        let text = (translations[lang] as any)[key] || key;
         if (data) {
             Object.keys(data).forEach(k => {
                 text = text.replace(`{${k}}`, String(data[k]));

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useTranslation } from "@/lib/i18n/context";
-import { Loader2, MapPin, Calendar, Clock, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Loader2, Calendar, Clock, AlertCircle, CheckCircle2 } from "lucide-react";
 
 interface CreateMakeUpSessionDialogProps {
     open: boolean;
@@ -44,21 +44,23 @@ export function CreateMakeUpSessionDialog({
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (open) {
-            fetchRooms();
+        if (open && request) {
+            fetchAvailableRooms();
         }
-    }, [open]);
+    }, [open, request]);
 
-    const fetchRooms = async () => {
+    const fetchAvailableRooms = async () => {
+        if (!request?.requestedDate || !request?.requestedTime) return;
+        
         setIsLoadingRooms(true);
         try {
-            const res = await fetch("/api/admin/rooms");
+            const res = await fetch(`/api/admin/rooms/availability?date=${request.requestedDate}&time=${request.requestedTime}`);
             if (res.ok) {
                 const data = await res.json();
                 setRooms(data.rooms || []);
             }
         } catch (error) {
-            console.error("Error fetching rooms:", error);
+            console.error("Error fetching available rooms:", error);
         } finally {
             setIsLoadingRooms(false);
         }
@@ -103,7 +105,7 @@ export function CreateMakeUpSessionDialog({
                     <DialogHeader className="text-start">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 font-mono text-[10px] font-bold uppercase tracking-widest text-primary mb-4 w-fit text-start">
                             <CheckCircle2 size={12} className="text-primary" />
-                            {t("approve_request_title") || "Approve Make-up Request"}
+                            {t("approve_request_title")}
                         </div>
                         <DialogTitle className="text-3xl font-black uppercase tracking-tight text-start">
                             {t("assign_room")}
@@ -152,15 +154,15 @@ export function CreateMakeUpSessionDialog({
                     <div className="space-y-4 text-start">
                         <div className="space-y-2 text-start">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
-                                {t("select_room") || "Select Room"}
+                                {t("select_room")}
                             </Label>
                             <Select value={selectedRoomId} onValueChange={setSelectedRoomId}>
                                 <SelectTrigger className="h-14 rounded-2xl border-none bg-muted/50 focus:ring-2 focus:ring-primary font-bold text-sm text-start">
                                     <SelectValue placeholder={t("room_availability")} />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-border/50 shadow-xl text-start">
+                                <SelectContent className="rounded-2xl border-border/50 shadow-xl text-start max-h-[300px] overflow-y-auto">
                                     {rooms.length === 0 && !isLoadingRooms ? (
-                                        <div className="p-4 text-center text-xs text-muted-foreground text-start">{t("no_rooms_found") || "No rooms found"}</div>
+                                        <div className="p-4 text-center text-xs text-muted-foreground text-start">{t("no_rooms_found")}</div>
                                     ) : (
                                         rooms.map((room) => (
                                             <SelectItem key={room._id} value={room._id} className="rounded-xl font-bold text-start">
@@ -174,12 +176,12 @@ export function CreateMakeUpSessionDialog({
 
                         <div className="space-y-2 text-start">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
-                                {t("admin_comment") || "Admin Message (Optional)"}
+                                {t("admin_comment")}
                             </Label>
                             <Textarea
                                 value={adminComment}
                                 onChange={(e) => setAdminComment(e.target.value)}
-                                placeholder={t("type_message") || "Message to the professor..."}
+                                placeholder={t("type_message")}
                                 className="min-h-[100px] rounded-2xl border-none bg-muted/50 focus-visible:ring-2 focus-visible:ring-primary font-medium text-sm p-4 resize-none transition-all text-start"
                             />
                         </div>
@@ -188,7 +190,7 @@ export function CreateMakeUpSessionDialog({
                     <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex items-start gap-3 mt-4 text-start">
                         <AlertCircle className="text-amber-500 shrink-0" size={18} />
                         <p className="text-[11px] font-medium text-amber-600/80 leading-relaxed text-start">
-                            {t("makeup_notice") || "Approving will create a one-time session. The professor can open it from the local server during the scheduled time."}
+                            {t("makeup_notice")}
                         </p>
                     </div>
                 </div>
