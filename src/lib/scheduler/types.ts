@@ -41,8 +41,8 @@ export interface Gene {
     type: "Cours" | "TD" | "TP";
     studyField?: string;
     roomStudyField?: string;
-    blockId?: string; 
-    
+    blockId?: string;
+
     // Performance optimization: Integer indices and masks
     profIdx: number;
     roomIdx: number;
@@ -69,7 +69,7 @@ export interface SchedulerInput {
     subjects: any[];
     rooms: any[];
     professors: any[];
-    existingSchedules?: any[]; 
+    existingSchedules?: any[];
 }
 
 export const CONSTRAINT_WEIGHTS = {
@@ -79,7 +79,7 @@ export const CONSTRAINT_WEIGHTS = {
     HARD_ROOM_TYPE_MISMATCH: 1000000,
     HARD_FORBIDDEN_AFTERNOON: 1000000,
     HARD_AFTERNOON_PENALTY: 1000000,   // Alias for HARD_FORBIDDEN_AFTERNOON
-    SOFT_SATURDAY_SESSION: 100000,    // Strong penalty to minimize, but not a hard limit
+    SOFT_SATURDAY_SESSION: 500000,    // Strong penalty to minimize, but not a hard limit
     SOFT_PROF_DAYS: 30,
     SOFT_GROUP_GAPS: 20,
     SOFT_DISTRIBUTION: 10,
@@ -110,7 +110,7 @@ export function isRoomTypeCompatible(sessionType: string, roomType: "TP" | "AMPH
     // Rule: Cours for large cohorts (> 2 groups) -> AMPHI
     let isLarge = false;
     const normalizedGroups = (groups || []).map(g => g?.trim().toLowerCase());
-    
+
     if (typeof specialtyGroupCount === 'number' && specialtyGroupCount > 0) {
         isLarge = specialtyGroupCount > 2;
     } else {
@@ -121,7 +121,7 @@ export function isRoomTypeCompatible(sessionType: string, roomType: "TP" | "AMPH
     if (st === "Cours" || st === "Amphi") {
         return isLarge ? roomType === "AMPHI" : roomType === "SALLE";
     }
-    
+
     if (st === "TD") return roomType === "SALLE";
     if (st === "TP") return roomType === "TP";
 

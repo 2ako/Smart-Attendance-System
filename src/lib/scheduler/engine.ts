@@ -1,9 +1,9 @@
-import { 
-    Chromosome, 
-    Gene, 
-    SchedulerInput, 
-    DAYS, 
-    SLOTS_PER_DAY, 
+import {
+    Chromosome,
+    Gene,
+    SchedulerInput,
+    DAYS,
+    SLOTS_PER_DAY,
     SLOT_DURATION,
     getRoomType,
     isRoomTypeCompatible,
@@ -30,15 +30,15 @@ const SUBJ_DAY_BUF = new Uint8Array(2000);
 export class SchedulerEngine {
     private input: SchedulerInput;
     private population: Chromosome[] = [];
-    private populationSize = 60;
-    private generations = 150; 
-    private stagnationLimit = 30; 
+    private populationSize = 90;
+    private generations = 250;
+    private stagnationLimit = 30;
     private profMap = new Map<string, number>();
     private roomMap = new Map<string, number>();
     private levelMap = new Map<string, number>();
     private specMap = new Map<string, number>();
     private subjectMap = new Map<string, number>();
-    
+
     // Restored properties
     private tabuList: string[] = [];
     private tabuSize = 10;
@@ -52,10 +52,10 @@ export class SchedulerEngine {
 
     public async generate(): Promise<Chromosome> {
         console.time("SchedulerGen");
-        
+
         // 1. Data Normalization & Legacy Cleanup
         this.input.subjects = this.input.subjects.map(s => {
-            const groups = (s.groups || []).map((g: string) => 
+            const groups = (s.groups || []).map((g: string) =>
                 (g?.toLowerCase().trim() === "all" || g?.toLowerCase().trim() === "toutes") ? "All" : g
             );
             return {
@@ -63,30 +63,30 @@ export class SchedulerEngine {
                 groups,
                 // Ensure we don't accidentally respect random manual IDs from previous UI states
                 // and clear scheduleInfo to start fresh
-                scheduleInfo: null 
+                scheduleInfo: null
             };
         });
-        
+
         // 1.5 Auto-Assign Professors to Unassigned Subjects
         this.autoAssignProfessors();
 
         // 2. Initialize Index Maps
         this.profMap.clear();
         this.input.professors.forEach((p, idx) => this.profMap.set(this.getId(p), idx));
-        
+
         this.roomMap.clear();
         this.input.rooms.forEach((r, idx) => this.roomMap.set(r.name, idx));
-        
+
         const levels = new Set<string>();
         const specs = new Set<string>();
         this.input.subjects.forEach(s => {
             levels.add(this.getId(s.level));
             specs.add(this.getId(s.specialty));
         });
-        
+
         this.levelMap.clear();
         Array.from(levels).forEach((l, idx) => this.levelMap.set(l, idx));
-        
+
         this.specMap.clear();
         Array.from(specs).forEach((s, idx) => this.specMap.set(s, idx));
 
@@ -95,7 +95,7 @@ export class SchedulerEngine {
 
         const totalRooms = this.input.rooms.length;
         const totalSlots = DAYS.length * SLOTS_PER_DAY;
-        
+
         // ... (rest of pre-calc)
         this.specialtyGroupCounts.clear();
         const specToGroups = new Map<string, Set<string>>();
@@ -109,7 +109,7 @@ export class SchedulerEngine {
             });
         });
         specToGroups.forEach((groups, spec) => {
-            this.specialtyGroupCounts.set(spec, groups.size || 1); 
+            this.specialtyGroupCounts.set(spec, groups.size || 1);
         });
 
         const expandedSubjects: any[] = [];
@@ -137,7 +137,7 @@ export class SchedulerEngine {
         try {
             for (let g = 0; g < this.generations; g++) {
                 this.evolve(g);
-                
+
                 // Track improvement
                 const currentBest = this.population[0]?.fitness || Infinity;
                 if (currentBest < this.bestFitness) {
@@ -171,7 +171,7 @@ export class SchedulerEngine {
             console.error("[Scheduler] Repair logic crashed:", err);
             best = evaluateFitness(this.population[0], true, SHARED_BUFFERS);
         }
-        
+
         console.timeEnd("SchedulerGen");
         return best;
     }
@@ -194,7 +194,7 @@ export class SchedulerEngine {
         let val = "";
         if (typeof field === "string") val = field;
         else if (typeof field === "object") val = field.code || field.name || "";
-        
+
         const f = val.toLowerCase().trim();
         if (f === "info" || f === "informatique") return "informatique";
         return f;
@@ -276,7 +276,7 @@ export class SchedulerEngine {
     private createGene(sub: any, group: string | string[], targetSlot: number, blockId?: string): Gene {
         const subjectStudyField = sub.studyField?.code || sub.studyField?.name || sub.studyField || "";
         const groups = Array.isArray(group) ? group : [group];
-        
+
         const lid = this.getId(sub.level);
         const sid = this.getId(sub.specialty);
         const specKey = `${lid}@@@${sid}`;
@@ -291,9 +291,9 @@ export class SchedulerEngine {
             subjectName: sub.name,
             professorId: this.getId(sub.professor),
             professorName: sub.professor ? (
-                (sub.professor.firstName || sub.professor.lastName) 
-                ? `${sub.professor.firstName || ""} ${sub.professor.lastName || ""}`.trim()
-                : sub.professor.user?.name || "Unknown"
+                (sub.professor.firstName || sub.professor.lastName)
+                    ? `${sub.professor.firstName || ""} ${sub.professor.lastName || ""}`.trim()
+                    : sub.professor.user?.name || "Unknown"
             ) : "Unknown",
             roomId: room?.name || "UNKNOWN_ROOM",
             roomStudyField: room?.studyField?.code || room?.studyField?.name || "",
@@ -324,13 +324,13 @@ export class SchedulerEngine {
         for (let i = 0; i < this.populationSize; i++) {
             const genes: Gene[] = [];
             const occupied = new Set<string>(); // slot-room, slot-prof, slot-group
-            
+
             // Priority subjects: Afternoon restricted (L3, M1, M2)
             const prioritySubjects = this.input.subjects.filter(s => !isAfternoonAllowed(this.getLevelName(s.level)));
             const others = this.input.subjects.filter(s => isAfternoonAllowed(this.getLevelName(s.level)));
 
             const allSubs = [...prioritySubjects, ...others];
-            
+
             for (const sub of allSubs) {
                 let found = false;
                 const sid = this.getId(sub.specialty);
@@ -339,18 +339,18 @@ export class SchedulerEngine {
                 const subGroups = sub.groups || [];
 
                 // Try days in order, Saturday LAST
-                const daysToTry = [1, 2, 3, 4, 5, 0]; 
+                const daysToTry = [1, 2, 3, 4, 5, 0];
 
                 for (const dayIdx of daysToTry) {
                     // Bias against Saturday for most chromosomes (Stronger: 99% of population ignores Saturday initially)
-                    if (dayIdx === 0 && i < this.populationSize * 0.99) continue;
+                    if (dayIdx === 0) continue;
 
                     for (let s = 0; s < SLOTS_PER_DAY; s++) {
                         const slotId = dayIdx * SLOTS_PER_DAY + s;
-                        
+
                         // Strict level-based afternoon check (After 2:00 PM means Slot 4, 5)
                         if (s >= 4 && !isAfternoonAllowed(this.getLevelName(sub.level))) continue;
-                        
+
                         const profKey = `${slotId}@@@prof@@@${pid}`;
                         if (pid && occupied.has(profKey)) continue;
 
@@ -364,17 +364,17 @@ export class SchedulerEngine {
 
                         const suitableRooms = this.getCompatibleRooms(sub.type, sub.studyField, subGroups, this.specialtyGroupCounts.get(`${lid}@@@${sid}`));
                         const room = suitableRooms.find(r => !occupied.has(`${slotId}@@@room@@@${r.name}`));
-                        
+
                         if (room) {
                             const gene = this.createGene(sub, subGroups, slotId);
                             gene.roomId = room.name;
                             gene.roomIdx = this.roomMap.get(room.name) ?? -1;
                             genes.push(gene);
-                            
+
                             occupied.add(`${slotId}@@@room@@@${room.name}`);
                             if (pid) occupied.add(profKey);
                             subGroups.forEach((g: string) => occupied.add(`${slotId}@@@group@@@${lid}@@@${sid}@@@${g}`));
-                            
+
                             found = true;
                             break;
                         }
@@ -391,7 +391,19 @@ export class SchedulerEngine {
                         const morningSlots = [0, 1, 2, 3, 6, 7, 8, 9, 12, 13, 14, 15, 18, 19, 20, 21, 24, 25, 26, 27, 30, 31, 32, 33];
                         fallbackSlot = morningSlots[Math.floor(Math.random() * morningSlots.length)];
                     } else {
-                        fallbackSlot = Math.floor(Math.random() * (DAYS.length * SLOTS_PER_DAY));
+                        const nonSaturdaySlots = [];
+
+                        for (let s = 6; s < 36; s++) {
+                            nonSaturdaySlots.push(s);
+                        }
+
+                        fallbackSlot =
+                            nonSaturdaySlots[
+                            Math.floor(
+                                Math.random() *
+                                nonSaturdaySlots.length
+                            )
+                            ];
                     }
                     genes.push(this.createGene(sub, subGroups, fallbackSlot));
                 }
@@ -403,9 +415,9 @@ export class SchedulerEngine {
 
     private evolve(generation: number) {
         if (this.population.length === 0) return;
-        
-        const newPopulation: Chromosome[] = this.population.slice(0, 15); // Slightly larger elite
-        
+
+        const newPopulation: Chromosome[] = this.population.slice(0, 40); // Slightly larger elite
+
         // Diversity Heat: If stalled, crank up the heat
         let mutationRate = 0.15;
         if (this.generationsSinceImprovement > 15) {
@@ -415,8 +427,8 @@ export class SchedulerEngine {
         }
 
         // Random Injection: Every 15 generations, inject some fresh blood
-        if (generation > 0 && generation % 15 === 0) {
-            for (let i = 0; i < 5; i++) {
+        if (generation > 0 && generation % 10 === 0) {
+            for (let i = 0; i < 15; i++) {
                 newPopulation.push(this.createRandomChromosome());
             }
         }
@@ -437,12 +449,23 @@ export class SchedulerEngine {
             SHARED_BUFFERS.roomOccupancy.fill(0n);
             SHARED_BUFFERS.levelMasks.fill(0);
             SHARED_BUFFERS.specMasks.fill(0);
-            newPopulation.push(evaluateFitness(child, false, SHARED_BUFFERS));
+            child = repairChromosome(
+                child,
+                this.input.rooms
+            );
+
+            newPopulation.push(
+                evaluateFitness(
+                    child,
+                    false,
+                    SHARED_BUFFERS
+                )
+            );
         }
-        
+
         this.population = newPopulation;
         this.sortPopulation();
-        
+
         // Local Search (Tabu) on the best individual every 8 generations
         if (generation % 8 === 0 && this.population.length > 0) {
             try {
@@ -466,15 +489,27 @@ export class SchedulerEngine {
     }
 
     private crossover(p1: Chromosome, p2: Chromosome): Chromosome {
-        const midpoint = Math.floor(p1.genes.length / 2);
-        const genes = [...p1.genes.slice(0, midpoint), ...p2.genes.slice(midpoint)];
-        return { genes, fitness: 0, conflicts: [] };
+        const genes: Gene[] = [];
+
+        for (let i = 0; i < p1.genes.length; i++) {
+            genes.push(
+                Math.random() < 0.5
+                    ? { ...p1.genes[i] }
+                    : { ...p2.genes[i] }
+            );
+        }
+
+        return {
+            genes,
+            fitness: 0,
+            conflicts: []
+        };
     }
 
     private mutate(chromosome: Chromosome): Chromosome {
         const genes = [...chromosome.genes];
-        const mutationRate = 0.2; // High exploration
-        
+        const mutationRate = 0.05; // High exploration
+
         // 1. Random Mutation (Standard Explorer)
         for (let i = 0; i < genes.length; i++) {
             if (Math.random() < mutationRate) {
@@ -485,7 +520,7 @@ export class SchedulerEngine {
                 } else {
                     genes[i] = { ...genes[i], slotId: Math.floor(Math.random() * totalSlots) };
                 }
-                
+
                 const suitableRooms = this.getCompatibleRooms(genes[i].type, genes[i].studyField, genes[i].groups || []);
                 if (suitableRooms.length > 0) {
                     const newRoom = suitableRooms[Math.floor(Math.random() * suitableRooms.length)];
@@ -503,14 +538,14 @@ export class SchedulerEngine {
             for (let r = 0; r < rescueCount; r++) {
                 const idx = Math.floor(Math.random() * genes.length);
                 const gene = genes[idx];
-                
+
                 // Find a slot that currently has NO overlap for this gene's PROF and ROOM
                 // This is a simplified local search within mutation
                 const totalSlots = DAYS.length * SLOTS_PER_DAY;
                 for (let attempt = 0; attempt < 10; attempt++) {
                     const testSlot = Math.floor(Math.random() * totalSlots);
                     if (!isAfternoonAllowed(this.getLevelName(gene.level)) && (testSlot % SLOTS_PER_DAY >= 4)) continue;
-                    
+
                     // Simple check against current genes (not exhaustive but helps)
                     const isOccupied = genes.some(g => g.slotId === testSlot && (g.professorId === gene.professorId || g.roomId === gene.roomId));
                     if (!isOccupied) {
@@ -520,14 +555,14 @@ export class SchedulerEngine {
                 }
             }
         }
-        
+
         return { ...chromosome, genes };
     }
 
     private performTabuSearch(chromosome: Chromosome): Chromosome {
         let best = { ...chromosome };
-        for (let i = 0; i < 50; i++) {
-            const neighbors = this.generateNeighbors(best);
+        for (let i = 0; i < 200; i++) {
+            const neighbors = this.generateNeighbors(best, 30);
             const filteredNeighbors = neighbors.filter(n => !this.tabuList.includes(this.getHash(n)));
             if (filteredNeighbors.length === 0) break;
             const nextBest = filteredNeighbors.sort((a, b) => a.fitness - b.fitness)[0];
@@ -541,14 +576,64 @@ export class SchedulerEngine {
         return best;
     }
 
-    private generateNeighbors(chromosome: Chromosome): Chromosome[] {
+    private generateNeighbors(
+        chromosome: Chromosome,
+        count: number = 30
+    ): Chromosome[] {
+
         const neighbors: Chromosome[] = [];
-        for (let i = 0; i < 5; i++) {
+
+        for (let i = 0; i < count; i++) {
+
             const genes = [...chromosome.genes];
-            const idx = Math.floor(Math.random() * genes.length);
-            genes[idx] = { ...genes[idx], slotId: Math.floor(Math.random() * (DAYS.length * SLOTS_PER_DAY)) };
-            neighbors.push(evaluateFitness({ genes, fitness: 0, conflicts: [] }, false));
+
+            const idx = Math.floor(
+                Math.random() * genes.length
+            );
+
+            const gene = genes[idx];
+
+            const allowedSlots: number[] = [];
+
+            for (let slot = 0; slot < DAYS.length * SLOTS_PER_DAY; slot++) {
+
+                const slotInDay = slot % SLOTS_PER_DAY;
+
+                if (
+                    !isAfternoonAllowed(gene.levelName || gene.level) &&
+                    slotInDay >= 4
+                ) {
+                    continue;
+                }
+
+                if (slot < 6) continue;
+
+                allowedSlots.push(slot);
+            }
+
+            if (allowedSlots.length > 0) {
+
+                genes[idx] = {
+                    ...gene,
+                    slotId:
+                        allowedSlots[
+                        Math.floor(
+                            Math.random() *
+                            allowedSlots.length
+                        )
+                        ]
+                };
+            }
+
+            neighbors.push(
+                evaluateFitness(
+                    { genes, fitness: 0, conflicts: [] },
+                    false,
+                    SHARED_BUFFERS
+                )
+            );
         }
+
         return neighbors;
     }
 

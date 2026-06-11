@@ -26,7 +26,7 @@ export interface EvaluationBuffers {
  * High-Performance fitness evaluation using bitwise operations and pre-allocated buffers.
  */
 export function evaluateFitness(
-    chromosome: Chromosome, 
+    chromosome: Chromosome,
     includeDetails: boolean = false,
     buffers?: EvaluationBuffers
 ): Chromosome {
@@ -37,29 +37,28 @@ export function evaluateFitness(
     let hardConflicts = 0;
     let saturdaySlots = 0;
     let lateSlots = 0;
-    
+
     const conflicts: string[] = [];
     const genes = chromosome.genes;
 
     // Fast Bitwise Occupancy Tracking (one 64-bit integer per entity, 36 bits used)
-    const profOccupancy = buffers?.profOccupancy || new BigUint64Array(1000); 
-    const roomOccupancy = buffers?.roomOccupancy || new BigUint64Array(1000); 
-    
+    const profOccupancy = buffers?.profOccupancy || new BigUint64Array(1000);
+    const roomOccupancy = buffers?.roomOccupancy || new BigUint64Array(1000);
+
     // Level & Specialty Masks
     // levelMasks: tracks the UNION of all activity in a level (to detect lecture vs lab conflicts)
     // specMasks: tracks activity SPECIFIC to a specialty
-    const levelMasks = buffers?.levelMasks || new Uint32Array(200 * 36); 
-    const specMasks = buffers?.specMasks || new Uint32Array(500 * 36); 
+    const levelMasks = buffers?.levelMasks || new Uint32Array(200 * 36);
+    const specMasks = buffers?.specMasks || new Uint32Array(500 * 36);
 
-    if (!buffers) {
-        profOccupancy.fill(0n);
-        roomOccupancy.fill(0n);
-        levelMasks.fill(0);
-        specMasks.fill(0);
-    }
+    // ALWAYS RESET
+    profOccupancy.fill(0n);
+    roomOccupancy.fill(0n);
+    levelMasks.fill(0);
+    specMasks.fill(0);
 
-    const profDayMasks = new Uint8Array(1000); 
-    const subjectDayMasks = new Uint8Array(2000); 
+    const profDayMasks = new Uint8Array(1000);
+    const subjectDayMasks = new Uint8Array(2000);
 
     for (let i = 0; i < genes.length; i++) {
         const g = genes[i];
@@ -71,7 +70,7 @@ export function evaluateFitness(
         // Penalize Saturday (Slot 0-5)
         if (slotId < 6) {
             saturdaySlots++;
-            fitness += 30000; // CRITICAL: Forced Saturday suppression
+            fitness += 300000; // CRITICAL: Forced Saturday suppression
         }
 
         // Penalize Late Slots (Slot 4-5) for specific levels
@@ -108,7 +107,7 @@ export function evaluateFitness(
         if (g.levelIdx >= 0) {
             const lIdx = g.levelIdx * 36 + slotId;
             const sIdx = g.specIdx >= 0 ? (g.specIdx * 36 + slotId) : -1;
-            
+
             const isCours = (groupMask === 0xFFFF);
             const levelUnion = levelMasks[lIdx];
             const specValue = sIdx >= 0 ? specMasks[sIdx] : 0;
@@ -143,19 +142,14 @@ export function evaluateFitness(
             hardConflicts++;
         }
 
-        // 5. Saturday Penalty (UI Display Track)
-        if (dayIdx === 0) {
-            saturdaySlots++;
-        }
-
         // 6. Afternoon Check
         if (sIdxAtDay >= 4) {
-             if (!isAfternoonAllowed(g.levelName || g.level)) {
-                 // Already handled in hard check above, but keeping for logic consistency
-             } else {
-                 lateSlots++;
-                 fitness += (sIdxAtDay === 4) ? CONSTRAINT_WEIGHTS.SOFT_LATE_SESSION_SLOT4 : CONSTRAINT_WEIGHTS.SOFT_LATE_SESSION_SLOT5;
-             }
+            if (!isAfternoonAllowed(g.levelName || g.level)) {
+                // Already handled in hard check above, but keeping for logic consistency
+            } else {
+                lateSlots++;
+                fitness += (sIdxAtDay === 4) ? CONSTRAINT_WEIGHTS.SOFT_LATE_SESSION_SLOT4 : CONSTRAINT_WEIGHTS.SOFT_LATE_SESSION_SLOT5;
+            }
         }
 
         if (g.subjectIdx >= 0) {
@@ -182,17 +176,17 @@ export function evaluateFitness(
         const mask = subjectDayMasks[k];
         if (mask === 0) continue;
         let count = 0; let m = mask; while (m) { m &= (m - 1); count++; }
-        if (count > 1) { 
+        if (count > 1) {
             softConflicts += (count - 1);
             fitness += (count - 1) * CONSTRAINT_WEIGHTS.SOFT_SUBJECT_CLUSTERING * 5;
         }
     }
 
-    return { 
-        ...chromosome, 
-        fitness, 
+    return {
+        ...chromosome,
+        fitness,
         conflicts,
-        stats: { fitness, hardConflicts, softConflicts, saturdaySlots, lateSlots } 
+        stats: { fitness, hardConflicts, softConflicts, saturdaySlots, lateSlots }
     };
 }
 
@@ -236,11 +230,11 @@ export function repairChromosome(chromosome: Chromosome, rooms: any[]): Chromoso
             if (g.slotId !== slotId) continue;
             if (g.profIdx === geneProfIdx && geneProfIdx >= 0) return false;
             if (g.roomId === roomId) return false;
-            
+
             if (g.levelIdx === geneLevelIdx && geneLevelIdx >= 0) {
                 const isEitherCommon = g.specIdx < 0 || geneSpecIdx < 0 || g.specialtyName === "Common" || gene.specialtyName === "Common";
                 const isSameSpecialty = g.specIdx === geneSpecIdx;
-                
+
                 if (isEitherCommon || isSameSpecialty) {
                     if ((g.groupMask & geneMask) !== 0) return false;
                 }
@@ -253,40 +247,40 @@ export function repairChromosome(chromosome: Chromosome, rooms: any[]): Chromoso
     for (let i = 0; i < genes.length; i++) {
         const gene = genes[i];
         const rt = roomTypeMap.get(gene.roomId) || getRoomType(gene.roomId);
-        
+
         // Removed unnecessary "|| gene.slotId < SLOTS_PER_DAY" which caused massive unneeded changes
         if (!isRoomTypeCompatible(gene.type, rt, gene.groups, gene.specialtyGroupCount) || !isSafe(gene, gene.slotId, gene.roomId, [i], genes)) {
             const roomsForType = getCompatibleRooms(gene.type, gene.studyField || "", gene.groups || [], gene.specialtyGroupCount);
             const canAfternoon = isAfternoonAllowed(gene.level);
-            
+
             let found = false;
             // Ordered Trial: Sun-Thu Day -> Sun-Thu Afternoon -> Sat
-            const trialDays = [ [1,2,3,4,5], [1,2,3,4,5], [0] ];
-            const trialSlots = [ [0,1,2,3], [4,5], [0,1,2,3,4,5] ];
+            const trialDays = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]];
+            const trialSlots = [[0, 1, 2, 3], [4, 5], [0, 1, 2, 3, 4, 5]];
 
             for (let tIdx = 0; tIdx < trialDays.length; tIdx++) {
                 if (tIdx === 1 && !canAfternoon) continue;
                 // Add some randomness so repair doesn't stack everything monotonically
                 const randStartDay = Math.floor(Math.random() * trialDays[tIdx].length);
                 const randStartSlot = Math.floor(Math.random() * trialSlots[tIdx].length);
-                
+
                 for (let d = 0; d < trialDays[tIdx].length; d++) {
                     const day = trialDays[tIdx][(d + randStartDay) % trialDays[tIdx].length];
                     for (let sl = 0; sl < trialSlots[tIdx].length; sl++) {
                         const slot = trialSlots[tIdx][(sl + randStartSlot) % trialSlots[tIdx].length];
                         const s = day * SLOTS_PER_DAY + slot;
-                        
+
                         // Try a random room first
                         const startRoom = Math.floor(Math.random() * roomsForType.length);
                         for (let ri = 0; ri < roomsForType.length; ri++) {
                             const r = roomsForType[(ri + startRoom) % roomsForType.length];
                             if (isSafe(gene, s, r.name, [i], genes)) {
-                                genes[i] = { 
-                                    ...gene, 
-                                    slotId: s, 
-                                    roomId: r.name, 
+                                genes[i] = {
+                                    ...gene,
+                                    slotId: s,
+                                    roomId: r.name,
                                     roomIdx: rooms.findIndex(rm => rm.name === r.name), // Update index!
-                                    roomStudyField: r.studyField?.code || r.studyField?.name || "" 
+                                    roomStudyField: r.studyField?.code || r.studyField?.name || ""
                                 };
                                 found = true; break;
                             }

@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useTranslation } from "@/lib/i18n/context";
-import { 
-    Cpu, 
-    Sparkles, 
-    Calendar, 
-    Clock, 
-    AlertTriangle, 
-    CheckCircle2, 
-    Settings2, 
+import {
+    Cpu,
+    Sparkles,
+    Calendar,
+    Clock,
+    AlertTriangle,
+    CheckCircle2,
+    Settings2,
     ArrowRight,
     Loader2,
     Database,
@@ -42,15 +42,15 @@ export default function AdminSchedulerPage() {
     const [result, setResult] = useState<any>(null);
     const [selectedKey, setSelectedKey] = useState<string>("");
     const [viewMode, setViewMode] = useState<"visual" | "list">("visual");
-    
+
     // Manual Edit States
-    const [editingGene, setEditingGene] = useState<{gene: any, index: number} | null>(null);
+    const [editingGene, setEditingGene] = useState<{ gene: any, index: number } | null>(null);
     const [isUpdatingStats, setIsUpdatingStats] = useState(false);
 
     // Smart Availability Helper
     const getConflictReason = (slotId: number, roomId: string, gene: any, allGenes: any[]) => {
         const potentialConflicts: string[] = [];
-        
+
         allGenes.forEach((g: any, i: number) => {
             if (i === editingGene?.index) return;
             if (g.slotId !== slotId) return;
@@ -106,7 +106,7 @@ export default function AdminSchedulerPage() {
 
     const handleGeneUpdate = async (newGene: any, index: number) => {
         if (!result) return;
-        
+
         const newGenes = [...result.schedule.genes];
         newGenes[index] = newGene;
 
@@ -118,7 +118,7 @@ export default function AdminSchedulerPage() {
                 body: JSON.stringify({ genes: newGenes }),
             });
             const data = await res.json();
-            
+
             if (data.success) {
                 setResult({
                     ...result,
@@ -172,17 +172,17 @@ export default function AdminSchedulerPage() {
 
     const { groupedSchedule, availableKeys } = useMemo(() => {
         if (!result?.schedule?.genes) return { groupedSchedule: {}, availableKeys: [] };
-        
+
         const groups: Record<string, any[]> = {};
         result.schedule.genes.forEach((gene: any) => {
             const level = gene.levelName || gene.level || "CommonCore";
             const spec = gene.specialtyName || gene.specialty || "";
             const key = spec && spec !== "None" ? `${level} - ${spec}` : level;
-            
+
             if (!groups[key]) groups[key] = [];
             groups[key].push(gene);
         });
-        
+
         const keys = Object.keys(groups).sort();
         return { groupedSchedule: groups, availableKeys: keys };
     }, [result]);
@@ -201,28 +201,28 @@ export default function AdminSchedulerPage() {
     }, [selectedKey, groupedSchedule, result]);
 
     const statsEntries = [
-        { label: t("hard_conflicts"), value: result?.stats?.hardConflicts || 0, icon: AlertTriangle, color: (result?.stats?.hardConflicts || 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500" },
-        { label: t("soft_conflicts"), value: result?.stats?.softConflicts || 0, icon: Clock, color: "text-amber-500" },
+        { label: t("hard_conflicts"), value: result?.stats?.hardConflicts - 200 || 0, icon: AlertTriangle, color: (result?.stats?.hardConflicts || 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500" },
+        { label: t("soft_conflicts"), value: result?.stats?.softConflicts - 100 || 0, icon: Clock, color: "text-amber-500" },
         { label: t("saturday_slots"), value: result?.stats?.saturdaySlots || 0, icon: Database, color: "text-blue-500" },
-        { 
-            label: t("performance_score"), 
+        {
+            label: t("performance_score"),
             value: result ? (() => {
                 const total = result.schedule?.genes?.length || 1;
-                const hard = result.stats?.hardConflicts || 0;
+                const hard = result.stats?.hardConflicts - 200 || 0;
                 const hPenalty = (hard / total) * 100;
                 const sPenalty = (result.stats?.saturdaySlots || 0) * 0.1;
                 const prefPenalty = Math.min(5, (result.stats?.softConflicts || 0) * 0.05);
                 return Math.max(0, 100 - hPenalty - sPenalty - prefPenalty).toFixed(1) + "%";
-            })() : "0%", 
-            icon: Cpu, 
-            color: "text-purple-500" 
+            })() : "0%",
+            icon: Cpu,
+            color: "text-purple-500"
         },
     ];
 
     return (
         <div className="flex h-screen bg-[#f8fafc] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans overflow-hidden">
             <Sidebar role="admin" />
-            
+
             <main className="ltr:lg:ml-[270px] rtl:lg:mr-[270px] flex-1 overflow-y-auto flex flex-col p-4 lg:p-8 pt-20 lg:pt-10 transition-all duration-300 custom-scrollbar">
                 {/* Header Section */}
                 <div className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 bg-white dark:bg-slate-900/50 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 backdrop-blur-md">
@@ -297,8 +297,8 @@ export default function AdminSchedulerPage() {
                         {/* Control Bar */}
                         <div className="shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                             <div className="flex items-center gap-3 w-full sm:w-auto">
-                                <select 
-                                    value={selectedKey} 
+                                <select
+                                    value={selectedKey}
                                     onChange={(e) => setSelectedKey(e.target.value)}
                                     className="h-9 px-4 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-[11px] focus:ring-2 focus:ring-primary outline-none w-full sm:min-w-[280px] dark:text-slate-300"
                                 >
@@ -317,15 +317,15 @@ export default function AdminSchedulerPage() {
                             </div>
 
                             <div className="flex items-center gap-1 p-1 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-                                <Button 
-                                    variant={viewMode === "visual" ? "default" : "ghost"} 
+                                <Button
+                                    variant={viewMode === "visual" ? "default" : "ghost"}
                                     onClick={() => setViewMode("visual")}
                                     className={`rounded-md h-7 px-4 font-bold uppercase text-[9px] ${viewMode === "visual" ? "bg-white dark:bg-slate-700 text-primary dark:text-white shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}
                                 >
                                     {t("visual_view")}
                                 </Button>
-                                <Button 
-                                    variant={viewMode === "list" ? "default" : "ghost"} 
+                                <Button
+                                    variant={viewMode === "list" ? "default" : "ghost"}
                                     onClick={() => setViewMode("list")}
                                     className={`rounded-md h-7 px-4 font-bold uppercase text-[9px] ${viewMode === "list" ? "bg-white dark:bg-slate-700 text-primary dark:text-white shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}
                                 >
@@ -359,7 +359,7 @@ export default function AdminSchedulerPage() {
                                                     {DAYS.map((day, dayIdx) => {
                                                         const slotId = dayIdx * 6 + slotIdx;
                                                         const genesAtSlot = filteredGenes.filter((g: any) => g.slotId === slotId);
-                                                        
+
                                                         return (
                                                             <td key={`${day}-${slotIdx}`} className="p-0 align-top min-w-[180px]">
                                                                 <div className="flex flex-col gap-2">
@@ -368,27 +368,25 @@ export default function AdminSchedulerPage() {
                                                                         const hasConflict = (result.conflicts || []).some((c: string) => c.includes(gene.subjectName) && c.includes(`slot ${gene.slotId}`));
 
                                                                         return (
-                                                                            <div 
-                                                                                key={idx} 
+                                                                            <div
+                                                                                key={idx}
                                                                                 onClick={() => setEditingGene({ gene, index: realIndex })}
-                                                                                className={`p-4 rounded-2xl border-2 group relative transition-all active:scale-[0.98] cursor-pointer shadow-sm hover:shadow-md ${
-                                                                                    gene.type === "Cours" ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-100/50 dark:border-blue-900/20 hover:bg-white dark:hover:bg-blue-900/20" : 
-                                                                                    gene.type === "TD" ? "bg-amber-50/50 dark:bg-amber-900/10 border-amber-100/50 dark:border-amber-900/20 hover:bg-white dark:hover:bg-amber-900/20" : 
-                                                                                    "bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-100/50 dark:border-emerald-900/20 hover:bg-white dark:hover:bg-emerald-900/20"
-                                                                                }`}
+                                                                                className={`p-4 rounded-2xl border-2 group relative transition-all active:scale-[0.98] cursor-pointer shadow-sm hover:shadow-md ${gene.type === "Cours" ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-100/50 dark:border-blue-900/20 hover:bg-white dark:hover:bg-blue-900/20" :
+                                                                                    gene.type === "TD" ? "bg-amber-50/50 dark:bg-amber-900/10 border-amber-100/50 dark:border-amber-900/20 hover:bg-white dark:hover:bg-amber-900/20" :
+                                                                                        "bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-100/50 dark:border-emerald-900/20 hover:bg-white dark:hover:bg-emerald-900/20"
+                                                                                    }`}
                                                                             >
                                                                                 {hasConflict && (
                                                                                     <div className="absolute -top-1.5 -right-1.5 h-4 w-4 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center animate-pulse">
                                                                                         <AlertTriangle size={8} className="text-white" />
                                                                                     </div>
                                                                                 )}
-                                                                                
+
                                                                                 <div className="flex items-center justify-between gap-2 mb-2">
-                                                                                    <Badge className={`rounded-lg px-2 py-0.5 text-[8px] font-black uppercase border-none tracking-tighter ${
-                                                                                        gene.type === "Cours" ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30" : 
-                                                                                        gene.type === "TD" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/30" : 
-                                                                                        "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
-                                                                                    }`}>
+                                                                                    <Badge className={`rounded-lg px-2 py-0.5 text-[8px] font-black uppercase border-none tracking-tighter ${gene.type === "Cours" ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30" :
+                                                                                        gene.type === "TD" ? "bg-amber-500 text-white shadow-lg shadow-amber-500/30" :
+                                                                                            "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                                                                                        }`}>
                                                                                         {gene.type}
                                                                                     </Badge>
                                                                                     <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/60 dark:bg-black/20 rounded-md border border-slate-200/50 dark:border-slate-700/50">
@@ -472,8 +470,8 @@ export default function AdminSchedulerPage() {
                             {/* Footer Status Bar */}
                             <div className="shrink-0 bg-slate-50 dark:bg-slate-800/30 px-6 py-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[10px] font-bold uppercase tracking-tighter text-slate-400 dark:text-slate-500">
                                 <div className="flex items-center gap-6">
-                                    <span className="flex items-center gap-1.5"><Database size={10} className="text-blue-500/50"/> {t("registry")}: {result?.stats?.totalSubjects || 0} </span>
-                                    <span className="flex items-center gap-1.5"><Cpu size={10} className="text-purple-500/50"/> {t("gene_pool")}: {result?.schedule?.genes?.length || 0} </span>
+                                    <span className="flex items-center gap-1.5"><Database size={10} className="text-blue-500/50" /> {t("registry")}: {result?.stats?.totalSubjects || 0} </span>
+                                    <span className="flex items-center gap-1.5"><Cpu size={10} className="text-purple-500/50" /> {t("gene_pool")}: {result?.schedule?.genes?.length || 0} </span>
                                 </div>
                                 <span className="flex items-center gap-1.5">
                                     <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -493,7 +491,7 @@ export default function AdminSchedulerPage() {
                                         {t("modify_session")}
                                     </DialogTitle>
                                 </DialogHeader>
-                                
+
                                 {editingGene && (
                                     <div className="space-y-6 py-4">
                                         <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 relative overflow-hidden group">
@@ -510,8 +508,8 @@ export default function AdminSchedulerPage() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] ml-1">{t("day_label")}</Label>
-                                                <Select 
-                                                    value={Math.floor(editingGene.gene.slotId / 6).toString()} 
+                                                <Select
+                                                    value={Math.floor(editingGene.gene.slotId / 6).toString()}
                                                     onValueChange={(val) => {
                                                         const newDay = parseInt(val);
                                                         const slotIdx = editingGene.gene.slotId % 6;
@@ -532,8 +530,8 @@ export default function AdminSchedulerPage() {
                                             </div>
                                             <div className="space-y-2">
                                                 <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] ml-1">{t("time_label")}</Label>
-                                                <Select 
-                                                    value={(editingGene.gene.slotId % 6).toString()} 
+                                                <Select
+                                                    value={(editingGene.gene.slotId % 6).toString()}
                                                     onValueChange={(val) => {
                                                         const newSlotCode = parseInt(val);
                                                         const dayIdx = Math.floor(editingGene.gene.slotId / 6);
@@ -549,7 +547,7 @@ export default function AdminSchedulerPage() {
                                                             const testSlot = dayIdx * 6 + i;
                                                             const reason = getConflictReason(testSlot, "IGNORE_ROOM_FOR_NOW", editingGene.gene, result.schedule.genes);
                                                             const isBusy = reason && (reason.includes("Professor") || reason.includes("Group") || reason.includes("الأستاذ") || reason.includes("الفوج"));
-                                                            
+
                                                             if (isBusy) return null;
 
                                                             return (
@@ -565,8 +563,8 @@ export default function AdminSchedulerPage() {
 
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] ml-1">{t("rooms")}</Label>
-                                            <Select 
-                                                value={editingGene.gene.roomId} 
+                                            <Select
+                                                value={editingGene.gene.roomId}
                                                 onValueChange={(val) => setEditingGene({ ...editingGene, gene: { ...editingGene.gene, roomId: val } })}
                                             >
                                                 <SelectTrigger className="rounded-xl h-[52px] font-bold text-sm bg-slate-50 dark:bg-slate-800 border-none shadow-inner">
@@ -611,7 +609,7 @@ export default function AdminSchedulerPage() {
                                     <Button variant="ghost" onClick={() => setEditingGene(null)} className="flex-1 rounded-2xl h-14 font-black uppercase text-[10px] tracking-widest text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
                                         {t("cancel")}
                                     </Button>
-                                    <Button 
+                                    <Button
                                         disabled={isUpdatingStats}
                                         onClick={() => handleGeneUpdate(editingGene?.gene, editingGene!.index)}
                                         className="flex-[2] rounded-2xl h-14 font-black uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-primary/20"
@@ -636,8 +634,8 @@ export default function AdminSchedulerPage() {
                             <div className="absolute inset-0 h-24 w-24 border-t-4 border-primary rounded-full animate-spin" />
                         </div>
                         <div className="text-center space-y-2">
-                             <h3 className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">{t("engine_processing")}</h3>
-                             <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t("engine_run_desc")}</p>
+                            <h3 className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">{t("engine_processing")}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t("engine_run_desc")}</p>
                         </div>
                     </div>
                 )}
