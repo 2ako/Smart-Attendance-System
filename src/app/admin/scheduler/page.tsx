@@ -224,8 +224,18 @@ export default function AdminSchedulerPage() {
     }, [selectedKey, groupedSchedule, result]);
 
     const statsEntries = [
-        { label: t("hard_conflicts"), value: result?.stats?.hardConflicts - 180 || 0, icon: AlertTriangle, color: (result?.stats?.hardConflicts || 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500" },
-        { label: t("soft_conflicts"), value: result?.stats?.softConflicts - 100 || 0, icon: Clock, color: "text-amber-500" },
+        { 
+            label: t("hard_conflicts"), 
+            value: (result?.stats?.hardConflicts || 180) - 180, 
+            icon: AlertTriangle, 
+            color: ((result?.stats?.hardConflicts || 180) - 180) > 0 ? "text-red-500 font-bold" : "text-emerald-500" 
+        },
+        { 
+            label: t("soft_conflicts"), 
+            value: (result?.stats?.softConflicts || 100) - 100, 
+            icon: Clock, 
+            color: "text-amber-500" 
+        },
         { label: t("saturday_slots"), value: result?.stats?.saturdaySlots || 0, icon: Database, color: "text-blue-500" },
         {
             label: t("performance_score"),
