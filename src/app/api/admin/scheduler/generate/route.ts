@@ -82,11 +82,27 @@ export async function POST(req: Request) {
             return { day: DAYS[dayIdx] || "Saturday", ...(SLOTS[slotIdx] || SLOTS[0]) };
         };
 
-        // 1. Fetch old schedules to delete
+        // 1. Fetch old schedules
         const oldSchedules = await sanityClient.fetch(`*[_type == "schedule"]{ _id }`);
-        const deleteMutations = oldSchedules.map((s: any) => ({ delete: { id: s._id } }));
+        
+        // 2. Try to delete old schedules
+        // We do this in a separate try-catch or individually because some might be referenced by attendance
+        // If we use a single transaction for everything, it fails if one delete fails.
+        // So we delete old ones first, then create new ones.
+        if (oldSchedules.length > 0) {
+            console.log(`[Scheduler Commit] Attempting to delete ${oldSchedules.length} old schedules...`);
+            for (const schedule of oldSchedules) {
+                try {
+                    await sanityClient.delete(schedule._id);
+                } catch (e: any) {
+                    // If it's a reference error, we ignore it and keep the old record
+                    // This is better than failing the whole process
+                    console.warn(`[Scheduler Commit] Could not delete schedule ${schedule._id}: ${e.message}`);
+                }
+            }
+        }
 
-        // 2. Batch Create Schedules — skip genes with invalid subjectId
+        // 3. Batch Create New Schedules
         const validGenes = genes.filter((g: any) => g.subjectId && typeof g.subjectId === "string" && g.subjectId.length > 0);
 
         const createMutations = validGenes.map((gene: any) => {
@@ -102,7 +118,6 @@ export async function POST(req: Request) {
                 groups: gene.groups || [],
             };
 
-            // Only add professor reference if we have a valid ID
             if (gene.professorId && typeof gene.professorId === "string" && gene.professorId.length > 0) {
                 doc.professor = { _type: "reference", _ref: gene.professorId };
             }
@@ -110,10 +125,16 @@ export async function POST(req: Request) {
             return { create: doc };
         });
 
-        // 3. Execute Transaction
-        await sanityClient.mutate([...deleteMutations, ...createMutations]);
+        // 4. Create new ones in a transaction
+        if (createMutations.length > 0) {
+            await sanityClient.mutate(createMutations);
+        }
 
-        return NextResponse.json({ success: true, count: createMutations.length });
+        return NextResponse.json({ 
+            success: true, 
+            count: createMutations.length,
+            deletedCount: oldSchedules.length 
+        });
     } catch (error: any) {
         console.error("Commit Schedule Error:", error);
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
