@@ -39,6 +39,7 @@ import { Label } from "@/components/ui/label";
 export default function AdminSchedulerPage() {
     const { t } = useTranslation();
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isLoadingExisting, setIsLoadingExisting] = useState(true);
     const [result, setResult] = useState<any>(null);
     const [selectedKey, setSelectedKey] = useState<string>("");
     const [viewMode, setViewMode] = useState<"visual" | "list">("visual");
@@ -46,6 +47,24 @@ export default function AdminSchedulerPage() {
     // Manual Edit States
     const [editingGene, setEditingGene] = useState<{ gene: any, index: number } | null>(null);
     const [isUpdatingStats, setIsUpdatingStats] = useState(false);
+
+    // Auto-load committed schedule on mount
+    useEffect(() => {
+        const loadExisting = async () => {
+            try {
+                const res = await fetch("/api/admin/scheduler/load");
+                const data = await res.json();
+                if (data.success && data.hasSchedule) {
+                    setResult(data);
+                }
+            } catch (e) {
+                // silently fail – admin can generate a new one
+            } finally {
+                setIsLoadingExisting(false);
+            }
+        };
+        loadExisting();
+    }, []);
 
     // Smart Availability Helper
     const getConflictReason = (slotId: number, roomId: string, gene: any, allGenes: any[]) => {
@@ -257,7 +276,15 @@ export default function AdminSchedulerPage() {
                     </div>
                 </div>
 
-                {!result && !isGenerating && (
+                {/* Loading existing schedule */}
+                {isLoadingExisting && !isGenerating && (
+                    <div className="flex-1 flex flex-col items-center justify-center gap-4 py-20">
+                        <Loader2 size={40} className="animate-spin text-primary" />
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t("processing") || "Loading schedule..."}</p>
+                    </div>
+                )}
+
+                {!result && !isGenerating && !isLoadingExisting && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {[
                             { title: t("core_logic"), desc: t("core_logic_desc"), icon: Settings2, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
