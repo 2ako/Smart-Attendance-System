@@ -61,7 +61,7 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const { genes } = await req.json();
-        
+
         if (!genes || !Array.isArray(genes)) {
             return NextResponse.json({ error: "Invalid genes data" }, { status: 400 });
         }
@@ -79,28 +79,35 @@ export async function POST(req: Request) {
             ];
             const dayIdx = Math.floor(slotId / 6);
             const slotIdx = slotId % 6;
-            return { day: DAYS[dayIdx] || "Saturday", ...SLOTS[slotIdx] };
+            return { day: DAYS[dayIdx] || "Saturday", ...(SLOTS[slotIdx] || SLOTS[0]) };
         };
 
         // 1. Fetch old schedules to delete
         const oldSchedules = await sanityClient.fetch(`*[_type == "schedule"]{ _id }`);
         const deleteMutations = oldSchedules.map((s: any) => ({ delete: { id: s._id } }));
 
-        // 2. Batch Create Schedules
-        const createMutations = genes.map((gene: any) => {
+        // 2. Batch Create Schedules — skip genes with invalid subjectId
+        const validGenes = genes.filter((g: any) => g.subjectId && typeof g.subjectId === "string" && g.subjectId.length > 0);
+
+        const createMutations = validGenes.map((gene: any) => {
             const info = getSlotInfo(gene.slotId);
-            return {
-                create: {
-                    _type: "schedule",
-                    subject: { _type: "reference", _ref: gene.subjectId },
-                    professor: { _type: "reference", _ref: gene.professorId },
-                    room: gene.roomId,
-                    day: info.day,
-                    startTime: info.start,
-                    endTime: info.end,
-                    groups: gene.groups
-                }
+
+            const doc: any = {
+                _type: "schedule",
+                subject: { _type: "reference", _ref: gene.subjectId },
+                room: gene.roomId || "Unknown",
+                day: info.day,
+                startTime: info.start,
+                endTime: info.end,
+                groups: gene.groups || [],
             };
+
+            // Only add professor reference if we have a valid ID
+            if (gene.professorId && typeof gene.professorId === "string" && gene.professorId.length > 0) {
+                doc.professor = { _type: "reference", _ref: gene.professorId };
+            }
+
+            return { create: doc };
         });
 
         // 3. Execute Transaction
@@ -108,6 +115,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ success: true, count: createMutations.length });
     } catch (error: any) {
+        console.error("Commit Schedule Error:", error);
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }

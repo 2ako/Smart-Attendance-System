@@ -175,19 +175,23 @@ export default function AdminSchedulerPage() {
 
     const handleCommit = async () => {
         if (!result) return;
-        toast.promise(
-            fetch("/api/admin/scheduler/generate", {
+        const toastId = toast.loading(t("processing") || "Saving schedule...");
+        try {
+            const res = await fetch("/api/admin/scheduler/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ genes: result.schedule.genes }),
-            }),
-            {
-                loading: t("processing") || "Saving...",
-                success: t("success_occurred") || "Saved successfully",
-                error: t("error_occurred") || "Failed to save",
+            });
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                throw new Error(data.error || `Server error (${res.status})`);
             }
-        );
+            toast.success(`${t("success_occurred") || "Saved"} — ${data.count} sessions`, { id: toastId });
+        } catch (error: any) {
+            toast.error(`${t("error_occurred") || "Failed to save"}: ${error.message}`, { id: toastId });
+        }
     };
+
 
     const { groupedSchedule, availableKeys } = useMemo(() => {
         if (!result?.schedule?.genes) return { groupedSchedule: {}, availableKeys: [] };
