@@ -103,8 +103,8 @@ export async function GET() {
         } : {
             totalSubjects: subjectsCount,
             totalRooms: roomsCount,
-            hardConflicts: 180, // Fallback for old schedules before metadata was added
-            softConflicts: 100, 
+            hardConflicts: 0, 
+            softConflicts: 0, 
             saturdaySlots: genes.filter((g: any) => g.slotId < 6).length,
             lateSlots: genes.filter((g: any) => g.slotId % 6 >= 4).length,
         };
