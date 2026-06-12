@@ -23,7 +23,7 @@ function getSlotId(day: string, startTime: string): number {
 export async function GET() {
     try {
         const schedules = await sanityClient.fetch(`
-            *[_type == "schedule"]{
+            *[_type == "schedule" && coalesce(isActive, true) == true]{
                 _id,
                 day,
                 startTime,

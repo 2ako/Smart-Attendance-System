@@ -82,24 +82,33 @@ export async function POST(req: Request) {
             return { day: DAYS[dayIdx] || "Saturday", ...(SLOTS[slotIdx] || SLOTS[0]) };
         };
 
-        // 1. Fetch old schedules
-        const oldSchedules = await sanityClient.fetch(`*[_type == "schedule"]{ _id }`);
+        // 1. Fetch currently active schedules
+        // We target both explicitly active and legacy schedules (isActive unset)
+        const oldSchedules = await sanityClient.fetch(`*[_type == "schedule" && coalesce(isActive, true) == true]{ _id }`);
         
-        // 2. Try to delete old schedules
-        // We do this in a separate try-catch or individually because some might be referenced by attendance
-        // If we use a single transaction for everything, it fails if one delete fails.
-        // So we delete old ones first, then create new ones.
+        let deletedCount = 0;
+        let archivedCount = 0;
+
+        // 2. Clear old schedules safely (Delete or Archive)
         if (oldSchedules.length > 0) {
-            console.log(`[Scheduler Commit] Attempting to delete ${oldSchedules.length} old schedules...`);
+            console.log(`[Scheduler Commit] Processing ${oldSchedules.length} active schedules...`);
             for (const schedule of oldSchedules) {
                 try {
+                    // Try to hard-delete first
                     await sanityClient.delete(schedule._id);
+                    deletedCount++;
                 } catch (e: any) {
-                    // If it's a reference error, we ignore it and keep the old record
-                    // This is better than failing the whole process
-                    console.warn(`[Scheduler Commit] Could not delete schedule ${schedule._id}: ${e.message}`);
+                    // If Sanity blocks it (e.g., due to Session/Attendance references), archive it instead
+                    console.warn(`[Scheduler Commit] Could not delete schedule ${schedule._id}, archiving instead.`);
+                    try {
+                        await sanityClient.patch(schedule._id).set({ isActive: false }).commit();
+                        archivedCount++;
+                    } catch (patchErr: any) {
+                        console.error(`[Scheduler Commit] Failed to archive schedule ${schedule._id}:`, patchErr);
+                    }
                 }
             }
+            console.log(`[Scheduler Commit] Finished clearing. Deleted: ${deletedCount}, Archived: ${archivedCount}`);
         }
 
         // 3. Batch Create New Schedules
@@ -116,6 +125,7 @@ export async function POST(req: Request) {
                 startTime: info.start,
                 endTime: info.end,
                 groups: gene.groups || [],
+                isActive: true, // Mark new ones as explicitly active
             };
 
             if (gene.professorId && typeof gene.professorId === "string" && gene.professorId.length > 0) {
@@ -125,7 +135,7 @@ export async function POST(req: Request) {
             return { create: doc };
         });
 
-        // 4. Create new ones in a transaction
+        // 4. Execute transaction to save
         if (createMutations.length > 0) {
             await sanityClient.mutate(createMutations);
         }
@@ -133,7 +143,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ 
             success: true, 
             count: createMutations.length,
-            deletedCount: oldSchedules.length 
+            deletedCount,
+            archivedCount
         });
     } catch (error: any) {
         console.error("Commit Schedule Error:", error);

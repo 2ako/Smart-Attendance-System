@@ -11,6 +11,7 @@ const schedule = {
         { name: "startTime", title: "Start Time", type: "string" },
         { name: "endTime", title: "End Time", type: "string" },
         { name: "groups", title: "Student Groups", type: "array", of: [{ type: "string" }] },
+        { name: "isActive", title: "Is Active", type: "boolean", initialValue: true, description: "Active schedules are currently in use. Inactive schedules are kept for historical session records." },
     ],
 };
 export default schedule;
