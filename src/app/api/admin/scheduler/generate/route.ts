@@ -60,7 +60,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const { genes } = await req.json();
+        const { genes, stats, conflicts: detailedConflicts } = await req.json();
 
         if (!genes || !Array.isArray(genes)) {
             return NextResponse.json({ error: "Invalid genes data" }, { status: 400 });
@@ -83,9 +83,16 @@ export async function POST(req: Request) {
         };
 
         // 1. Fetch currently active schedules
-        // We target both explicitly active and legacy schedules (isActive unset)
         const oldSchedules = await sanityClient.fetch(`*[_type == "schedule" && coalesce(isActive, true) == true]{ _id }`);
         
+        // 1.5 Delete old metadata
+        const oldMetadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"]{ _id }`);
+        if (oldMetadata.length > 0) {
+            for (const meta of oldMetadata) {
+                await sanityClient.delete(meta._id);
+            }
+        }
+
         let deletedCount = 0;
         let archivedCount = 0;
 
@@ -94,11 +101,9 @@ export async function POST(req: Request) {
             console.log(`[Scheduler Commit] Processing ${oldSchedules.length} active schedules...`);
             for (const schedule of oldSchedules) {
                 try {
-                    // Try to hard-delete first
                     await sanityClient.delete(schedule._id);
                     deletedCount++;
                 } catch (e: any) {
-                    // If Sanity blocks it (e.g., due to Session/Attendance references), archive it instead
                     console.warn(`[Scheduler Commit] Could not delete schedule ${schedule._id}, archiving instead.`);
                     try {
                         await sanityClient.patch(schedule._id).set({ isActive: false }).commit();
@@ -108,15 +113,13 @@ export async function POST(req: Request) {
                     }
                 }
             }
-            console.log(`[Scheduler Commit] Finished clearing. Deleted: ${deletedCount}, Archived: ${archivedCount}`);
         }
 
         // 3. Batch Create New Schedules
         const validGenes = genes.filter((g: any) => g.subjectId && typeof g.subjectId === "string" && g.subjectId.length > 0);
 
-        const createMutations = validGenes.map((gene: any) => {
+        const mutations = validGenes.map((gene: any) => {
             const info = getSlotInfo(gene.slotId);
-
             const doc: any = {
                 _type: "schedule",
                 subject: { _type: "reference", _ref: gene.subjectId },
@@ -125,7 +128,7 @@ export async function POST(req: Request) {
                 startTime: info.start,
                 endTime: info.end,
                 groups: gene.groups || [],
-                isActive: true, // Mark new ones as explicitly active
+                isActive: true,
             };
 
             if (gene.professorId && typeof gene.professorId === "string" && gene.professorId.length > 0) {
@@ -135,14 +138,32 @@ export async function POST(req: Request) {
             return { create: doc };
         });
 
+        // 3.5 Create metadata
+        if (stats) {
+            mutations.push({
+                create: {
+                    _type: "scheduleMetadata",
+                    fitness: stats.fitness,
+                    hardConflicts: stats.hardConflicts,
+                    softConflicts: stats.softConflicts,
+                    saturdaySlots: stats.saturdaySlots,
+                    lateSlots: stats.lateSlots,
+                    totalSubjects: stats.totalSubjects,
+                    totalRooms: stats.totalRooms,
+                    conflicts: detailedConflicts || [],
+                    committedAt: new Date().toISOString()
+                }
+            } as any);
+        }
+
         // 4. Execute transaction to save
-        if (createMutations.length > 0) {
-            await sanityClient.mutate(createMutations);
+        if (mutations.length > 0) {
+            await sanityClient.mutate(mutations);
         }
 
         return NextResponse.json({ 
             success: true, 
-            count: createMutations.length,
+            count: validGenes.length,
             deletedCount,
             archivedCount
         });

@@ -21,6 +21,7 @@ import academicConfig from "./academicConfig";
 import studyField from "./studyField";
 import systemConfig from "./systemConfig";
 import makeUpRequest from "./makeUpRequest";
+import scheduleMetadata from "./scheduleMetadata";
 
 export const schemaTypes = [
     user,
@@ -42,4 +43,5 @@ export const schemaTypes = [
     studyField,
     systemConfig,
     makeUpRequest,
+    scheduleMetadata,
 ];

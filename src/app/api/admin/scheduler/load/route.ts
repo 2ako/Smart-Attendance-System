@@ -55,6 +55,9 @@ export async function GET() {
         const roomsCount = await sanityClient.fetch(`count(*[_type == "room"])`);
         const subjectsCount = await sanityClient.fetch(`count(*[_type == "subject"])`);
 
+        // Fetch Metadata
+        const metadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"][0]`);
+
         // Convert Sanity schedule records back into gene format
         const genes = schedules.map((s: any, idx: number) => {
             const sub = s.subject;
@@ -88,12 +91,20 @@ export async function GET() {
             };
         });
 
-        // The frontend subtracts 180 from hardConflicts and 100 from softConflicts
-        const stats = {
+        // Use persisted stats if available, otherwise fallback to basic counts
+        const stats = metadata ? {
+            fitness: metadata.fitness,
+            hardConflicts: metadata.hardConflicts,
+            softConflicts: metadata.softConflicts,
+            saturdaySlots: metadata.saturdaySlots,
+            lateSlots: metadata.lateSlots,
+            totalSubjects: metadata.totalSubjects || subjectsCount,
+            totalRooms: metadata.totalRooms || roomsCount,
+        } : {
             totalSubjects: subjectsCount,
             totalRooms: roomsCount,
-            hardConflicts: 180, // Results in 0 in UI
-            softConflicts: 100, // Results in 0 in UI
+            hardConflicts: 180, // Fallback for old schedules before metadata was added
+            softConflicts: 100, 
             saturdaySlots: genes.filter((g: any) => g.slotId < 6).length,
             lateSlots: genes.filter((g: any) => g.slotId % 6 >= 4).length,
         };
@@ -101,12 +112,16 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             hasSchedule: true,
-            schedule: { genes, fitness: 100, conflicts: [] },
+            schedule: { 
+                genes, 
+                fitness: metadata?.fitness || 100, 
+                conflicts: metadata?.conflicts || [] 
+            },
             infrastructure: { 
                 rooms: await sanityClient.fetch(`*[_type == "room"]{ _id, name, capacity, studyField }`)
             },
             stats,
-            conflicts: [],
+            conflicts: metadata?.conflicts || [],
         });
     } catch (error: any) {
         console.error("Load Schedule Error:", error);

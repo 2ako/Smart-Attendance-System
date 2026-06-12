@@ -180,7 +180,11 @@ export default function AdminSchedulerPage() {
             const res = await fetch("/api/admin/scheduler/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ genes: result.schedule.genes }),
+                body: JSON.stringify({ 
+                    genes: result.schedule.genes,
+                    stats: result.stats,
+                    conflicts: result.schedule.conflicts
+                }),
             });
             const data = await res.json();
             if (!res.ok || !data.success) {
