@@ -35,11 +35,9 @@ export async function GET() {
                     name,
                     code,
                     type,
-                    "levelName": level->name,
-                    "levelCode": level->code,
-                    "specialtyName": specialty->name,
-                    "specialtyCode": specialty->code,
-                    studyField->{ _id, name, code }
+                    level,
+                    specialty,
+                    studyField
                 },
                 professor->{
                     _id,
@@ -63,8 +61,9 @@ export async function GET() {
             const prof = s.professor;
             const slotId = getSlotId(s.day, s.startTime);
 
-            const levelLabel = sub?.levelName || sub?.levelCode || "L1";
-            const specialtyLabel = sub?.specialtyName || sub?.specialtyCode || "None";
+            // In our schema, level and specialty are plain strings
+            const levelLabel = sub?.level || "L1";
+            const specialtyLabel = sub?.specialty || "None";
 
             const profName = prof
                 ? ((prof.firstName || prof.lastName)
@@ -83,19 +82,18 @@ export async function GET() {
                 type: sub?.type || "Cours",
                 levelName: levelLabel,
                 specialtyName: specialtyLabel,
-                studyField: sub?.studyField?.code || sub?.studyField?.name || "",
+                studyField: sub?.studyField || "",
                 // Index fields for internal logic
                 subjectIdx: idx,
             };
         });
 
         // The frontend subtracts 180 from hardConflicts and 100 from softConflicts
-        // So for a "clean" committed schedule, we provide these base values.
         const stats = {
             totalSubjects: subjectsCount,
             totalRooms: roomsCount,
-            hardConflicts: 180, // Results in 0 in UI (180 - 180)
-            softConflicts: 100, // Results in 0 in UI (100 - 100)
+            hardConflicts: 180, // Results in 0 in UI
+            softConflicts: 100, // Results in 0 in UI
             saturdaySlots: genes.filter((g: any) => g.slotId < 6).length,
             lateSlots: genes.filter((g: any) => g.slotId % 6 >= 4).length,
         };
@@ -105,7 +103,7 @@ export async function GET() {
             hasSchedule: true,
             schedule: { genes, fitness: 100, conflicts: [] },
             infrastructure: { 
-                rooms: await sanityClient.fetch(`*[_type == "room"]{ _id, name, capacity, studyField->{ _id, name, code } }`)
+                rooms: await sanityClient.fetch(`*[_type == "room"]{ _id, name, capacity, studyField }`)
             },
             stats,
             conflicts: [],
