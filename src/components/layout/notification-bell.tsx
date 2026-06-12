@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Bell, BellDot, CheckCheck, ClipboardList, X, Sparkles, UserCheck, UserX, Clock, MessageSquare, AlertTriangle, Hourglass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n/context";
 
 interface Notification {
@@ -28,10 +28,13 @@ export function NotificationBell() {
     const { user } = useAuth();
     const { t } = useTranslation();
     const router = useRouter();
-    const pathname = usePathname();
     const [open, setOpen] = useState(false);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [loading, setLoading] = useState(false);
+    
+    // Use ref to prevent concurrent fetches and break dependency cycle in useCallback
+    const isFetchingRef = useRef(false);
 
     const translateNotification = (n: Notification) => {
         let title = n.title;
@@ -76,12 +79,10 @@ export function NotificationBell() {
     };
 
     const handleNotificationClick = async (n: Notification) => {
-        // Mark as read if not already
         if (!n.isRead) {
             await markOneRead(n._id);
         }
 
-        // Determine redirection URL
         let url = "";
         if ((n.type === "new_assignment" || n.type === "graded" || n.type === "appeal_update" || n.type === "deadline_approaching" || n.type === "deadline_passed") && n.assignment?._id) {
             url = `/student/assignments?assignmentId=${n.assignment._id}`;
@@ -90,24 +91,21 @@ export function NotificationBell() {
         } else if (n.type === "new_justification") {
             url = `/admin/justifications`;
         } else if (n.type === "new_announcement") {
-            // Fix: Redirect students to their dedicated announcements page, admins to the admin page
             url = user?.role === "student" ? `/student/announcements` : `/admin/announcements`;
         }
 
-        // Close dropdown
         setOpen(false);
-
-        // Navigate if URL exists
         if (url) {
             router.push(url);
         }
     };
 
-    const [loading, setLoading] = useState(false);
-
     const fetchNotifications = useCallback(async (signal?: AbortSignal) => {
-        if (!user?.id || loading) return;
+        if (!user?.id || isFetchingRef.current) return;
+        
+        isFetchingRef.current = true;
         setLoading(true);
+        
         try {
             const res = await fetch("/api/notifications", { signal });
             if (res.ok) {
@@ -116,15 +114,19 @@ export function NotificationBell() {
                 setUnreadCount(data.unreadCount || 0);
             }
         } catch (err: any) {
-            if (err.name !== 'AbortError') {
+            // Ignore abort errors and transient network errors during unmount
+            if (err.name !== 'AbortError' && err.message !== 'Failed to fetch') {
                 console.error("Error fetching notifications:", err);
             }
         } finally {
+            isFetchingRef.current = false;
             setLoading(false);
         }
-    }, [user?.id, loading]);
+    }, [user?.id]);
 
     useEffect(() => {
+        if (!user?.id) return;
+
         const controller = new AbortController();
         fetchNotifications(controller.signal);
         
@@ -136,7 +138,7 @@ export function NotificationBell() {
             controller.abort();
             clearInterval(interval);
         };
-    }, [user?.id]); // Only re-run if user changes
+    }, [user?.id, fetchNotifications]);
 
     const markAllRead = async () => {
         try {
@@ -183,7 +185,6 @@ export function NotificationBell() {
 
     return (
         <div className="relative">
-            {/* Bell Button */}
             <Button
                 variant="ghost"
                 size="icon"
@@ -201,15 +202,10 @@ export function NotificationBell() {
                 )}
             </Button>
 
-            {/* Dropdown Panel */}
             {open && (
                 <>
-                    {/* Backdrop */}
                     <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-
                     <div className="fixed inset-x-4 top-20 lg:absolute lg:inset-x-auto ltr:lg:left-0 rtl:lg:right-0 lg:top-10 z-50 w-auto lg:w-[320px] max-w-[400px] mx-auto lg:mx-0 rounded-3xl bg-card border border-border/60 shadow-2xl shadow-black/25 overflow-hidden animate-in zoom-in-95 fade-in slide-in-from-top-3 lg:slide-in-from-top-2 duration-200 origin-top ltr:lg:origin-top-left rtl:lg:origin-top-right">
-
-                        {/* Header */}
                         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent">
                             <div className="flex items-center gap-2.5">
                                 <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
@@ -245,10 +241,8 @@ export function NotificationBell() {
                             </div>
                         </div>
 
-                        {/* Body */}
                         <div className="max-h-[340px] overflow-y-auto scrollbar-none">
                             {notifications.length === 0 ? (
-                                /* ── Empty State ── */
                                 <div className="flex flex-col items-center justify-center py-12 px-6 text-center gap-5">
                                     <div className="relative">
                                         <div className="h-20 w-20 rounded-[28px] bg-muted/30 border border-border/40 flex items-center justify-center shadow-inner">
@@ -272,7 +266,6 @@ export function NotificationBell() {
                                     </div>
                                 </div>
                             ) : (
-                                /* ── Notification Items ── */
                                 <div className="divide-y divide-border/30">
                                     {notifications.map((n) => (
                                         <div
@@ -351,7 +344,6 @@ export function NotificationBell() {
                             )}
                         </div>
 
-                        {/* Footer — only when there are notifications */}
                         {notifications.length > 0 && (
                             <div className="px-5 py-3 border-t border-border/40 bg-muted/10">
                                 <p className="text-[9px] text-muted-foreground/25 font-bold uppercase tracking-widest text-center">
