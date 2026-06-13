@@ -190,6 +190,15 @@ export default function AdminSchedulerPage() {
             if (!res.ok || !data.success) {
                 throw new Error(data.error || `Server error (${res.status})`);
             }
+            
+            // If the server returns updated stats/metadata, sync the local state
+            if (data.stats) {
+                setResult((prev: any) => ({
+                    ...prev,
+                    stats: data.stats
+                }));
+            }
+
             toast.success(`${t("success_occurred") || "Saved"} — ${data.count} sessions`, { id: toastId });
         } catch (error: any) {
             toast.error(`${t("error_occurred") || "Failed to save"}: ${error.message}`, { id: toastId });

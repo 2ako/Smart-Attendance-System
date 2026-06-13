@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { sanityClient } from "@/lib/sanity/client";
 import { SchedulerEngine } from "@/lib/scheduler/engine";
+import { evaluateFitness } from "@/lib/scheduler/constraints";
+import { Chromosome } from "@/lib/scheduler/types";
 
 export async function GET() {
     try {
@@ -60,7 +62,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const { genes, stats, conflicts: detailedConflicts } = await req.json();
+        const payload = await req.json();
+        const { genes, stats, conflicts: detailedConflicts } = payload;
+        
+        console.log(`[Scheduler Commit] Payload stats:`, stats);
+        console.log(`[Scheduler Commit] Has Hard Conflicts: ${stats?.hasOwnProperty('hardConflicts')}, Value: ${stats?.hardConflicts}`);
 
         if (!genes || !Array.isArray(genes)) {
             return NextResponse.json({ error: "Invalid genes data" }, { status: 400 });
@@ -118,6 +124,24 @@ export async function POST(req: Request) {
         // 3. Batch Create New Schedules
         const validGenes = genes.filter((g: any) => g.subjectId && typeof g.subjectId === "string" && g.subjectId.length > 0);
 
+        // --- ROOT FIX: Re-calculate stats on server to ensure 100% accuracy ---
+        const mockChromosome: Chromosome = {
+            genes: validGenes,
+            fitness: 0,
+            conflicts: [],
+        };
+        const evaluation = evaluateFitness(mockChromosome, true);
+        const finalStats = {
+            fitness: evaluation.stats?.fitness ?? 0,
+            hardConflicts: evaluation.stats?.hardConflicts ?? 0,
+            softConflicts: evaluation.stats?.softConflicts ?? 0,
+            saturdaySlots: evaluation.stats?.saturdaySlots ?? 0,
+            lateSlots: evaluation.stats?.lateSlots ?? 0,
+            totalSubjects: stats?.totalSubjects || validGenes.length,
+            totalRooms: stats?.totalRooms || 0,
+        };
+        console.log(`[Scheduler Commit] Final Re-calculated Stats:`, finalStats);
+
         const mutations = validGenes.map((gene: any) => {
             const info = getSlotInfo(gene.slotId);
             const doc: any = {
@@ -138,23 +162,15 @@ export async function POST(req: Request) {
             return { create: doc };
         });
 
-        // 3.5 Create metadata
-        if (stats) {
-            mutations.push({
-                create: {
-                    _type: "scheduleMetadata",
-                    fitness: stats.fitness,
-                    hardConflicts: stats.hardConflicts,
-                    softConflicts: stats.softConflicts,
-                    saturdaySlots: stats.saturdaySlots,
-                    lateSlots: stats.lateSlots,
-                    totalSubjects: stats.totalSubjects,
-                    totalRooms: stats.totalRooms,
-                    conflicts: detailedConflicts || [],
-                    committedAt: new Date().toISOString()
-                }
-            } as any);
-        }
+        // 3.5 Create metadata document with re-calculated stats
+        mutations.push({
+            create: {
+                _type: "scheduleMetadata",
+                ...finalStats,
+                conflicts: evaluation.conflicts || [],
+                committedAt: new Date().toISOString()
+            }
+        } as any);
 
         // 4. Execute transaction to save
         if (mutations.length > 0) {

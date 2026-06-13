@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { sanityClient } from "@/lib/sanity/client";
+import { evaluateFitness } from "@/lib/scheduler/constraints";
+import { Chromosome } from "@/lib/scheduler/types";
 
 export const dynamic = "force-dynamic";
 
@@ -57,7 +59,14 @@ export async function GET() {
 
         // Fetch Metadata - Get the latest committed metadata
         const metadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"] | order(committedAt desc)[0]`);
-        console.log(`[Scheduler Load] Metadata found: ${!!metadata}`);
+        console.log(`[Scheduler Load] Metadata found: ${!!metadata}, ID: ${metadata?._id}`);
+        if (metadata) {
+            console.log(`[Scheduler Load] Raw Metadata Stats:`, {
+                hard: metadata.hardConflicts,
+                soft: metadata.softConflicts,
+                fitness: metadata.fitness
+            });
+        }
 
         // Convert Sanity schedule records back into gene format
         const genes = schedules.map((s: any, idx: number) => {
@@ -92,23 +101,24 @@ export async function GET() {
             };
         });
 
-        // Use persisted stats if available, otherwise fallback to basic counts
-        // Use ?? 0 to strictly ensure numbers for the frontend
-        const stats = metadata ? {
-            fitness: metadata.fitness ?? 100,
-            hardConflicts: metadata.hardConflicts ?? 0,
-            softConflicts: metadata.softConflicts ?? 0,
-            saturdaySlots: metadata.saturdaySlots ?? 0,
-            lateSlots: metadata.lateSlots ?? 0,
-            totalSubjects: metadata.totalSubjects || subjectsCount,
-            totalRooms: metadata.totalRooms || roomsCount,
-        } : {
-            totalSubjects: subjectsCount,
-            totalRooms: roomsCount,
-            hardConflicts: 0,
-            softConflicts: 0,
-            saturdaySlots: genes.filter((g: any) => g.slotId < 6).length,
-            lateSlots: genes.filter((g: any) => g.slotId % 6 >= 4).length,
+        // ROOT FIX: Perform server-side evaluation if metadata is missing or incomplete
+        // This ensures the stats are ALWAYS accurate according to the stored genes.
+        const mockChromosome: Chromosome = {
+            genes,
+            fitness: 0,
+            conflicts: [],
+        };
+        const evaluation = evaluateFitness(mockChromosome, true);
+
+        // Use persisted stats if available, otherwise fallback to evaluation
+        const stats = {
+            fitness: metadata?.fitness ?? evaluation.stats?.fitness ?? 100,
+            hardConflicts: metadata?.hardConflicts ?? evaluation.stats?.hardConflicts ?? 0,
+            softConflicts: metadata?.softConflicts ?? evaluation.stats?.softConflicts ?? 0,
+            saturdaySlots: metadata?.saturdaySlots ?? evaluation.stats?.saturdaySlots ?? 0,
+            lateSlots: metadata?.lateSlots ?? evaluation.stats?.lateSlots ?? 0,
+            totalSubjects: metadata?.totalSubjects || subjectsCount,
+            totalRooms: metadata?.totalRooms || roomsCount,
         };
 
         return NextResponse.json({
@@ -116,14 +126,14 @@ export async function GET() {
             hasSchedule: true,
             schedule: {
                 genes,
-                fitness: metadata?.fitness || 100,
-                conflicts: metadata?.conflicts || []
+                fitness: stats.fitness,
+                conflicts: metadata?.conflicts || evaluation.conflicts || []
             },
             infrastructure: {
                 rooms: await sanityClient.fetch(`*[_type == "room"]{ _id, name, capacity, studyField }`)
             },
             stats,
-            conflicts: metadata?.conflicts || [],
+            conflicts: metadata?.conflicts || evaluation.conflicts || [],
         });
     } catch (error: any) {
         console.error("Load Schedule Error:", error);
