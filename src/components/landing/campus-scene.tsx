@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Box, Cylinder, Float, Environment, ContactShadows, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { Suspense } from "react";
+import { Sparkles } from "lucide-react";
 
 function ProfessorModel() {
     const { scene } = useGLTF("/models/professor_test_best.glb");
@@ -318,34 +319,106 @@ function LowPolyRoom() {
     );
 }
 
+function StaticCampusFallback() {
+    return (
+        <div className="absolute inset-0 w-full h-full bg-slate-950 flex items-center justify-center overflow-hidden">
+            {/* Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-900/10" />
+            
+            {/* Abstract Shapes to mimic the 3D scene feel */}
+            <div className="relative w-full max-w-4xl h-[60%] flex items-center justify-center">
+                <div className="absolute top-[20%] left-[10%] w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-[10%] right-[15%] w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+                
+                {/* Simplified Floor Graphic */}
+                <div className="absolute bottom-0 w-[120%] h-40 bg-slate-900/40 skew-y-3 blur-sm" />
+                
+                {/* Visual Placeholder for the Scene */}
+                <div className="relative z-10 flex flex-col items-center gap-6 p-8 rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-md">
+                    <div className="h-20 w-20 rounded-3xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                        <Sparkles size={40} />
+                    </div>
+                    <div className="space-y-2 text-center">
+                        <h3 className="text-xl font-black text-white/80 tracking-tight uppercase">Smart Campus View</h3>
+                        <p className="text-sm text-slate-400 max-w-[280px] font-medium leading-relaxed">
+                            A minimalist version is showing because your browser or hardware currently has WebGL disabled.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            {/* Floating particles (CSS) */}
+            {[...Array(6)].map((_, i) => (
+                <div 
+                    key={i}
+                    className="absolute h-1 w-1 bg-blue-400/30 rounded-full animate-bounce"
+                    style={{
+                        top: `${20 + i * 15}%`,
+                        left: `${15 + (i % 3) * 30}%`,
+                        animationDuration: `${3 + i}s`,
+                        animationDelay: `${i * 0.5}s`
+                    }}
+                />
+            ))}
+        </div>
+    );
+}
+
 export function CampusScene() {
+    const [hasWebGL, setHasWebGL] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        const checkWebGL = () => {
+            try {
+                const canvas = document.createElement("canvas");
+                const support = !!(
+                    window.WebGLRenderingContext &&
+                    (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+                );
+                setHasWebGL(support);
+            } catch (e) {
+                setHasWebGL(false);
+            }
+        };
+        checkWebGL();
+    }, []);
+
+    if (hasWebGL === false) {
+        return <StaticCampusFallback />;
+    }
+
+    // While checking or if supported (null or true), render Canvas
+    // null state preserves the same layout to avoid flicker
     return (
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-auto cursor-grab active:cursor-grabbing">
-            <Canvas camera={{ position: [6, 5, 8], fov: 40 }}>
-                {/* Lighting - Enhanced to compensate for removed Environment */}
-                <ambientLight intensity={1.5} />
-                <directionalLight position={[10, 15, 10]} intensity={3.5} castShadow />
-                <pointLight position={[-1.6, 1.5, -2.0]} color="#3b82f6" intensity={6} distance={8} />
+            {hasWebGL && (
+                <Canvas camera={{ position: [6, 5, 8], fov: 40 }}>
+                    {/* Lighting - Enhanced to compensate for removed Environment */}
+                    <ambientLight intensity={1.5} />
+                    <directionalLight position={[10, 15, 10]} intensity={3.5} castShadow />
+                    <pointLight position={[-1.6, 1.5, -2.0]} color="#3b82f6" intensity={6} distance={8} />
 
-                <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.3}>
-                    <LowPolyRoom />
-                </Float>
+                    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.3}>
+                        <LowPolyRoom />
+                    </Float>
 
-                {/* Ground Shadow/Reflection */}
-                <ContactShadows position={[0, -0.5, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
+                    {/* Ground Shadow/Reflection */}
+                    <ContactShadows position={[0, -0.5, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
 
-                {/* Interactive Controls */}
-                <OrbitControls
-                    enableZoom={true}
-                    minDistance={4}
-                    maxDistance={15}
-                    autoRotate
-                    autoRotateSpeed={0.8}
-                    maxPolarAngle={Math.PI / 2.1}
-                    minPolarAngle={Math.PI / 6}
-                    enablePan={true}
-                />
-            </Canvas>
+                    {/* Interactive Controls */}
+                    <OrbitControls
+                        enableZoom={true}
+                        minDistance={4}
+                        maxDistance={15}
+                        autoRotate
+                        autoRotateSpeed={0.8}
+                        maxPolarAngle={Math.PI / 2.1}
+                        minPolarAngle={Math.PI / 6}
+                        enablePan={true}
+                    />
+                </Canvas>
+            )}
+            {!hasWebGL && hasWebGL !== null && <StaticCampusFallback />}
         </div>
     );
 }

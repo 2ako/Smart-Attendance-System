@@ -55,8 +55,9 @@ export async function GET() {
         const roomsCount = await sanityClient.fetch(`count(*[_type == "room"])`);
         const subjectsCount = await sanityClient.fetch(`count(*[_type == "subject"])`);
 
-        // Fetch Metadata
-        const metadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"][0]`);
+        // Fetch Metadata - Get the latest committed metadata
+        const metadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"] | order(committedAt desc)[0]`);
+        console.log(`[Scheduler Load] Metadata found: ${!!metadata}`);
 
         // Convert Sanity schedule records back into gene format
         const genes = schedules.map((s: any, idx: number) => {
@@ -92,19 +93,20 @@ export async function GET() {
         });
 
         // Use persisted stats if available, otherwise fallback to basic counts
+        // Use ?? 0 to strictly ensure numbers for the frontend
         const stats = metadata ? {
-            fitness: metadata.fitness,
-            hardConflicts: metadata.hardConflicts,
-            softConflicts: metadata.softConflicts,
-            saturdaySlots: metadata.saturdaySlots,
-            lateSlots: metadata.lateSlots,
+            fitness: metadata.fitness ?? 100,
+            hardConflicts: metadata.hardConflicts ?? 0,
+            softConflicts: metadata.softConflicts ?? 0,
+            saturdaySlots: metadata.saturdaySlots ?? 0,
+            lateSlots: metadata.lateSlots ?? 0,
             totalSubjects: metadata.totalSubjects || subjectsCount,
             totalRooms: metadata.totalRooms || roomsCount,
         } : {
             totalSubjects: subjectsCount,
             totalRooms: roomsCount,
-            hardConflicts: 0, 
-            softConflicts: 0, 
+            hardConflicts: 0,
+            softConflicts: 0,
             saturdaySlots: genes.filter((g: any) => g.slotId < 6).length,
             lateSlots: genes.filter((g: any) => g.slotId % 6 >= 4).length,
         };
@@ -112,12 +114,12 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             hasSchedule: true,
-            schedule: { 
-                genes, 
-                fitness: metadata?.fitness || 100, 
-                conflicts: metadata?.conflicts || [] 
+            schedule: {
+                genes,
+                fitness: metadata?.fitness || 100,
+                conflicts: metadata?.conflicts || []
             },
-            infrastructure: { 
+            infrastructure: {
                 rooms: await sanityClient.fetch(`*[_type == "room"]{ _id, name, capacity, studyField }`)
             },
             stats,

@@ -180,7 +180,7 @@ export default function AdminSchedulerPage() {
             const res = await fetch("/api/admin/scheduler/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     genes: result.schedule.genes,
                     stats: result.stats,
                     conflicts: result.schedule.conflicts
@@ -228,27 +228,27 @@ export default function AdminSchedulerPage() {
     }, [selectedKey, groupedSchedule, result]);
 
     const statsEntries = [
-        { 
-            label: t("hard_conflicts"), 
-            value: result?.stats?.hardConflicts || 0, 
-            icon: AlertTriangle, 
-            color: (result?.stats?.hardConflicts || 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500" 
+        {
+            label: t("hard_conflicts"),
+            value: result?.stats?.hardConflicts ?? 0,
+            icon: AlertTriangle,
+            color: (result?.stats?.hardConflicts ?? 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500"
         },
-        { 
-            label: t("soft_conflicts"), 
-            value: result?.stats?.softConflicts || 0, 
-            icon: Clock, 
-            color: "text-amber-500" 
+        {
+            label: t("soft_conflicts"),
+            value: result?.stats?.softConflicts ?? 0,
+            icon: Clock,
+            color: "text-amber-500"
         },
-        { label: t("saturday_slots"), value: result?.stats?.saturdaySlots || 0, icon: Database, color: "text-blue-500" },
+        { label: t("saturday_slots"), value: result?.stats?.saturdaySlots ?? 0, icon: Database, color: "text-blue-500" },
         {
             label: t("performance_score"),
             value: result ? (() => {
                 const total = result.schedule?.genes?.length || 1;
-                const hard = result.stats?.hardConflicts || 0;
+                const hard = result.stats?.hardConflicts ?? 0;
                 const hPenalty = (hard / total) * 100;
-                const sPenalty = (result.stats?.saturdaySlots || 0) * 0.1;
-                const prefPenalty = Math.min(5, (result.stats?.softConflicts || 0) * 0.05);
+                const sPenalty = (result.stats?.saturdaySlots ?? 0) * 0.1;
+                const prefPenalty = Math.min(5, (result.stats?.softConflicts ?? 0) * 0.05);
                 return Math.max(0, 100 - hPenalty - sPenalty - prefPenalty).toFixed(1) + "%";
             })() : "0%",
             icon: Cpu,
