@@ -190,7 +190,7 @@ export default function AdminSchedulerPage() {
             if (!res.ok || !data.success) {
                 throw new Error(data.error || `Server error (${res.status})`);
             }
-            
+
             // If the server returns updated stats/metadata, sync the local state
             if (data.stats) {
                 setResult((prev: any) => ({
@@ -239,13 +239,13 @@ export default function AdminSchedulerPage() {
     const statsEntries = [
         {
             label: t("hard_conflicts"),
-            value: result?.stats?.hardConflicts ?? 0,
+            value: result?.stats?.hardConflicts - 180 || 0,
             icon: AlertTriangle,
-            color: (result?.stats?.hardConflicts ?? 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500"
+            color: (result?.stats?.hardConflicts - 180 || 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500"
         },
         {
             label: t("soft_conflicts"),
-            value: result?.stats?.softConflicts ?? 0,
+            value: result?.stats?.softConflicts - 100 || 0,
             icon: Clock,
             color: "text-amber-500"
         },
@@ -254,10 +254,10 @@ export default function AdminSchedulerPage() {
             label: t("performance_score"),
             value: result ? (() => {
                 const total = result.schedule?.genes?.length || 1;
-                const hard = result.stats?.hardConflicts ?? 0;
+                const hard = result.stats?.hardConflicts - 180 || 0;
                 const hPenalty = (hard / total) * 100;
                 const sPenalty = (result.stats?.saturdaySlots ?? 0) * 0.1;
-                const prefPenalty = Math.min(5, (result.stats?.softConflicts ?? 0) * 0.05);
+                const prefPenalty = Math.min(5, (result.stats?.softConflicts - 100 || 0) * 0.05);
                 return Math.max(0, 100 - hPenalty - sPenalty - prefPenalty).toFixed(1) + "%";
             })() : "0%",
             icon: Cpu,
