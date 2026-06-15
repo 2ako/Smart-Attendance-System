@@ -24,8 +24,19 @@ function getSlotId(day: string, startTime: string): number {
 
 export async function GET() {
     try {
+        // 1. Fetch Metadata first to get the latest batchId
+        const metadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"] | order(committedAt desc)[0]`);
+        const latestBatchId = metadata?.batchId;
+        console.log(`[Scheduler Load] Latest Metadata found: ${!!metadata}, BatchID: ${latestBatchId}`);
+
+        // 2. Fetch only schedules belonging to the latest batch
+        // If no batchId exists (legacy), fallback to isActive check but limited
+        const query = latestBatchId 
+            ? `*[_type == "schedule" && batchId == "${latestBatchId}" && isActive == true]`
+            : `*[_type == "schedule" && isActive == true]`;
+
         const schedules = await sanityClient.fetch(`
-            *[_type == "schedule" && coalesce(isActive, true) == true]{
+            ${query}{
                 _id,
                 day,
                 startTime,
@@ -56,10 +67,8 @@ export async function GET() {
 
         const roomsCount = await sanityClient.fetch(`count(*[_type == "room"])`);
         const subjectsCount = await sanityClient.fetch(`count(*[_type == "subject"])`);
-
-        // Fetch Metadata - Get the latest committed metadata
-        const metadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"] | order(committedAt desc)[0]`);
-        console.log(`[Scheduler Load] Metadata found: ${!!metadata}, ID: ${metadata?._id}`);
+        
+        console.log(`[Scheduler Load] Metadata used for stats logic: ${!!metadata}, ID: ${metadata?._id}`);
         if (metadata) {
             console.log(`[Scheduler Load] Raw Metadata Stats:`, {
                 hard: metadata.hardConflicts,

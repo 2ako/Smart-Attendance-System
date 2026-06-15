@@ -88,10 +88,14 @@ export async function POST(req: Request) {
             return { day: DAYS[dayIdx] || "Saturday", ...(SLOTS[slotIdx] || SLOTS[0]) };
         };
 
-        // 1. Fetch currently active schedules
-        const oldSchedules = await sanityClient.fetch(`*[_type == "schedule" && coalesce(isActive, true) == true]{ _id }`);
+        // 0. Generate a unique batchId for this commitment
+        const batchId = `batch_${Date.now()}`;
+        console.log(`[Scheduler Commit] Starting batch: ${batchId}`);
+
+        // 1. Fetch ALL schedules that might be active or stray
+        const oldSchedules = await sanityClient.fetch(`*[_type == "schedule" && isActive == true]{ _id }`);
         
-        // 1.5 Delete old metadata
+        // 1.5 Delete old metadata (we only keep the latest for stats/UI)
         const oldMetadata = await sanityClient.fetch(`*[_type == "scheduleMetadata"]{ _id }`);
         if (oldMetadata.length > 0) {
             for (const meta of oldMetadata) {
@@ -102,23 +106,11 @@ export async function POST(req: Request) {
         let deletedCount = 0;
         let archivedCount = 0;
 
-        // 2. Clear old schedules safely (Delete or Archive)
+        // 2. Clear old schedules safely (Bulk Patch for speed and reliability)
         if (oldSchedules.length > 0) {
-            console.log(`[Scheduler Commit] Processing ${oldSchedules.length} active schedules...`);
-            for (const schedule of oldSchedules) {
-                try {
-                    await sanityClient.delete(schedule._id);
-                    deletedCount++;
-                } catch (e: any) {
-                    console.warn(`[Scheduler Commit] Could not delete schedule ${schedule._id}, archiving instead.`);
-                    try {
-                        await sanityClient.patch(schedule._id).set({ isActive: false }).commit();
-                        archivedCount++;
-                    } catch (patchErr: any) {
-                        console.error(`[Scheduler Commit] Failed to archive schedule ${schedule._id}:`, patchErr);
-                    }
-                }
-            }
+            console.log(`[Scheduler Commit] Deactivating ${oldSchedules.length} existing active schedules...`);
+            // We use a single patch with a query to deactivate everything in one go
+            await sanityClient.patch({ query: '*[_type == "schedule" && isActive == true]' }).set({ isActive: false }).commit();
         }
 
         // 3. Batch Create New Schedules
@@ -153,6 +145,7 @@ export async function POST(req: Request) {
                 endTime: info.end,
                 groups: gene.groups || [],
                 isActive: true,
+                batchId, // Link to this batch
             };
 
             if (gene.professorId && typeof gene.professorId === "string" && gene.professorId.length > 0) {
@@ -162,11 +155,12 @@ export async function POST(req: Request) {
             return { create: doc };
         });
 
-        // 3.5 Create metadata document with re-calculated stats
+        // 3.5 Create metadata document with re-calculated stats and batchId
         mutations.push({
             create: {
                 _type: "scheduleMetadata",
                 ...finalStats,
+                batchId, // The master link
                 conflicts: evaluation.conflicts || [],
                 committedAt: new Date().toISOString()
             }

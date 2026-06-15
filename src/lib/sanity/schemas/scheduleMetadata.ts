@@ -12,6 +12,7 @@ const scheduleMetadata = {
         { name: "totalSubjects", title: "Total Subjects", type: "number" },
         { name: "totalRooms", title: "Total Rooms", type: "number" },
         { name: "conflicts", title: "Detailed Conflicts", type: "array", of: [{ type: "string" }] },
+        { name: "batchId", title: "Batch ID", type: "string", description: "Uniquely identifies this version of the schedule." },
         { name: "committedAt", title: "Committed At", type: "datetime" },
     ],
 };

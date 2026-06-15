@@ -12,6 +12,7 @@ const schedule = {
         { name: "endTime", title: "End Time", type: "string" },
         { name: "groups", title: "Student Groups", type: "array", of: [{ type: "string" }] },
         { name: "isActive", title: "Is Active", type: "boolean", initialValue: true, description: "Active schedules are currently in use. Inactive schedules are kept for historical session records." },
+        { name: "batchId", title: "Batch ID", type: "string", description: "Groups schedules created in the same commitment batch." },
     ],
 };
 export default schedule;

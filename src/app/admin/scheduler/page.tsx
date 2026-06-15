@@ -43,6 +43,7 @@ export default function AdminSchedulerPage() {
     const [result, setResult] = useState<any>(null);
     const [selectedKey, setSelectedKey] = useState<string>("");
     const [viewMode, setViewMode] = useState<"visual" | "list">("visual");
+    const [isGenerated, setIsGenerated] = useState(false);
 
     // Manual Edit States
     const [editingGene, setEditingGene] = useState<{ gene: any, index: number } | null>(null);
@@ -56,6 +57,7 @@ export default function AdminSchedulerPage() {
                 const data = await res.json();
                 if (data.success && data.hasSchedule) {
                     setResult(data);
+                    setIsGenerated(false); // Stats hidden on load
                 }
             } catch (e) {
                 // silently fail – admin can generate a new one
@@ -162,6 +164,7 @@ export default function AdminSchedulerPage() {
             const data = await res.json();
             if (data.success) {
                 setResult(data);
+                setIsGenerated(true); // Stats shown after generation
                 toast.success(t("success_occurred") || "Schedule generated successfully");
             } else {
                 throw new Error(data.error);
@@ -198,6 +201,8 @@ export default function AdminSchedulerPage() {
                     stats: data.stats
                 }));
             }
+            
+            setIsGenerated(false); // Transitions into "committed/loaded" mode
 
             toast.success(`${t("success_occurred") || "Saved"} — ${data.count} sessions`, { id: toastId });
         } catch (error: any) {
@@ -290,7 +295,7 @@ export default function AdminSchedulerPage() {
                             {isGenerating ? <Loader2 className="animate-spin" size={14} /> : <Cpu size={14} />}
                             {isGenerating ? t("engine_processing") : t("initialize_generator")}
                         </Button>
-                        {result && (
+                        {result && isGenerated && (
                             <Button
                                 onClick={handleCommit}
                                 variant="outline"
@@ -333,20 +338,22 @@ export default function AdminSchedulerPage() {
 
                 {result && (
                     <div className="flex-1 flex flex-col min-h-0 space-y-6">
-                        {/* Stats Inventory */}
-                        <div className="shrink-0 grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            {statsEntries.map((stat, i) => (
-                                <div key={i} className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-center gap-4 transition-all">
-                                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${stat.color} bg-current/5`}>
-                                        <stat.icon size={20} />
+                        {/* Stats Inventory - Only show when freshly generated */}
+                        {isGenerated && (
+                            <div className="shrink-0 grid grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                                {statsEntries.map((stat, i) => (
+                                    <div key={i} className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-center gap-4 transition-all">
+                                        <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${stat.color} bg-current/5`}>
+                                            <stat.icon size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-0.5 tracking-tighter">{stat.label}</p>
+                                            <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 mb-0.5 tracking-tighter">{stat.label}</p>
-                                        <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
 
                         {/* Control Bar */}
                         <div className="shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
