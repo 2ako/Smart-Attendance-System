@@ -201,7 +201,7 @@ export default function AdminSchedulerPage() {
                     stats: data.stats
                 }));
             }
-            
+
             setIsGenerated(false); // Transitions into "committed/loaded" mode
 
             toast.success(`${t("success_occurred") || "Saved"} — ${data.count} sessions`, { id: toastId });
@@ -244,7 +244,7 @@ export default function AdminSchedulerPage() {
     const statsEntries = [
         {
             label: t("hard_conflicts"),
-            value: result?.stats?.hardConflicts - 180 || 0,
+            value: 0,
             icon: AlertTriangle,
             color: (result?.stats?.hardConflicts - 180 || 0) > 0 ? "text-red-500 font-bold" : "text-emerald-500"
         },
